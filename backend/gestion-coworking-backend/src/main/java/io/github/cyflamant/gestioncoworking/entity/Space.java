@@ -21,8 +21,9 @@ import java.math.BigDecimal;
 public class Space {
     
     public enum SpaceType {
-    OpenSpace, Office, Room
-}
+    OPENSPACE, OFFICE, ROOM
+    }
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
