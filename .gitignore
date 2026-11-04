@@ -196,3 +196,6 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/netbeans,java,maven,node
+
+### Local notes ###
+docs/to-do.md
