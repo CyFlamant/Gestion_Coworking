@@ -7,9 +7,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -17,30 +20,33 @@ import java.math.BigDecimal;
  */
 
 @Entity
-@Table(name="spaces")
+@Table(name = "spaces")
 public class Space {
-    
+
     public enum SpaceType {
-    OPENSPACE, OFFICE, ROOM
+        OPENSPACE, OFFICE, ROOM
     }
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
-    @Column(name="type")
+
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    private SpaceType type;    
-    
-    @Column(name="hour_rate", precision = 6, scale = 2)
+    private SpaceType type;
+
+    @Column(name = "hour_rate", precision = 6, scale = 2)
     @NotNull(message = "Champ obligatoire")
     private BigDecimal hourRate;
-    
-    @Column(name="half_day_rate", precision = 6, scale = 2)
+
+    @Column(name = "half_day_rate", precision = 6, scale = 2)
     @NotNull(message = "Champ obligatoire")
     private BigDecimal halfDayRate;
-    
-    @Column(name="day_rate", precision = 6, scale = 2)
+
+    @Column(name = "day_rate", precision = 6, scale = 2)
     @NotNull(message = "Champ obligatoire")
-    private BigDecimal dayRate;    
+    private BigDecimal dayRate;
+
+    @OneToMany(mappedBy = "space")
+    private List<Booking> bookings = new ArrayList<>();
 }

@@ -7,14 +7,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Coworking space management web app (student integration project, EAFC Namur). Specs are in `docs/` (French): `Cahier des charges.md` (requirements), `Plan d'implementation.md` (architecture, planning, class diagram), `pages accueil.md` (UI mockups). The `.docx` originals are kept for reference; edit the `.md` files.
 
 Planned architecture (only the backend app-service exists so far):
-- `backend/gestion-coworking-backend` — app-service: Spring Boot 4.1 / Java 21, bookings and spaces.
+- `backend/app-service` — app-service: Spring Boot 4.1 / Java 21, bookings and spaces.
 - Auth-service (planned) — separate Spring Boot project with its own DB, issues JWTs. Until it exists, the app-service uses a fixed user id.
 - Front end (planned) — React.
 - Deployment (planned) — Docker, cloud host (Azure/AWS).
 
 ## Commands
 
-Run from `backend/gestion-coworking-backend` (Maven wrapper, no global Maven):
+Run from `backend/app-service` (Maven wrapper, no global Maven):
 
 ```powershell
 .\mvnw.cmd test                                         # all tests
@@ -32,7 +32,7 @@ Tests and the app need a running MySQL-compatible server at `localhost:3306` wit
 
 ## Conventions
 
-- TDD: write the failing test first.
+- TDD: write the failing test first. Whenever new or changed code needs a test, remind the user to write it (and where it goes) before the implementation.
 - Documentation and commit messages in English. Existing French docs in `docs/` stay as they are.
 - User-facing validation messages are in French (e.g. `"Champ obligatoire"`).
-- Never tag, push or force push; releases go through the separate release repository.
+- Git: the user makes all commits and pushes manually. Never commit, tag, push or force push; suggest a commit message instead. Core development happens on `main`; branches only for optional features.
