@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 
 import io.github.cyflamant.gestioncoworking.entity.Space;
 import io.github.cyflamant.gestioncoworking.repository.SpaceRepository;
+
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,6 +54,34 @@ class SpaceServiceTest {
 
         assertThat(created).isSameAs(space);
         verify(spaceRepository).save(space);
+    }
+
+    @Test
+    void findAllReturnsAllSpaces() {
+        // Arrange: the mock "database" contains two spaces
+        Space office = validSpace();
+        Space room = validSpace();
+        room.setName("Salle 1");
+        room.setType(Space.SpaceType.ROOM);
+        when(spaceRepository.findAll()).thenReturn(List.of(office, room));
+
+        // Act
+        List<Space> spaces = spaceService.findAll();
+
+        // Assert: same spaces, same order
+        assertThat(spaces).containsExactly(office, room);
+    }
+
+    @Test
+    void findAllReturnsEmptyListWhenNoSpaces() {
+        // Arrange: the mock "database" is empty
+        when(spaceRepository.findAll()).thenReturn(List.of());
+
+        // Act
+        List<Space> spaces = spaceService.findAll();
+
+        // Assert: an empty list, not null
+        assertThat(spaces).isEmpty();
     }
 
     private Space validSpace() {

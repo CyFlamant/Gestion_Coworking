@@ -2,6 +2,9 @@ package io.github.cyflamant.gestioncoworking.service;
 
 import io.github.cyflamant.gestioncoworking.entity.Space;
 import io.github.cyflamant.gestioncoworking.repository.SpaceRepository;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,4 +24,9 @@ public class SpaceService {
     public Space create(Space space) {
         return spaceRepository.save(space);
     }
+
+    public List<Space> findAll() {
+        return spaceRepository.findAll();
+    }
+
 }
