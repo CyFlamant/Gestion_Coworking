@@ -29,4 +29,15 @@ public class SpaceService {
         return spaceRepository.findAll();
     }
 
+    public Space update(Integer id, Space changes) {
+        Space existing = findById(id);
+        existing.setName(changes.getName());
+        existing.setType(changes.getType());
+        existing.setHourRate(changes.getHourRate());
+        existing.setHalfDayRate(changes.getHalfDayRate());
+        existing.setDayRate(changes.getDayRate());
+
+        return spaceRepository.save(existing);
+    }
+
 }
