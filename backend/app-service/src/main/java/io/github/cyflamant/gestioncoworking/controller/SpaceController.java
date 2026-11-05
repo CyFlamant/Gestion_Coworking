@@ -1,6 +1,6 @@
 package io.github.cyflamant.gestioncoworking.controller;
 
-import io.github.cyflamant.gestioncoworking.entity.Space;
+import io.github.cyflamant.gestioncoworking.dto.SpaceResponse;
 import io.github.cyflamant.gestioncoworking.service.SpaceService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +19,8 @@ public class SpaceController {
     }
 
     @GetMapping("/{id}")
-    public Space findById(@PathVariable Integer id) {
-        return spaceService.findById(id);
+    public SpaceResponse findById(@PathVariable Integer id) {
+        return SpaceResponse.from(spaceService.findById(id));
     }
 
 }

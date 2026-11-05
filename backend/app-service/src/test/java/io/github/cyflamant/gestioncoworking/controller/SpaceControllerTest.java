@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
 import io.github.cyflamant.gestioncoworking.service.SpaceNotFoundException;
 import io.github.cyflamant.gestioncoworking.service.SpaceService;
@@ -54,6 +55,35 @@ class SpaceControllerTest {
         mockMvc.perform(get("/api/spaces/99"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.detail").value("Espace introuvable : 99"));
+    }
+
+    @Test
+    void findByIdDoesNotExposeBookings() throws Exception {
+        // Arrange: space 1 has a booking that points back to it (like a real JPA
+        // relation)
+        Space space = validSpace();
+        space.setId(1);
+        Booking booking = new Booking();
+        booking.setSpace(space);
+        space.getBookings().add(booking);
+        when(spaceService.findById(1)).thenReturn(space);
+
+        // Act + Assert: the JSON has no bookings field
+        mockMvc.perform(get("/api/spaces/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.bookings").doesNotExist());
+
+    }
+
+    private Space validSpace() {
+        Space space = new Space();
+        space.setName("Bureau 1");
+        space.setType(Space.SpaceType.OFFICE);
+        space.setHourRate(new BigDecimal("10.00"));
+        space.setHalfDayRate(new BigDecimal("35.00"));
+        space.setDayRate(new BigDecimal("60.00"));
+        return space;
     }
 
 }
