@@ -1,9 +1,11 @@
 package io.github.cyflamant.gestioncoworking.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.MediaType;
 
 @WebMvcTest(SpaceController.class)
 class SpaceControllerTest {
@@ -74,6 +77,37 @@ class SpaceControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.bookings").doesNotExist());
 
+    }
+
+    @Test
+    void createReturns201WithCreatedSpace() throws Exception {
+        // Arrange: the service gives the new space id 1, like the DB would
+        when(spaceService.create(any(Space.class))).thenAnswer(invocation -> {
+            Space space = invocation.getArgument(0);
+            space.setId(1);
+            return space;
+        });
+
+        // Act + Assert
+        mockMvc.perform(post("/api/spaces")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(validSpaceJson()))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Bureau 1"))
+                .andExpect(jsonPath("$.type").value("OFFICE"));
+    }
+
+    private String validSpaceJson() {
+        return """
+                {
+                  "name": "Bureau 1",
+                  "type": "OFFICE",
+                  "hourRate": 10.00,
+                  "halfDayRate": 35.00,
+                  "dayRate": 60.00
+                }
+                """;
     }
 
     private Space validSpace() {
