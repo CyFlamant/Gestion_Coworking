@@ -11,6 +11,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +39,17 @@ public class Space {
 
     @Column(name = "hour_rate", precision = 6, scale = 2)
     @NotNull(message = "Champ obligatoire")
+    @PositiveOrZero(message = "Le tarif ne peut pas être négatif")
     private BigDecimal hourRate;
 
     @Column(name = "half_day_rate", precision = 6, scale = 2)
     @NotNull(message = "Champ obligatoire")
+    @PositiveOrZero(message = "Le tarif ne peut pas être négatif")
     private BigDecimal halfDayRate;
 
     @Column(name = "day_rate", precision = 6, scale = 2)
     @NotNull(message = "Champ obligatoire")
+    @PositiveOrZero(message = "Le tarif ne peut pas être négatif")
     private BigDecimal dayRate;
 
     @Column(name = "name")
