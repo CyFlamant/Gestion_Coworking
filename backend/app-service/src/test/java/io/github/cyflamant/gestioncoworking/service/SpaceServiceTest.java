@@ -120,6 +120,29 @@ class SpaceServiceTest {
         verify(spaceRepository).save(existing);
     }
 
+    @Test
+    void deleteThrowsWhenSpaceDoesNotExist() {
+        when(spaceRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> spaceService.delete(99))
+                .isInstanceOf(SpaceNotFoundException.class)
+                .hasMessage("Espace introuvable : 99");
+        verify(spaceRepository, never()).delete(any());
+    }
+
+    @Test
+    void deleteRemovesSpace() {
+        // Arrange: space 1 exists
+        Space space = validSpace();
+        when(spaceRepository.findById(1)).thenReturn(Optional.of(space));
+
+        // Act
+        spaceService.delete(1);
+
+        // Assert: the repository was asked to delete exactly this space
+        verify(spaceRepository).delete(space);
+    }
+
     private Space validSpace() {
         Space space = new Space();
         space.setName("Bureau 1");

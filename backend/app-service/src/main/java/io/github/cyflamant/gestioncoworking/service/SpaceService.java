@@ -40,4 +40,9 @@ public class SpaceService {
         return spaceRepository.save(existing);
     }
 
+    public void delete(Integer id) {
+        Space existing = findById(id); // throws SpaceNotFoundException if missing
+        spaceRepository.delete(existing);
+    }
+
 }
