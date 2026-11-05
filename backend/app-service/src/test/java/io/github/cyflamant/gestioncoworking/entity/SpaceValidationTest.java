@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +25,15 @@ class SpaceValidationTest {
         Space space = validSpace();
         space.setHourRate(BigDecimal.ZERO);
         assertThat(validator.validate(space)).isEmpty();
+    }
+
+    @Test
+    void missingTypeIsRejected() {
+        Space space = validSpace();
+        space.setType(null);
+        assertThat(validator.validate(space))
+                .extracting(ConstraintViolation::getMessage)
+                .containsExactly("Champ obligatoire");
     }
 
     private Space validSpace() {

@@ -34,6 +34,7 @@ public class Space {
     private Integer id;
 
     @Column(name = "type")
+    @NotNull(message = "Champ obligatoire")
     @Enumerated(EnumType.STRING)
     private SpaceType type;
 
