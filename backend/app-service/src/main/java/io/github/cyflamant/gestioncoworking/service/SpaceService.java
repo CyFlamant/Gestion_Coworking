@@ -17,4 +17,8 @@ public class SpaceService {
         return spaceRepository.findById(id)
                 .orElseThrow(() -> new SpaceNotFoundException(id));
     }
+
+    public Space create(Space space) {
+        return spaceRepository.save(space);
+    }
 }
