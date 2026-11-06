@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
@@ -16,6 +17,7 @@ import io.github.cyflamant.gestioncoworking.service.SpaceService;
 
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -126,6 +128,25 @@ class SpaceControllerTest {
 
         // The service is never reached
         verify(spaceService, never()).create(any());
+    }
+
+    @Test
+    void createIgnoresIdInBody() throws Exception {
+        when(spaceService.create(any(Space.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        mockMvc.perform(post("/api/spaces")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "id": 5, "name": "Bureau 1", "type": "OFFICE",
+                          "hourRate": 10.00, "halfDayRate": 35.00, "dayRate": 60.00 }
+                        """))
+                .andExpect(status().isCreated());
+
+        // The space handed to the service has no id, so save() inserts instead of
+        // overwriting space 5
+        ArgumentCaptor<Space> captor = ArgumentCaptor.forClass(Space.class);
+        verify(spaceService).create(captor.capture());
+        assertThat(captor.getValue().getId()).isNull();
     }
 
     private Space validSpace() {
