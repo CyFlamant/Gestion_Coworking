@@ -149,6 +149,31 @@ class SpaceControllerTest {
         assertThat(captor.getValue().getId()).isNull();
     }
 
+    @Test
+    void createReturns400WhenTypeIsUnknown() throws Exception {
+        mockMvc.perform(post("/api/spaces")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "name": "Bureau 1", "type": "GARAGE",
+                        "hourRate": 10.00, "halfDayRate": 35.00, "dayRate": 60.00 }
+                        """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.type").value("Valeur invalide"));
+
+        verify(spaceService, never()).create(any());
+    }
+
+    @Test
+    void createReturns400WhenJsonIsMalformed() throws Exception {
+        mockMvc.perform(post("/api/spaces")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"name\": \"Bureau 1\","))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Format JSON invalide"));
+
+        verify(spaceService, never()).create(any());
+    }
+
     private Space validSpace() {
         Space space = new Space();
         space.setName("Bureau 1");
