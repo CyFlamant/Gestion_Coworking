@@ -1,6 +1,8 @@
 package io.github.cyflamant.gestioncoworking.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -108,6 +110,22 @@ class SpaceControllerTest {
                   "dayRate": 60.00
                 }
                 """;
+    }
+
+    @Test
+    void createReturns400WhenNameIsBlank() throws Exception {
+        // Act + Assert: blank name is rejected with the French message for that field
+        mockMvc.perform(post("/api/spaces")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "name": "", "type": "OFFICE",
+                          "hourRate": 10.00, "halfDayRate": 35.00, "dayRate": 60.00 }
+                        """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.name").value("Champ obligatoire"));
+
+        // The service is never reached
+        verify(spaceService, never()).create(any());
     }
 
     private Space validSpace() {
