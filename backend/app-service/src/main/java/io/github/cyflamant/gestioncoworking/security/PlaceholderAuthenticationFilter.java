@@ -29,7 +29,8 @@ public class PlaceholderAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         // Keep a user that is already set (e.g. by @WithMockUser in tests)
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (!role.isBlank() && SecurityContextHolder.getContext().getAuthentication() == null) {
+
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(
                     userId.toString(), null, List.of(new SimpleGrantedAuthority("ROLE_" + role))));
