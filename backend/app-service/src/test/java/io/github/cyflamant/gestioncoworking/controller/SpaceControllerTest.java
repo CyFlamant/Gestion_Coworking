@@ -252,6 +252,47 @@ class SpaceControllerTest {
                 .andExpect(jsonPath("$.detail").value("Impossible de supprimer l'espace 1 : il a des réservations"));
     }
 
+    @Test
+    @WithMockUser(roles = "CLIENT") // overrides the class-level ADMIN
+    void createReturns403ForClient() throws Exception {
+        mockMvc.perform(post("/api/spaces")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(validSpaceJson()))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.detail").value("Accès refusé"));
+
+        verify(spaceService, never()).create(any());
+    }
+
+    @Test
+    @WithMockUser(roles = "CLIENT")
+    void findAllIsAllowedForClient() throws Exception {
+        mockMvc.perform(get("/api/spaces"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "CLIENT")
+    void updateReturns403ForClient() throws Exception {
+        mockMvc.perform(put("/api/spaces/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(validSpaceJson()))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.detail").value("Accès refusé"));
+
+        verify(spaceService, never()).update(any(), any());
+    }
+
+    @Test
+    @WithMockUser(roles = "CLIENT")
+    void deleteReturns403ForClient() throws Exception {
+        mockMvc.perform(delete("/api/spaces/1"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.detail").value("Accès refusé"));
+
+        verify(spaceService, never()).delete(any());
+    }
+
     private Space validSpace() {
         Space space = new Space();
         space.setName("Bureau 1");
