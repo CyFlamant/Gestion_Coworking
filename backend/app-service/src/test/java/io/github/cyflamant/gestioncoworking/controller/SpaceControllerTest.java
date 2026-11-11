@@ -1,6 +1,7 @@
 package io.github.cyflamant.gestioncoworking.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -10,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
@@ -192,6 +194,32 @@ class SpaceControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].name").value("Bureau 1"))
                 .andExpect(jsonPath("$[1].name").value("Salle 1"));
+    }
+
+    @Test
+    void updateReturnsUpdatedSpace() throws Exception {
+        when(spaceService.update(eq(1), any(Space.class))).thenAnswer(invocation -> {
+            Space space = invocation.getArgument(1);
+            space.setId(1);
+            return space;
+        });
+
+        mockMvc.perform(put("/api/spaces/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(validSpaceJson()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Bureau 1"));
+    }
+
+    @Test
+    void updateReturns404WhenSpaceDoesNotExist() throws Exception {
+        when(spaceService.update(eq(99), any(Space.class))).thenThrow(new SpaceNotFoundException(99));
+
+        mockMvc.perform(put("/api/spaces/99")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(validSpaceJson()))
+                .andExpect(status().isNotFound());
     }
 
     private Space validSpace() {
