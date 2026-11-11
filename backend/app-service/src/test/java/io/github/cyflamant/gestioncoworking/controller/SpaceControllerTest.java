@@ -2,6 +2,7 @@ package io.github.cyflamant.gestioncoworking.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
@@ -219,6 +221,22 @@ class SpaceControllerTest {
         mockMvc.perform(put("/api/spaces/99")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(validSpaceJson()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteReturns204() throws Exception {
+        mockMvc.perform(delete("/api/spaces/1"))
+                .andExpect(status().isNoContent());
+
+        verify(spaceService).delete(1);
+    }
+
+    @Test
+    void deleteReturns404WhenSpaceDoesNotExist() throws Exception {
+        doThrow(new SpaceNotFoundException(99)).when(spaceService).delete(99);
+
+        mockMvc.perform(delete("/api/spaces/99"))
                 .andExpect(status().isNotFound());
     }
 
