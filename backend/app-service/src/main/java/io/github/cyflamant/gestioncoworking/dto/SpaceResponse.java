@@ -10,7 +10,8 @@ public record SpaceResponse(
         Space.SpaceType type,
         BigDecimal hourRate,
         BigDecimal halfDayRate,
-        BigDecimal dayRate) {
+        BigDecimal dayRate,
+        BigDecimal monthRate) {
 
     public static SpaceResponse from(Space space) {
         return new SpaceResponse(
@@ -19,7 +20,8 @@ public record SpaceResponse(
                 space.getType(),
                 space.getHourRate(),
                 space.getHalfDayRate(),
-                space.getDayRate());
+                space.getDayRate(),
+                space.getMonthRate());
     }
 
 }

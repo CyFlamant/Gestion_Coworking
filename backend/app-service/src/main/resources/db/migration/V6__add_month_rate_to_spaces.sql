@@ -1,0 +1,2 @@
+ALTER TABLE spaces
+    ADD COLUMN month_rate DECIMAL(8, 2) NOT NULL DEFAULT 0;

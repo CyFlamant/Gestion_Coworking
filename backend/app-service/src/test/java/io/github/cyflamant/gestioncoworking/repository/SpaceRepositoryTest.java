@@ -27,6 +27,7 @@ class SpaceRepositoryTest {
         space.setHourRate(new BigDecimal("10.00"));
         space.setHalfDayRate(new BigDecimal("35.00"));
         space.setDayRate(new BigDecimal("60.00"));
+        space.setMonthRate(new BigDecimal("900.00"));
 
         Space saved = spaceRepository.saveAndFlush(space); // INSERT runs now
         entityManager.clear(); // forget cached objects
@@ -40,6 +41,7 @@ class SpaceRepositoryTest {
                     assertThat(found.getHourRate()).isEqualByComparingTo("10.00");
                     assertThat(found.getHalfDayRate()).isEqualByComparingTo("35.00");
                     assertThat(found.getDayRate()).isEqualByComparingTo("60.00");
+                    assertThat(found.getMonthRate()).isEqualByComparingTo("900.00");
                 });
     }
 

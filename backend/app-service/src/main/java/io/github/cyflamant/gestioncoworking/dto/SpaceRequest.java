@@ -16,7 +16,9 @@ public record SpaceRequest(
 
         @NotNull(message = "Champ obligatoire") @PositiveOrZero(message = "Le tarif ne peut pas être négatif") BigDecimal halfDayRate,
 
-        @NotNull(message = "Champ obligatoire") @PositiveOrZero(message = "Le tarif ne peut pas être négatif") BigDecimal dayRate) {
+        @NotNull(message = "Champ obligatoire") @PositiveOrZero(message = "Le tarif ne peut pas être négatif") BigDecimal dayRate,
+
+        @NotNull(message = "Champ obligatoire") @PositiveOrZero(message = "Le tarif ne peut pas être négatif") BigDecimal monthRate) {
 
     public Space toEntity() {
         Space space = new Space();
@@ -25,6 +27,7 @@ public record SpaceRequest(
         space.setHourRate(hourRate);
         space.setHalfDayRate(halfDayRate);
         space.setDayRate(dayRate);
+        space.setMonthRate(monthRate);
         return space;
     }
 

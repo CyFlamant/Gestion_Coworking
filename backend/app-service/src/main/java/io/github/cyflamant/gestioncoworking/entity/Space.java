@@ -53,6 +53,11 @@ public class Space {
     @PositiveOrZero(message = "Le tarif ne peut pas être négatif")
     private BigDecimal dayRate;
 
+    @Column(name = "month_rate", precision = 8, scale = 2)
+    @NotNull(message = "Champ obligatoire")
+    @PositiveOrZero(message = "Le tarif ne peut pas être négatif")
+    private BigDecimal monthRate;
+
     @Column(name = "name")
     @NotBlank(message = "Champ obligatoire")
     private String name;
@@ -114,6 +119,14 @@ public class Space {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BigDecimal getMonthRate() {
+        return monthRate;
+    }
+
+    public void setMonthRate(BigDecimal monthRate) {
+        this.monthRate = monthRate;
     }
 
 }

@@ -37,14 +37,16 @@ public class SpaceService {
         existing.setHourRate(changes.getHourRate());
         existing.setHalfDayRate(changes.getHalfDayRate());
         existing.setDayRate(changes.getDayRate());
+        existing.setMonthRate(changes.getMonthRate());
 
         return spaceRepository.save(existing);
     }
 
     public void delete(Integer id) {
         Space existing = findById(id); // throws SpaceNotFoundException if missing
-        // The catch only works while delete() commits its own transaction. If this method
-        // becomes @Transactional, the FK error is thrown at commit, after the method returns.
+        // The catch only works while delete() commits its own transaction.
+        // If this method becomes @Transactional, the FK error is thrown
+        // at commit, after the method returns.
         try {
             spaceRepository.delete(existing);
         } catch (DataIntegrityViolationException ex) {

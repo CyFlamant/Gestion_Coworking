@@ -44,13 +44,8 @@ class SpaceControllerTest {
     @Test
     void findByIdReturnsSpace() throws Exception {
         // Arrange: the service returns space 1
-        Space space = new Space();
+        Space space = validSpace();
         space.setId(1);
-        space.setName("Bureau 1");
-        space.setType(Space.SpaceType.OFFICE);
-        space.setHourRate(new BigDecimal("10.00"));
-        space.setHalfDayRate(new BigDecimal("35.00"));
-        space.setDayRate(new BigDecimal("60.00"));
         when(spaceService.findById(1)).thenReturn(space);
 
         // Act + Assert: GET returns 200 and the space as JSON
@@ -58,7 +53,8 @@ class SpaceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Bureau 1"))
-                .andExpect(jsonPath("$.type").value("OFFICE"));
+                .andExpect(jsonPath("$.type").value("OFFICE"))
+                .andExpect(jsonPath("$.monthRate").value(900.0));
     }
 
     @Test
@@ -117,7 +113,8 @@ class SpaceControllerTest {
                   "type": "OFFICE",
                   "hourRate": 10.00,
                   "halfDayRate": 35.00,
-                  "dayRate": 60.00
+                  "dayRate": 60.00,
+                  "monthRate": 900.00
                 }
                 """;
     }
@@ -129,7 +126,7 @@ class SpaceControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         { "name": "", "type": "OFFICE",
-                          "hourRate": 10.00, "halfDayRate": 35.00, "dayRate": 60.00 }
+                          "hourRate": 10.00, "halfDayRate": 35.00, "dayRate": 60.00, "monthRate": 900.00 }
                         """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors.name").value("Champ obligatoire"));
@@ -146,7 +143,7 @@ class SpaceControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         { "id": 5, "name": "Bureau 1", "type": "OFFICE",
-                          "hourRate": 10.00, "halfDayRate": 35.00, "dayRate": 60.00 }
+                          "hourRate": 10.00, "halfDayRate": 35.00, "dayRate": 60.00, "monthRate": 900.00 }
                         """))
                 .andExpect(status().isCreated());
 
@@ -163,7 +160,7 @@ class SpaceControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         { "name": "Bureau 1", "type": "GARAGE",
-                        "hourRate": 10.00, "halfDayRate": 35.00, "dayRate": 60.00 }
+                        "hourRate": 10.00, "halfDayRate": 35.00, "dayRate": 60.00, "monthRate": 900.00 }
                         """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors.type").value("Valeur invalide"));
@@ -257,6 +254,7 @@ class SpaceControllerTest {
         space.setHourRate(new BigDecimal("10.00"));
         space.setHalfDayRate(new BigDecimal("35.00"));
         space.setDayRate(new BigDecimal("60.00"));
+        space.setMonthRate(new BigDecimal("900.00"));
         return space;
     }
 

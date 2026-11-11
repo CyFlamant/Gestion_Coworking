@@ -111,6 +111,7 @@ class SpaceServiceTest {
         changes.setHourRate(new BigDecimal("15.00"));
         changes.setHalfDayRate(new BigDecimal("50.00"));
         changes.setDayRate(new BigDecimal("90.00"));
+        changes.setMonthRate(new BigDecimal("1200.00"));
 
         Space updated = spaceService.update(1, changes);
 
@@ -120,6 +121,7 @@ class SpaceServiceTest {
         assertThat(updated.getHourRate()).isEqualByComparingTo("15.00");
         assertThat(updated.getHalfDayRate()).isEqualByComparingTo("50.00");
         assertThat(updated.getDayRate()).isEqualByComparingTo("90.00");
+        assertThat(updated.getMonthRate()).isEqualByComparingTo("1200.00");
         verify(spaceRepository).save(existing);
     }
 
@@ -166,6 +168,7 @@ class SpaceServiceTest {
         space.setHourRate(new BigDecimal("10.00"));
         space.setHalfDayRate(new BigDecimal("35.00"));
         space.setDayRate(new BigDecimal("60.00"));
+        space.setMonthRate(new BigDecimal("900.00"));
         return space;
     }
 

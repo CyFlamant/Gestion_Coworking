@@ -36,6 +36,13 @@ class SpaceValidationTest {
                 .containsExactly("Champ obligatoire");
     }
 
+    @Test
+    void negativeMonthRateIsRejected() {
+        Space space = validSpace();
+        space.setMonthRate(new BigDecimal("-1.00"));
+        assertThat(validator.validate(space)).isNotEmpty();
+    }
+
     private Space validSpace() {
         Space space = new Space();
         space.setName("Bureau 1");
@@ -43,6 +50,7 @@ class SpaceValidationTest {
         space.setHourRate(new BigDecimal("10.00"));
         space.setHalfDayRate(new BigDecimal("35.00"));
         space.setDayRate(new BigDecimal("60.00"));
+        space.setMonthRate(new BigDecimal("900.00"));
         return space;
     }
 
