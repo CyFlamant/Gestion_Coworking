@@ -5,6 +5,8 @@ import io.github.cyflamant.gestioncoworking.dto.SpaceResponse;
 import io.github.cyflamant.gestioncoworking.service.SpaceService;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +35,13 @@ public class SpaceController {
     @ResponseStatus(HttpStatus.CREATED)
     public SpaceResponse create(@Valid @RequestBody SpaceRequest request) {
         return SpaceResponse.from(spaceService.create(request.toEntity()));
+    }
+
+    @GetMapping
+    public List<SpaceResponse> findAll() {
+        return spaceService.findAll().stream()
+                .map(SpaceResponse::from)
+                .toList();
     }
 
 }

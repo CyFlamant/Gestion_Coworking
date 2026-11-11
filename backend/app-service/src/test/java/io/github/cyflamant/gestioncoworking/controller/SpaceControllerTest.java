@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
@@ -16,6 +17,8 @@ import io.github.cyflamant.gestioncoworking.service.SpaceNotFoundException;
 import io.github.cyflamant.gestioncoworking.service.SpaceService;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,6 +175,23 @@ class SpaceControllerTest {
                 .andExpect(jsonPath("$.detail").value("Format JSON invalide"));
 
         verify(spaceService, never()).create(any());
+    }
+
+    @Test
+    void findAllReturnsAllSpaces() throws Exception {
+        Space office = validSpace();
+        office.setId(1);
+        Space room = validSpace();
+        room.setId(2);
+        room.setName("Salle 1");
+        room.setType(Space.SpaceType.ROOM);
+        when(spaceService.findAll()).thenReturn(List.of(office, room));
+
+        mockMvc.perform(get("/api/spaces"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name").value("Bureau 1"))
+                .andExpect(jsonPath("$[1].name").value("Salle 1"));
     }
 
     private Space validSpace() {
