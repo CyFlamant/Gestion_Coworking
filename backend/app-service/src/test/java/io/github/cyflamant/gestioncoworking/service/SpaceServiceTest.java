@@ -3,6 +3,7 @@ package io.github.cyflamant.gestioncoworking.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,6 +18,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+
 import java.math.BigDecimal;
 
 @ExtendWith(MockitoExtension.class)
@@ -141,6 +144,19 @@ class SpaceServiceTest {
 
         // Assert: the repository was asked to delete exactly this space
         verify(spaceRepository).delete(space);
+    }
+
+    @Test
+    void deleteThrowsWhenSpaceHasBookings() {
+        // Arrange: space 1 exists, but the DB refuses the delete (FK from bookings)
+        Space space = validSpace();
+        when(spaceRepository.findById(1)).thenReturn(Optional.of(space));
+        doThrow(new DataIntegrityViolationException("fk_bookings_space"))
+                .when(spaceRepository).delete(space);
+
+        assertThatThrownBy(() -> spaceService.delete(1))
+                .isInstanceOf(SpaceHasBookingsException.class)
+                .hasMessage("Impossible de supprimer l'espace 1 : il a des réservations");
     }
 
     private Space validSpace() {

@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
+import io.github.cyflamant.gestioncoworking.service.SpaceHasBookingsException;
 import io.github.cyflamant.gestioncoworking.service.SpaceNotFoundException;
 import io.github.cyflamant.gestioncoworking.service.SpaceService;
 
@@ -238,6 +239,15 @@ class SpaceControllerTest {
 
         mockMvc.perform(delete("/api/spaces/99"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteReturns500WhenSpaceHasBookings() throws Exception {
+        doThrow(new SpaceHasBookingsException(1)).when(spaceService).delete(1);
+
+        mockMvc.perform(delete("/api/spaces/1"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.detail").value("Impossible de supprimer l'espace 1 : il a des réservations"));
     }
 
     private Space validSpace() {

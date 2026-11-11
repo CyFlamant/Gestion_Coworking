@@ -5,6 +5,7 @@ import io.github.cyflamant.gestioncoworking.repository.SpaceRepository;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,7 +43,13 @@ public class SpaceService {
 
     public void delete(Integer id) {
         Space existing = findById(id); // throws SpaceNotFoundException if missing
-        spaceRepository.delete(existing);
+        // The catch only works while delete() commits its own transaction. If this method
+        // becomes @Transactional, the FK error is thrown at commit, after the method returns.
+        try {
+            spaceRepository.delete(existing);
+        } catch (DataIntegrityViolationException ex) {
+            throw new SpaceHasBookingsException(id); // fk_bookings_space blocks the delete
+        }
     }
 
 }

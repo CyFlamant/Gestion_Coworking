@@ -1,5 +1,6 @@
 package io.github.cyflamant.gestioncoworking.controller;
 
+import io.github.cyflamant.gestioncoworking.service.SpaceHasBookingsException;
 import io.github.cyflamant.gestioncoworking.service.SpaceNotFoundException;
 import tools.jackson.core.JacksonException;
 
@@ -43,6 +44,11 @@ public class GlobalExceptionHandler {
         }
         // Syntax error or empty body: no field to point at
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Format JSON invalide");
+    }
+
+    @ExceptionHandler(SpaceHasBookingsException.class)
+    public ProblemDetail handleSpaceHasBookings(SpaceHasBookingsException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
 }
