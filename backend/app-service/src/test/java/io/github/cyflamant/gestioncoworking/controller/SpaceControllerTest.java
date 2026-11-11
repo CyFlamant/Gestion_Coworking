@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
+import io.github.cyflamant.gestioncoworking.security.SecurityConfig;
 import io.github.cyflamant.gestioncoworking.service.SpaceHasBookingsException;
 import io.github.cyflamant.gestioncoworking.service.SpaceNotFoundException;
 import io.github.cyflamant.gestioncoworking.service.SpaceService;
@@ -28,11 +29,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
 
 @WebMvcTest(SpaceController.class)
+@Import(SecurityConfig.class)
+@WithMockUser(roles = "ADMIN") // default user for every test in this class
 class SpaceControllerTest {
 
     @Autowired
