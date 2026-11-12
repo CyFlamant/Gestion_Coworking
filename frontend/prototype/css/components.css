@@ -157,10 +157,6 @@
   color: var(--color-danger);
 }
 
-.status--off {
-  color: var(--color-muted);
-}
-
 /* ---------- Form ---------- */
 
 .form {

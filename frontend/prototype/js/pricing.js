@@ -52,7 +52,6 @@ export function inferFormula(start, end) {
   return { formula: 'HOUR', quantity: Math.ceil(to - from) };
 }
 
-// A rate of 0 means the space is not offered with that formula.
 export function computePrice(space, start, end) {
   const { formula, quantity } = inferFormula(start, end);
   const unitPrice = Number(space[RATE_BY_FORMULA[formula]]);
@@ -61,7 +60,6 @@ export function computePrice(space, start, end) {
     quantity,
     unitPrice,
     total: Math.round(unitPrice * quantity * 100) / 100,
-    offered: unitPrice > 0,
   };
 }
 

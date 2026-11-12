@@ -67,7 +67,7 @@ function render() {
       h('tbody', {}, shown.map((space) => h('tr', {},
         h('td', {}, h('span', { class: 'table__name' }, shapeIcon(space.type), space.name)),
         h('td', {}, typeChip(space.type)),
-        RATE_FIELDS.map((key) => h('td', { class: 'num' }, Number(space[key]) > 0 ? formatMoney(space[key]) : t('common.notOffered'))),
+        RATE_FIELDS.map((key) => h('td', { class: 'num' }, formatMoney(space[key]))),
         h('td', { class: 'num' }, bookingCounts.get(space.id) ?? 0),
         h('td', {}, h('div', { class: 'table__actions' },
           h('button', { type: 'button', class: 'btn btn--small', onclick: () => openSpaceDialog(space) }, t('common.edit')),

@@ -43,7 +43,7 @@ const form = bookingForm({
 
 function renderSummary(state) {
   const { space, price, range, available } = state;
-  submitButton.disabled = !space || !price?.offered || available === false;
+  submitButton.disabled = !space || available === false;
   summary.replaceChildren(
     h('h2', {}, t('booking.summary')),
     space && h('div', { class: 'space-card__head' }, h('h3', {}, space.name), typeChip(space.type)),
@@ -51,15 +51,14 @@ function renderSummary(state) {
     space && h('dl', { class: 'rate-list' },
       RATE_FIELDS.map((key) => {
         const active = key === rateKey(price.formula) ? 'is-active' : null;
-        const rate = Number(space[key]);
-        return [h('dt', { class: active }, t(`rates.${key}`)), h('dd', { class: active }, rate > 0 ? formatMoney(rate) : t('common.notOffered'))];
+        return [h('dt', { class: active }, t(`rates.${key}`)), h('dd', { class: active }, formatMoney(space[key]))];
       })),
-    price?.offered && h('div', { class: 'summary__line' },
+    price && h('div', { class: 'summary__line' },
       h('span', {}, t(`formulaUnits.${price.formula}`, { n: price.quantity })),
       h('span', {}, `× ${formatMoney(price.unitPrice)}`)),
     h('div', { class: 'summary__total' },
       h('span', { class: 'field__label' }, t('booking.total')),
-      h('span', { class: 'summary__amount' }, price?.offered ? formatMoney(price.total) : '—')),
+      h('span', { class: 'summary__amount' }, price ? formatMoney(price.total) : '—')),
     submitButton,
     h('p', { class: 'field__hint' }, t('booking.payOnSite')),
   );

@@ -8,7 +8,6 @@ export default {
     edit: 'Modifier',
     close: 'Fermer',
     all: 'Tous',
-    notOffered: 'Non proposé',
     loadError: 'Impossible de charger les données : {detail}',
   },
   nav: {
@@ -75,7 +74,6 @@ export default {
     halfDayRate: 'Demi-journée',
     dayRate: 'Journée',
     monthRate: 'Mois',
-    zeroHint: '0 € : formule non proposée pour cet espace.',
   },
   slots: {
     MORNING: 'Matin ({start} – {end})',
@@ -109,7 +107,6 @@ export default {
     resultsCount: '{available} espace(s) disponible(s) sur {total}',
     available: 'Disponible',
     busy: 'Déjà réservé',
-    notOffered: 'Formule non proposée',
     priceForSlot: 'Prix pour ce créneau',
     book: 'Réserver',
     signInToBook: 'Se connecter pour réserver',
@@ -128,9 +125,7 @@ export default {
     hours: '{n} h',
     halfDay: 'Demi-journée',
     optionBusy: '{name} — déjà réservé',
-    optionNotOffered: '{name} — formule non proposée',
     spaceBusy: 'Cet espace est déjà réservé sur ce créneau.',
-    spaceNotOffered: 'Cet espace n’est pas proposé avec cette formule.',
     summary: 'Récapitulatif',
     total: 'Total',
     payOnSite: 'Paiement sur place, à l’accueil.',

@@ -28,8 +28,7 @@ export function spaceForm({ id, space, onSubmit }) {
   field({ id: 'space-name', name: 'name', label: t('adminSpaces.name'), control: nameInput }),
   field({ id: 'space-type', name: 'type', label: t('adminSpaces.type'), control: typeSelect }),
   h('div', { class: 'field-row' },
-    RATE_FIELDS.map((key) => field({ id: `space-${key}`, name: key, label: t(`rates.${key}`), control: rateInputs[key] }))),
-  h('p', { class: 'field__hint' }, t('rates.zeroHint')));
+    RATE_FIELDS.map((key) => field({ id: `space-${key}`, name: key, label: t(`rates.${key}`), control: rateInputs[key] }))));
 
   function getValues() {
     const values = { name: nameInput.value, type: typeSelect.value || null };

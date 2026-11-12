@@ -3,7 +3,7 @@ import { addDays, toLocalIso, today } from '../dates.js';
 import { bookingRange } from '../pricing.js';
 import { readLocal, writeLocal } from '../storage.js';
 
-const DB_KEY = 'proto.db.v1';
+const DB_KEY = 'proto.db.v2'; // v2: every formula is offered, 0 € is free
 const SESSION_KEY = 'proto.session';
 
 // Same UUID as app.placeholder-user-id in the app-service.
@@ -27,8 +27,8 @@ function seed() {
     { id: 3, name: 'Openspace 3', type: 'OPENSPACE', hourRate: 4, halfDayRate: 14, dayRate: 25, monthRate: 250 },
     { id: 4, name: 'Bureau 1', type: 'OFFICE', hourRate: 9, halfDayRate: 30, dayRate: 50, monthRate: 700 },
     { id: 5, name: 'Bureau 2', type: 'OFFICE', hourRate: 9, halfDayRate: 30, dayRate: 50, monthRate: 700 },
-    { id: 6, name: 'Salle Atelier', type: 'ROOM', hourRate: 25, halfDayRate: 80, dayRate: 140, monthRate: 0 },
-    { id: 7, name: 'Salle Studio', type: 'ROOM', hourRate: 35, halfDayRate: 110, dayRate: 190, monthRate: 0 },
+    { id: 6, name: 'Salle Atelier', type: 'ROOM', hourRate: 25, halfDayRate: 80, dayRate: 140, monthRate: 2000 },
+    { id: 7, name: 'Salle Studio', type: 'ROOM', hourRate: 35, halfDayRate: 110, dayRate: 190, monthRate: 2800 },
   ];
 
   // Bookings are relative to today so the demo always has past and upcoming entries.

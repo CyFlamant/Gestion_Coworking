@@ -82,9 +82,8 @@ function spaceCard(space) {
   const price = computePrice(space, start, end);
   const isFree = available.has(space.id);
   let status = h('span', { class: 'status status--ok' }, t('spaces.available'));
-  if (!price.offered) status = h('span', { class: 'status status--off' }, t('spaces.notOffered'));
-  else if (!isFree) status = h('span', { class: 'status status--busy' }, t('spaces.busy'));
-  const bookable = price.offered && isFree;
+  if (!isFree) status = h('span', { class: 'status status--busy' }, t('spaces.busy'));
+  const bookable = isFree;
 
   let action = null;
   if (bookable && role === 'CLIENT') {
@@ -106,27 +105,23 @@ function spaceCard(space) {
       typeChip(space.type)),
     h('dl', { class: 'rate-list' },
       RATE_FIELDS.map((key) => {
-        const rate = Number(space[key]);
         const active = key === rateKey(price.formula) ? 'is-active' : null;
         return [
           h('dt', { class: active }, t(`rates.${key}`)),
-          h('dd', { class: active }, rate > 0 ? formatMoney(rate) : t('common.notOffered')),
+          h('dd', { class: active }, formatMoney(space[key])),
         ];
       })),
     status,
     h('div', { class: 'space-card__foot' },
       h('div', {},
         h('p', { class: 'field__hint' }, t('spaces.priceForSlot')),
-        h('p', { class: 'space-card__price' }, price.offered ? formatMoney(price.total) : '—')),
+        h('p', { class: 'space-card__price' }, formatMoney(price.total))),
       action));
 }
 
 function render() {
   const shown = spaces.filter((space) => selectedType === 'ALL' || space.type === selectedType);
-  const freeCount = shown.filter((space) => {
-    const { start, end } = slot.getRange();
-    return available.has(space.id) && computePrice(space, start, end).offered;
-  }).length;
+  const freeCount = shown.filter((space) => available.has(space.id)).length;
   resultsHead.textContent = `${t('spaces.resultsFor', { slot: describeRange(slot.getRange()) })} · ${t('spaces.resultsCount', { available: freeCount, total: shown.length })}`;
   results.replaceChildren(...(shown.length
     ? shown.map(spaceCard)

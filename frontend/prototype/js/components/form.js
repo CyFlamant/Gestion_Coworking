@@ -32,7 +32,7 @@ export function select({ options, value, placeholder, ...props }) {
 
 export function moneyInput(props) {
   return h('div', { class: 'input-suffix' },
-    input({ type: 'number', inputMode: 'decimal', min: '0', step: '0.01', ...props }),
+    input({ type: 'number', inputMode: 'decimal', min: '0', step: 'any', ...props }),
     h('span', { class: 'input-suffix__text', 'aria-hidden': 'true' }, '€'),
   );
 }

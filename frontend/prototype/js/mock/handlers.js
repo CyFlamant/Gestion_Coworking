@@ -171,9 +171,6 @@ function checkBooking(body, { ignoreId = null, requireFuture = true } = {}) {
   const space = findSpace(body.spaceId);
   if (!space) return problem(404, `Espace introuvable : ${body.spaceId}`);
   if (!db.users.some((u) => u.id === body.userId)) return invalid({ userId: 'Client introuvable' });
-  if (!computePrice(space, start, end).offered) {
-    return problem(400, 'Cette formule n’est pas proposée pour cet espace');
-  }
   const conflict = db.bookings.some(
     (b) => b.id !== ignoreId && b.spaceId === space.id
       && overlaps(start, end, parseLocal(b.startDateTime), parseLocal(b.endDateTime)),

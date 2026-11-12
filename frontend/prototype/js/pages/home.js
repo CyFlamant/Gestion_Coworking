@@ -32,7 +32,7 @@ const ctas = role === 'CLIENT'
 
 function typePanel(type) {
   const ofType = spaces.filter((space) => space.type === type);
-  const hourly = ofType.map((space) => Number(space.hourRate)).filter((rate) => rate > 0);
+  const hourly = ofType.map((space) => Number(space.hourRate));
   return h('a', { class: `type-panel type-panel--${type.toLowerCase()}`, href: `espaces.html#${type.toLowerCase()}` },
     shapeIcon(type),
     h('h3', {}, t(`typesPlural.${type}`)),

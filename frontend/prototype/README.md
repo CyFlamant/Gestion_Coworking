@@ -45,7 +45,7 @@ A booking response adds `spaceName`, `spaceType`, `userName`, `formula` and `pri
 
 - **Opening hours** are 8:00–22:00. A half-day is 8:00–13:00 or 13:00–18:00, and a day is 8:00–18:00. These values live in `js/config.js`.
 - **A month** runs from the start date to the day before the same date next month.
-- **A rate of 0 €** means "formule non proposée" for that space. For example, meeting rooms have no monthly rate.
+- **Every formula is offered** for every space: all four rates are required, and 0 € means the formula is free.
 - **The price** is rate × quantity for the formula inferred from start and end (`js/pricing.js`). The backend will need the same rule.
 - **Cancellation:** a client can cancel a booking only before it starts. An admin can delete any booking.
 

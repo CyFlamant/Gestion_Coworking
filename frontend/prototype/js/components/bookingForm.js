@@ -35,13 +35,11 @@ export function bookingForm({ idPrefix, spaces, clients = null, initial, minDate
   const spaceField = field({ id: `${idPrefix}-space`, name: 'spaceId', label: t('booking.space'), control: spaceSelect });
 
   function renderSpaceOptions() {
-    const { start, end } = slot.getRange();
     const ofType = spaces.filter((space) => space.type === state.type);
     if (!ofType.some((space) => space.id === state.spaceId)) state.spaceId = ofType[0]?.id ?? null;
     spaceSelect.replaceChildren(...ofType.map((space) => {
       let label = space.name;
-      if (!computePrice(space, start, end).offered) label = t('booking.optionNotOffered', { name: space.name });
-      else if (available && !available.has(space.id)) label = t('booking.optionBusy', { name: space.name });
+      if (available && !available.has(space.id)) label = t('booking.optionBusy', { name: space.name });
       return h('option', { value: space.id, selected: space.id === state.spaceId }, label);
     }));
     if (!ofType.length) spaceSelect.append(h('option', { value: '' }, t('booking.noSpace')));
@@ -64,8 +62,7 @@ export function bookingForm({ idPrefix, spaces, clients = null, initial, minDate
   function notify() {
     const current = getState();
     let warning = null;
-    if (current.price && !current.price.offered) warning = t('booking.spaceNotOffered');
-    else if (current.available === false) warning = t('booking.spaceBusy');
+    if (current.available === false) warning = t('booking.spaceBusy');
     setFieldError(spaceField, warning);
     onChange?.(current);
   }
@@ -78,8 +75,7 @@ export function bookingForm({ idPrefix, spaces, clients = null, initial, minDate
     if (request !== requestCount) return; // a newer change is already being checked
     available = result;
     if (!spaceChosen && !available.has(state.spaceId)) {
-      const { start, end } = slot.getRange();
-      const free = spaces.find((s) => s.type === state.type && available.has(s.id) && computePrice(s, start, end).offered);
+      const free = spaces.find((s) => s.type === state.type && available.has(s.id));
       if (free) state.spaceId = free.id;
     }
     renderSpaceOptions();
