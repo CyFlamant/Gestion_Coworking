@@ -124,7 +124,7 @@ function footer() {
         h('li', {}, h('a', { href: 'mentions-legales.html' }, t('footer.legal'))),
         h('li', {}, h('a', { href: 'contact.html' }, t('footer.contact'))),
         h('li', {}, h('a', { href: 'horaires.html' }, t('footer.hours')))),
-      h('p', { class: 'muted' }, `© ${new Date().getFullYear()} ${brand.name} · ${t('footer.payment')}`)));
+      h('p', { class: 'muted' }, `© ${new Date().getFullYear()} ${brand.name}`)));
 }
 
 // Prototype-only panel: switch the simulated role and data source. Not part of the future app.

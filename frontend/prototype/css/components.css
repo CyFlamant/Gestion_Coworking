@@ -275,6 +275,12 @@
   color: var(--color-bg);
 }
 
+.segmented__option input:disabled,
+.segmented__option input:disabled + span {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .segmented__option input:focus-visible + span {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
@@ -1132,4 +1138,17 @@
 .devbar__note {
   font-size: var(--text-xs);
   opacity: 0.75;
+}
+
+/* Placeholder pages (stub.js): keeps the line breaks of the address */
+.stub__text {
+  white-space: pre-line;
+  font-style: normal;
+}
+
+.stub__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 60ch;
 }

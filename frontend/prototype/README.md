@@ -43,7 +43,7 @@ A booking response adds `spaceName`, `spaceType`, `userName`, `formula` and `pri
 
 ## Assumptions to confirm
 
-- **Opening hours** are 8:00–22:00. A half-day is 8:00–13:00 or 13:00–18:00, and a day is 8:00–18:00. These values live in `js/config.js`.
+- **Opening hours** are Monday to Friday 8:00–19:00 and Saturday 9:00–13:00; closed on Sunday. On weekdays a half-day is 8:00–13:00 or 13:00–19:00, and a day is 8:00–19:00. On Saturday only hourly bookings and the 9:00–13:00 morning are offered. These values live in `js/config.js`; the mock API rejects bookings outside them.
 - **A month** runs from the start date to the day before the same date next month.
 - **Every formula is offered** for every space: all four rates are required, and 0 € means the formula is free.
 - **The price** is rate × quantity for the formula inferred from start and end (`js/pricing.js`). The backend will need the same rule.

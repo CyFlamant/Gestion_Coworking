@@ -1,14 +1,16 @@
 // Day view for the admin: one column per space, one row per half hour from opening to closing time.
-import { OPENING_HOURS } from '../config.js';
 import { formatHour, formatTime, parseLocal, startOfDay } from '../dates.js';
 import { h } from '../dom.js';
 import { t } from '../i18n/index.js';
+import { openingHours } from '../pricing.js';
 import { shapeIcon } from './typeBadge.js';
 
 const ROW_MINUTES = 30;
 
 export function dayTimeline({ date, spaces, bookings, onSlot, onBooking }) {
-  const { open, close } = OPENING_HOURS;
+  const hoursOfDay = openingHours(date);
+  if (!hoursOfDay) return h('p', { class: 'empty' }, t('slots.closed'));
+  const { open, close } = hoursOfDay;
   const rows = ((close - open) * 60) / ROW_MINUTES;
   const dayStart = startOfDay(date);
   const minutesOf = (d) => Math.round((d - dayStart) / 60000);

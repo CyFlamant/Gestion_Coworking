@@ -3,7 +3,7 @@
 // Endpoints marked "planned" do not exist in the backend yet; their shape is a proposal.
 import { RATE_FIELDS, SPACE_TYPES } from '../config.js';
 import { overlaps, parseLocal } from '../dates.js';
-import { computePrice } from '../pricing.js';
+import { computePrice, isWithinOpeningHours } from '../pricing.js';
 import { getDb, getSessionUserId, saveDb, setSessionUserId } from './db.js';
 
 const respond = (status, body = null) => ({ status, body });
@@ -165,6 +165,7 @@ function checkBooking(body, { ignoreId = null, requireFuture = true } = {}) {
   const start = parseLocal(body.startDateTime);
   const end = parseLocal(body.endDateTime);
   if (end <= start) return invalid({ endDateTime: 'La fin doit être après le début' });
+  if (!isWithinOpeningHours(start, end)) return invalid({ startDateTime: 'En dehors des heures d’ouverture' });
   if (requireFuture && start < new Date()) return invalid({ startDateTime: 'La date doit être dans le futur' });
 
   const db = getDb();

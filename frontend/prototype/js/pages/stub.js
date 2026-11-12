@@ -1,6 +1,4 @@
 // Placeholder pages (Mentions légales, Contact, Horaires). The page key comes from <body data-page>.
-import { OPENING_HOURS, SLOTS } from '../config.js';
-import { formatHour } from '../dates.js';
 import { h, mainElement } from '../dom.js';
 import { t } from '../i18n/index.js';
 import { mountLayout } from '../layout.js';
@@ -15,19 +13,20 @@ const page = document.body.dataset.page;
 const key = PAGES[page];
 await mountLayout({ page, title: `pages.${key}` });
 
-const range = ({ start, end }) => `${formatHour(start)} – ${formatHour(end)}`;
+// Mentions légales: one heading and text per section (stubs.legal in fr.js).
+const LEGAL_SECTIONS = ['editor', 'host', 'data', 'student'];
+
+const content = key === 'legal'
+  ? LEGAL_SECTIONS.map((section) => h('section', { class: 'stub__section' },
+    h('h2', {}, t(`stubs.legal.${section}Title`)),
+    h('p', { class: 'stub__text' }, t(`stubs.legal.${section}`))))
+  // The contact text is a postal address; \n in the text starts a new line (.stub__text).
+  : h(key === 'contact' ? 'address' : 'p', { class: 'lead stub__text' }, t(`stubs.${key}`));
 
 mainElement().append(
   h('div', { class: 'inner page' },
     h('div', { class: 'page-head__text' },
-      h('p', { class: 'eyebrow' }, t('stubs.soon')),
       h('h1', {}, t(`pages.${key}`)),
-      h('p', { class: 'lead' }, t(`stubs.${key}`))),
-    key === 'hours' && h('p', { class: 'demo-note' }, t('stubs.hoursPrototype', {
-      open: formatHour(OPENING_HOURS.open),
-      close: formatHour(OPENING_HOURS.close),
-      morning: range(SLOTS.MORNING),
-      afternoon: range(SLOTS.AFTERNOON),
-      day: range(SLOTS.DAY),
-    }))),
+      key !== 'legal' && content),
+    key === 'legal' && content),
 );

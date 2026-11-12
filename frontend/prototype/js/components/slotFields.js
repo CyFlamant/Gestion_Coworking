@@ -1,10 +1,10 @@
 // Formula + date + time fields. Shared by the availability search, the client booking form and the admin dialog.
-import { OPENING_HOURS, SLOTS } from '../config.js';
+// The choices follow the opening hours of the chosen day (js/config.js).
 import { formatDate, formatHour, formatTime, fromDateInput, sameDay, toDateInput } from '../dates.js';
 import { h } from '../dom.js';
 import { t } from '../i18n/index.js';
-import { bookingRange, FORMULAS } from '../pricing.js';
-import { field, segmented, select } from './form.js';
+import { bookingRange, fitToOpeningHours, FORMULAS, formulasOn, halfDaysOn, openingHours } from '../pricing.js';
+import { field, segmented, select, setFieldError } from './form.js';
 
 export function describeRange({ start, end }) {
   return sameDay(start, end)
@@ -12,17 +12,15 @@ export function describeRange({ start, end }) {
     : t('slots.multiDay', { start: formatDate(start), end: formatDate(end) });
 }
 
-export function slotLabel(halfDay) {
-  const slot = SLOTS[halfDay];
+export function slotLabel(halfDay, date) {
+  const slot = openingHours(date).slots[halfDay];
   return t(`slots.${halfDay}`, { start: formatHour(slot.start), end: formatHour(slot.end) });
 }
 
-// values: { formula, date, startHour, hours, halfDay }
+// values: { formula, date, startHour, hours, halfDay }. A closed day moves to the next open one.
 export function slotFields({ idPrefix, values, minDate, onChange }) {
-  const v = { ...values };
-  const { open, close } = OPENING_HOURS;
+  const v = fitToOpeningHours(values);
   const hint = h('p', { class: 'field__hint', 'aria-live': 'polite' });
-  const details = h('div', { class: 'field-row' });
 
   const emit = () => {
     hint.textContent = describeRange(bookingRange(v));
@@ -42,13 +40,44 @@ export function slotFields({ idPrefix, values, minDate, onChange }) {
       required: true,
       onchange: (event) => {
         if (!event.target.value) return;
-        v.date = fromDateInput(event.target.value);
+        const date = fromDateInput(event.target.value);
+        if (!openingHours(date)) {
+          setFieldError(dateField, t('slots.closed'));
+          event.target.value = toDateInput(v.date);
+          return;
+        }
+        setFieldError(dateField, null);
+        Object.assign(v, fitToOpeningHours({ ...v, date }));
+        renderFormulas();
+        renderDetails();
         emit();
       },
     }),
   });
+  const details = h('div', { class: 'field-row' }, dateField);
+
+  const formulaControl = segmented({
+    name: `${idPrefix}-formula`,
+    value: v.formula,
+    options: FORMULAS.map((formula) => ({ value: formula, label: t(`formulas.${formula}`) })),
+    onChange: (formula) => {
+      v.formula = formula;
+      renderDetails();
+      emit();
+    },
+  });
+
+  // Formulas not offered on the chosen day are disabled.
+  function renderFormulas() {
+    const offered = formulasOn(v.date);
+    formulaControl.querySelectorAll('input').forEach((radio) => {
+      radio.disabled = !offered.includes(radio.value);
+      radio.checked = radio.value === v.formula;
+    });
+  }
 
   function renderDetails() {
+    const { open, close } = openingHours(v.date);
     dateField.querySelector('label').textContent = v.formula === 'MONTH' ? t('booking.startDate') : t('booking.date');
     const extra = [];
     if (v.formula === 'HOUR') {
@@ -91,7 +120,7 @@ export function slotFields({ idPrefix, values, minDate, onChange }) {
         control: select({
           id: `${idPrefix}-half`,
           value: v.halfDay,
-          options: ['MORNING', 'AFTERNOON'].map((key) => ({ value: key, label: slotLabel(key) })),
+          options: halfDaysOn(v.date).map((key) => ({ value: key, label: slotLabel(key, v.date) })),
           onchange: (event) => {
             v.halfDay = event.target.value;
             emit();
@@ -99,9 +128,12 @@ export function slotFields({ idPrefix, values, minDate, onChange }) {
         }),
       }));
     }
-    details.replaceChildren(dateField, ...extra);
+    // The date field stays in place, so it keeps focus while the other fields change.
+    while (dateField.nextSibling) dateField.nextSibling.remove();
+    details.append(...extra);
   }
 
+  renderFormulas();
   renderDetails();
   hint.textContent = describeRange(bookingRange(v)); // no onChange on creation: the caller reads the initial values
 
@@ -111,16 +143,7 @@ export function slotFields({ idPrefix, values, minDate, onChange }) {
       name: 'formula',
       label: t('booking.formula'),
       group: true,
-      control: segmented({
-        name: `${idPrefix}-formula`,
-        value: v.formula,
-        options: FORMULAS.map((formula) => ({ value: formula, label: t(`formulas.${formula}`) })),
-        onChange: (formula) => {
-          v.formula = formula;
-          renderDetails();
-          emit();
-        },
-      }),
+      control: formulaControl,
     }),
     details,
     hint,

@@ -27,7 +27,6 @@ export default {
     legal: 'Mentions légales',
     contact: 'Contact',
     hours: 'Horaires',
-    payment: 'Paiement sur place uniquement',
   },
   pages: {
     home: 'Accueil',
@@ -80,6 +79,7 @@ export default {
     AFTERNOON: 'Après-midi ({start} – {end})',
     range: '{date}, de {start} à {end}',
     multiDay: 'Du {start} au {end}',
+    closed: 'L’espace de coworking est fermé ce jour-là.',
   },
   home: {
     title: 'Espace de coworking',
@@ -178,7 +178,7 @@ export default {
     empty: 'Aucune réservation pour cette sélection.',
   },
   adminSpaces: {
-    lead: 'Ajoutez, modifiez ou supprimez les espaces et leurs tarifs. Un espace qui a des réservations ne peut pas être supprimé.',
+    lead: 'Ajoutez, modifiez ou supprimez les espaces et leurs tarifs.',
     count: '{n} espace(s)',
     add: 'Ajouter un espace',
     newTitle: 'Nouvel espace',
@@ -227,11 +227,19 @@ export default {
     created: 'Compte créé. Bienvenue !',
   },
   stubs: {
-    soon: 'Contenu à venir',
-    legal: 'Éditeur du site, hébergeur, protection des données personnelles et conditions d’utilisation.',
-    contact: 'Adresse, téléphone, e-mail et formulaire de contact.',
-    hours: 'Jours et heures d’ouverture de l’accueil, fermetures exceptionnelles.',
-    hoursPrototype: 'Valeurs utilisées par le prototype : ouverture de {open} à {close}, demi-journées {morning} et {afternoon}, journée {day}.',
+    // [ ] = to fill in before deployment.
+    legal: {
+      editorTitle: 'Éditeur du site',
+      editor: 'L’Échappée, [forme juridique, ex. ASBL / SRL]\nChaussée d’Alsemberg 104, 1060 Saint-Gilles\nNuméro d’entreprise (BCE) : [0XXX.XXX.XXX]\nE-mail : [contact@exemple.be]',
+      hostTitle: 'Hébergement',
+      host: '[Nom de l’hébergeur], [adresse de l’hébergeur]',
+      dataTitle: 'Données personnelles',
+      data: 'Les données collectées (nom, prénom, e-mail, réservations) servent uniquement à la gestion des comptes et des réservations. Elles ne sont pas transmises à des tiers. Conformément au RGPD, vous pouvez demander l’accès, la rectification ou la suppression de vos données à l’adresse [contact@exemple.be].',
+      studentTitle: 'Projet étudiant',
+      student: 'Ce site est réalisé dans le cadre d’un projet d’intégration à l’EAFC Namur.',
+    },
+    contact: 'L’Échappée\nChaussée d’Alsemberg 104\n1060 St Gilles',
+    hours: 'Du lundi au vendredi de 8h à 19h et le samedi de 9h à 13h',
   },
   logout: {
     done: 'Vous êtes déconnecté.',

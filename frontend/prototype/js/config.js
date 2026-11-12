@@ -16,15 +16,16 @@ export function setApiMode(mode) {
   writeLocal(API_MODE_KEY, mode);
 }
 
-// Opening hours, in whole hours. The admin timeline shows this range.
-export const OPENING_HOURS = { open: 8, close: 22 };
-
-// Fixed time slots for the half-day and day formulas.
-export const SLOTS = {
-  MORNING: { start: 8, end: 13 },
-  AFTERNOON: { start: 13, end: 18 },
-  DAY: { start: 8, end: 18 },
+// Opening hours in whole hours, and the half-day and day slots offered that day.
+const WEEKDAY = {
+  open: 8,
+  close: 19,
+  slots: { MORNING: { start: 8, end: 13 }, AFTERNOON: { start: 13, end: 19 }, DAY: { start: 8, end: 19 } },
 };
+const SATURDAY = { open: 9, close: 13, slots: { MORNING: { start: 9, end: 13 } } };
+
+// Indexed by Date.getDay() (0 = Sunday). null = closed.
+export const OPENING_HOURS = [null, WEEKDAY, WEEKDAY, WEEKDAY, WEEKDAY, WEEKDAY, SATURDAY];
 
 export const SPACE_TYPES = ['OPENSPACE', 'OFFICE', 'ROOM'];
 export const RATE_FIELDS = ['hourRate', 'halfDayRate', 'dayRate', 'monthRate'];

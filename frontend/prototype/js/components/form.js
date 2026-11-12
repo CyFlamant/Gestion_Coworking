@@ -45,6 +45,7 @@ export function segmented({ name, options, value, onChange }) {
         name,
         value: option.value,
         checked: option.value === value,
+        disabled: option.disabled,
         onchange: () => onChange(option.value),
       }),
       h('span', {}, option.icon, option.label),

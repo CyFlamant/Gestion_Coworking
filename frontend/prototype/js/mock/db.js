@@ -1,9 +1,9 @@
 // In-browser mock database, kept in localStorage so changes survive page changes.
 import { addDays, toLocalIso, today } from '../dates.js';
-import { bookingRange } from '../pricing.js';
+import { bookingRange, fitToOpeningHours } from '../pricing.js';
 import { readLocal, writeLocal } from '../storage.js';
 
-const DB_KEY = 'proto.db.v2'; // v2: every formula is offered, 0 € is free
+const DB_KEY = 'proto.db.v3'; // bump when the seed data changes
 const SESSION_KEY = 'proto.session';
 
 // Same UUID as app.placeholder-user-id in the app-service.
@@ -34,7 +34,8 @@ function seed() {
   // Bookings are relative to today so the demo always has past and upcoming entries.
   const day = today();
   const booking = (id, spaceId, userId, values) => {
-    const { start, end } = bookingRange({ startHour: 9, hours: 1, halfDay: 'MORNING', ...values });
+    // A date that falls on a closed day or slot is moved into the opening hours.
+    const { start, end } = bookingRange(fitToOpeningHours({ startHour: 9, hours: 1, halfDay: 'MORNING', ...values }));
     return { id, spaceId, userId, startDateTime: toLocalIso(start), endDateTime: toLocalIso(end) };
   };
   const [marie, thomas, sofia] = [users[1].id, users[2].id, users[3].id];
