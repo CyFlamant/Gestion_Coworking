@@ -127,6 +127,12 @@ a:hover {
   border-bottom: 1px solid var(--color-line);
 }
 
+.user-bar {
+  padding-top: var(--space-2);
+  color: var(--color-muted);
+  background: var(--color-bg);
+}
+
 .site-header__inner {
   min-height: var(--header-h);
   display: flex;
@@ -185,6 +191,7 @@ a:hover {
   letter-spacing: 0.06em;
   text-decoration: none;
   padding-block: var(--space-2);
+  padding-inline: 0; /* the Déconnexion button would otherwise be indented */
   border: 0;
   border-bottom: 2px solid transparent;
   background: none;
@@ -205,6 +212,11 @@ a:hover {
   align-items: center;
   gap: 6px;
   font: 500 var(--text-sm) / 1 var(--font-display);
+  white-space: nowrap;
+}
+
+.user-badge__icon {
+  flex-shrink: 0;
 }
 
 .user-badge__icon svg {
@@ -263,6 +275,15 @@ a:hover {
   }
 
   .site-nav:not(.is-open) {
+    display: none;
+  }
+
+  /* The language switch goes into the folded menu, below the links. */
+  .lang-switch {
+    order: 4;
+  }
+
+  .site-nav:not(.is-open) ~ .lang-switch {
     display: none;
   }
 

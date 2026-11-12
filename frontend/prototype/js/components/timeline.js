@@ -56,11 +56,11 @@ export function dayTimeline({ date, spaces, bookings, onSlot, onBooking }) {
   return h('div', { class: 'timeline' },
     h('div', {
       class: 'timeline__grid',
-      style: `grid-template-columns: 52px repeat(${spaces.length}, minmax(130px, 1fr))`,
+      style: `grid-template-columns: 52px repeat(${spaces.length}, minmax(var(--timeline-col-min), 1fr))`,
     },
     h('div', { class: 'timeline__corner' }),
     spaces.map((space) => h('div', { class: 'timeline__colhead' }, shapeIcon(space.type), space.name)),
-    h('div', { style: `--rows: ${rows}` }, timeColumn),
+    h('div', { class: 'timeline__timecol', style: `--rows: ${rows}` }, timeColumn),
     columns),
   );
 }

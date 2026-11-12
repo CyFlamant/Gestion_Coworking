@@ -51,7 +51,7 @@ export async function mountLayout({ page, title, roles = null }) {
   }
 
   document.title = `${t(title)} · ${brand.name}`;
-  document.body.prepend(header(user, page));
+  document.body.prepend(...[user && userBar(user), header(user, page)].filter(Boolean));
   document.body.append(footer(), devBar(role));
   showFlash();
   if (loadError) showToast(loadError.detail ?? loadError.message, 'error');
@@ -67,6 +67,11 @@ function userBadge(user) {
   return h('span', { class: 'user-badge' }, icon, user.firstName);
 }
 
+// Signed-in user, in the top left corner of the page. Outside the sticky header, so it scrolls away.
+function userBar(user) {
+  return h('div', { class: 'user-bar' }, h('div', { class: 'inner' }, userBadge(user)));
+}
+
 function header(user, page) {
   const role = roleOf(user);
   const nav = h('nav', { class: 'site-nav', id: 'site-nav', 'aria-label': t('nav.main') },
@@ -77,7 +82,6 @@ function header(user, page) {
           href: item.href,
           'aria-current': item.page === page || item.also?.includes(page) ? 'page' : null,
         }, t(item.label)))),
-      user && h('li', {}, userBadge(user)),
       role !== 'GUEST' && h('li', {},
         h('button', { type: 'button', class: 'site-nav__link', onclick: signOut }, t('nav.logout'))),
     ),

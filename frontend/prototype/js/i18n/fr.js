@@ -154,7 +154,7 @@ export default {
   adminBookings: {
     lead: 'Choisissez un jour dans le calendrier, puis cliquez sur une heure libre pour ajouter une réservation.',
     filterType: 'Type d’espace',
-    filterSpace: 'Identifiant',
+    filterSpace: 'Nom',
     allTypes: 'Tous les types',
     allSpaces: 'Tous les espaces',
     viewCalendar: 'Calendrier',
