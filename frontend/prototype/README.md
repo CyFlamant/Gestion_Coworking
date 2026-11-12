@@ -26,8 +26,6 @@ Demo accounts for the sign-in page: `marie.dubois@exemple.be` and `admin@exemple
 - In **mock** mode, `js/mock/handlers.js` answers in the browser. It reproduces the app-service's status codes and `ProblemDetail` bodies: 400 with an `errors` map, 401, 403 "Accès refusé", 404, and 500 when deleting a space that has bookings.
 - In **real** mode it calls `fetch`. The existing endpoints are `/api/me` and `/api/spaces`. Endpoints marked *planned* throw a 501 "Pas encore disponible".
 
-Real mode needs a CORS configuration in the app-service, which is not done yet. Write the test first, in `backend/app-service/src/test/...`, then add `http.cors(...)` in `SecurityConfig`.
-
 The planned endpoints are a proposal for the next backend steps:
 
 | Function | Request |
