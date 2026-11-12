@@ -1,4 +1,4 @@
-// Booking form: (client, for admins) + space type + space + slot. Used by "Réserver" and the admin booking dialog.
+// Booking form: (client, for admins) + space type + slot + space. Used by "Réserver" and the admin booking dialog.
 // checkAvailability(range) → Promise<Set<spaceId>> of free spaces; the page decides where that comes from.
 import { SPACE_TYPES } from '../config.js';
 import { toLocalIso } from '../dates.js';
@@ -32,10 +32,15 @@ export function bookingForm({ idPrefix, spaces, clients = null, initial, minDate
       notify();
     },
   });
-  const spaceField = field({ id: `${idPrefix}-space`, name: 'spaceId', label: t('booking.space'), control: spaceSelect });
+  // Replaces the select when every space of the type is booked on the slot.
+  const noneFreeMessage = h('p', { class: 'muted', hidden: true }, t('booking.noneFree'));
+  const spaceField = field({ id: `${idPrefix}-space`, name: 'spaceId', label: t('booking.space'), control: [spaceSelect, noneFreeMessage] });
+
+  const spacesOfType = () => spaces.filter((space) => space.type === state.type);
+  const noneFree = () => Boolean(available) && spacesOfType().length > 0 && !spacesOfType().some((space) => available.has(space.id));
 
   function renderSpaceOptions() {
-    const ofType = spaces.filter((space) => space.type === state.type);
+    const ofType = spacesOfType();
     if (!ofType.some((space) => space.id === state.spaceId)) state.spaceId = ofType[0]?.id ?? null;
     spaceSelect.replaceChildren(...ofType.map((space) => {
       let label = space.name;
@@ -44,6 +49,8 @@ export function bookingForm({ idPrefix, spaces, clients = null, initial, minDate
     }));
     if (!ofType.length) spaceSelect.append(h('option', { value: '' }, t('booking.noSpace')));
     spaceSelect.disabled = !ofType.length;
+    spaceSelect.hidden = noneFree();
+    noneFreeMessage.hidden = !noneFree();
   }
 
   function getState() {
@@ -62,7 +69,7 @@ export function bookingForm({ idPrefix, spaces, clients = null, initial, minDate
   function notify() {
     const current = getState();
     let warning = null;
-    if (current.available === false) warning = t('booking.spaceBusy');
+    if (current.available === false && !noneFree()) warning = t('booking.spaceBusy');
     setFieldError(spaceField, warning);
     onChange?.(current);
   }
@@ -113,8 +120,8 @@ export function bookingForm({ idPrefix, spaces, clients = null, initial, minDate
         },
       }),
     }),
-    spaceField,
     slot.node,
+    spaceField, // after the slot: the list shows which spaces are free then
   );
 
   return {

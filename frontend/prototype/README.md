@@ -41,6 +41,8 @@ The planned endpoints are a proposal for the next backend steps:
 
 A booking response adds `spaceName`, `spaceType`, `userName`, `formula` and `price` (computed by the server).
 
+`GET /api/me` is planned to also return `firstName` (shown in the header), from the auth-service or the JWT.
+
 ## Assumptions to confirm
 
 - **Opening hours** are Monday to Friday 8:00–19:00 and Saturday 9:00–13:00; closed on Sunday. On weekdays a half-day is 8:00–13:00 or 13:00–19:00, and a day is 8:00–19:00. On Saturday only hourly bookings and the 9:00–13:00 morning are offered. These values live in `js/config.js`; the mock API rejects bookings outside them.

@@ -200,6 +200,23 @@ a:hover {
   color: var(--color-hover);
 }
 
+.user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 var(--text-sm) / 1 var(--font-display);
+}
+
+.user-badge__icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
 .site-header .nav-toggle {
   display: none;
   margin-left: auto;

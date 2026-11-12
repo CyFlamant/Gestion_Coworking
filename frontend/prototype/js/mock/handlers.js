@@ -127,11 +127,11 @@ on('DELETE', /^\/api\/spaces\/(\d+)$/, ({ params: [id] }) => {
   return respond(204);
 });
 
-// ---------- Current user (existing API) ----------
+// ---------- Current user (existing API; firstName is planned) ----------
 
 on('GET', /^\/api\/me$/, () => {
   const user = currentUser();
-  return user ? respond(200, { id: user.id, role: user.role }) : respond(401);
+  return user ? respond(200, { id: user.id, role: user.role, firstName: user.firstName }) : respond(401);
 });
 
 // ---------- Bookings (planned) ----------

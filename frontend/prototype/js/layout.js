@@ -34,7 +34,7 @@ export const HOME_BY_ROLE = {
  * page:  key of the current page (highlights the nav item)
  * title: i18n key for the document title
  * roles: roles allowed on this page (null = everyone); others are sent to their home page
- * Returns the current user ({ id, role }) or null for a guest.
+ * Returns the current user ({ id, role, firstName }) or null for a guest.
  */
 export async function mountLayout({ page, title, roles = null }) {
   let user = null;
@@ -51,14 +51,24 @@ export async function mountLayout({ page, title, roles = null }) {
   }
 
   document.title = `${t(title)} · ${brand.name}`;
-  document.body.prepend(header(role, page));
+  document.body.prepend(header(user, page));
   document.body.append(footer(), devBar(role));
   showFlash();
   if (loadError) showToast(loadError.detail ?? loadError.message, 'error');
   return user;
 }
 
-function header(role, page) {
+const USER_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
+
+// Icon + first name of the signed-in user. The real /api/me has no firstName yet: icon only.
+function userBadge(user) {
+  const icon = h('span', { class: 'user-badge__icon' });
+  icon.innerHTML = USER_ICON;
+  return h('span', { class: 'user-badge' }, icon, user.firstName);
+}
+
+function header(user, page) {
+  const role = roleOf(user);
   const nav = h('nav', { class: 'site-nav', id: 'site-nav', 'aria-label': t('nav.main') },
     h('ul', { class: 'site-nav__list' },
       NAV[role].map((item) => h('li', {},
@@ -67,6 +77,7 @@ function header(role, page) {
           href: item.href,
           'aria-current': item.page === page || item.also?.includes(page) ? 'page' : null,
         }, t(item.label)))),
+      user && h('li', {}, userBadge(user)),
       role !== 'GUEST' && h('li', {},
         h('button', { type: 'button', class: 'site-nav__link', onclick: signOut }, t('nav.logout'))),
     ),
