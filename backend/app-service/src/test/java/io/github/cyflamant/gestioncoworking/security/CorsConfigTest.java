@@ -32,6 +32,15 @@ class CorsConfigTest {
     }
 
     @Test
+    void preflightFromViteDevServerSucceeds() throws Exception {
+        mockMvc.perform(options("/api/spaces")
+                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET"))
+                .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"));
+    }
+
+    @Test
     void preflightFromUnknownOriginIsRejected() throws Exception {
         mockMvc.perform(options("/api/me")
                 .header(HttpHeaders.ORIGIN, "http://evil.example")
