@@ -1,0 +1,97 @@
+/*
+ * Design tokens (future React theme file).
+ * Layout: a 1024px column under a white sticky header; flat colour panels,
+ * one colour and one shape per space type (open space = yellow circle,
+ * office = green square, meeting room = coral star).
+ */
+:root {
+  --color-bg: #ffffff;
+  --color-fg: #1c1c1c;
+  --color-muted: #64625c;
+  --color-surface: #f5f5f1;
+  --color-line: #dddddd;
+  --color-accent: #19b469;
+  --color-accent-text: #0d7a44;
+  --color-hover: #f38964;
+  --color-yellow: #ffe362;
+  --color-green: #19b469;
+  --color-coral: #f38964;
+  --color-panel-fg: #1c1c1c; /* text on colour panels, same in both themes */
+  --color-danger: #b23a22;
+  --color-danger-bg: #fce9e4;
+  --color-success-bg: #e1f5ea;
+  --color-overlay: rgba(28, 28, 28, 0.45);
+  --color-devbar-bg: #1c1c1c;
+  --color-devbar-fg: #f5f5f1;
+  --logo-filter: none;
+
+  --font-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --font-body: "Hind", "Segoe UI", Arial, sans-serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.375rem;
+  --text-xl: 2rem;
+  --text-2xl: clamp(2.25rem, 6vw, 4rem);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+
+  --radius-pill: 50px;
+  --radius-card: 6px;
+  --radius-panel: 12px;
+
+  --header-h: 80px;
+  --content-max: 1024px;
+  --gutter-left: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-right: max(16px, env(safe-area-inset-right, 0px));
+  --shadow-dialog: 0 24px 64px rgba(0, 0, 0, 0.25);
+  --timeline-row-h: 22px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #131312;
+    --color-fg: #efeee9;
+    --color-muted: #a5a39b;
+    --color-surface: #1e1e1c;
+    --color-line: #353532;
+    --color-accent: #19b469;
+    --color-accent-text: #4fd394;
+    --color-hover: #f38964;
+    --color-danger: #ff8a70;
+    --color-danger-bg: #3b1d16;
+    --color-success-bg: #12301f;
+    --color-overlay: rgba(0, 0, 0, 0.6);
+    --color-devbar-bg: #efeee9;
+    --color-devbar-fg: #1c1c1c;
+    --logo-filter: invert(1);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #131312;
+  --color-fg: #efeee9;
+  --color-muted: #a5a39b;
+  --color-surface: #1e1e1c;
+  --color-line: #353532;
+  --color-accent: #19b469;
+  --color-accent-text: #4fd394;
+  --color-hover: #f38964;
+  --color-danger: #ff8a70;
+  --color-danger-bg: #3b1d16;
+  --color-success-bg: #12301f;
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  --color-devbar-bg: #efeee9;
+  --color-devbar-fg: #1c1c1c;
+  --logo-filter: invert(1);
+  color-scheme: dark;
+}
