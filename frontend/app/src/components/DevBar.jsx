@@ -1,6 +1,8 @@
 // Prototype-only panel: switch the simulated role and data source. Shown in development only (npm run dev).
 import { getApiMode, setApiMode } from "../lib/config.js";
 import { t } from "../lib/i18n/index.js";
+import { HOME_BY_ROLE } from "../lib/auth.js";
+
 import {
   DEMO_ADMIN_ID,
   DEMO_CLIENT_ID,
@@ -14,7 +16,6 @@ const SESSION_BY_ROLE = {
   CLIENT: DEMO_CLIENT_ID,
   ADMIN: DEMO_ADMIN_ID,
 };
-const HOME_BY_ROLE = { GUEST: "/", CLIENT: "/", ADMIN: "/admin/reservations" };
 
 export default function DevBar({ role }) {
   const mock = getApiMode() === "mock";

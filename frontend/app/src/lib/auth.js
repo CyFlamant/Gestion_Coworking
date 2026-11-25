@@ -13,3 +13,7 @@ export async function getCurrentUser() {
 export function roleOf(user) {
   return user?.role ?? 'GUEST';
 }
+
+// Where each role lands: after sign-in, and when a page is not for them.
+export const HOME_BY_ROLE = { GUEST: '/', CLIENT: '/', ADMIN: '/admin/reservations' };
+
