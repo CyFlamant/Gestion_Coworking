@@ -1,5 +1,8 @@
 import { Route, Routes } from "react-router";
 import Layout from "./components/Layout.jsx";
+import HoursPage from "./pages/HoursPage.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
+import LegalPage from "./pages/LegalPage.jsx";
 
 // Temporary: replaced by the real pages one by one.
 function Placeholder({ title }) {
@@ -37,12 +40,9 @@ export default function App() {
           path="/admin/espaces"
           element={<Placeholder title="Espaces" />}
         />
-        <Route path="/contact" element={<Placeholder title="Contact" />} />
-        <Route path="/horaires" element={<Placeholder title="Horaires" />} />
-        <Route
-          path="/mentions-legales"
-          element={<Placeholder title="Mentions légales" />}
-        />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/horaires" element={<HoursPage />} />
+        <Route path="/mentions-legales" element={<LegalPage />} />
         <Route path="*" element={<Placeholder title="Page introuvable" />} />
       </Route>
     </Routes>
