@@ -3,6 +3,8 @@ import Layout from "./components/Layout.jsx";
 import HoursPage from "./pages/HoursPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import LegalPage from "./pages/LegalPage.jsx";
+import RequireRole from "./components/RequireRole.jsx";
+import HomePage from "./pages/HomePage.jsx";
 
 // Temporary: replaced by the real pages one by one.
 function Placeholder({ title }) {
@@ -18,7 +20,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route element={<RequireRole roles={["GUEST", "CLIENT"]} />}>
-          <Route path="/" element={<Placeholder title="Accueil" />} />
+          <Route path="/" element={<HomePage />} />
           <Route
             path="/espaces"
             element={<Placeholder title="Espaces disponibles" />}

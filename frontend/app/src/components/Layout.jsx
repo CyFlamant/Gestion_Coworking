@@ -7,6 +7,7 @@ import { brand } from "../lib/brand.js";
 import { getLanguage, LANGUAGES, t } from "../lib/i18n/index.js";
 import DevBar from "./DevBar.jsx";
 
+const YEAR = new Date().getFullYear();
 const NAV = {
   GUEST: [
     { to: "/espaces", label: "nav.spaces" },
@@ -125,7 +126,7 @@ export default function Layout() {
             </li>
           </ul>
           <p className="muted">
-            © {new Date().getFullYear()} {brand.name}
+            © {YEAR} {brand.name}
           </p>
         </div>
       </footer>
