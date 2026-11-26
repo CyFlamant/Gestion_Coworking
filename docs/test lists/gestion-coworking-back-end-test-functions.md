@@ -1,10 +1,6 @@
-# Gestion Coworking: test functions
+# Gestion Coworking back end: test functions
 
-Test number and title from `gestion-coworking-tests.md`, and the test function.
-
-## Back end
-
-Java test methods; files relative to `backend/app-service/src/test/java/io/github/cyflamant/gestioncoworking/`.
+Test number and title from `gestion-coworking-back-end-tests.md`, and the Java test method. Files are relative to `backend/app-service/src/test/java/io/github/cyflamant/gestioncoworking/`.
 
 | # | Test | Function (file) |
 |---|---|---|
@@ -52,39 +48,3 @@ Java test methods; files relative to `backend/app-service/src/test/java/io/githu
 | 42 | Create then read back through the API | `createdSpaceCanBeReadBack` (`integration/SpaceApiIntegrationTest.java`) |
 
 Run one test from `backend/app-service`: `.\mvnw.cmd test -Dtest=<Class>#<method>`.
-
-## Front end
-
-Vitest tests, written as `describe > it`; files relative to `frontend/app/src/`.
-
-| # | Test | Function (file) |
-|---|---|---|
-| 43 | Sunday | `formulasOn > offers no formula on Sunday` (`lib/pricing.test.js`) |
-| 44 | Saturday formulas | `formulasOn > offers no day formula on Saturday` (`lib/pricing.test.js`) |
-| 45 | Saturday half-days | `halfDaysOn > offers only the morning on Saturday` (`lib/pricing.test.js`) |
-| 46 | A weekday day | `bookingRange > books a weekday DAY from 8:00 to 19:00` (`lib/pricing.test.js`) |
-| 47 | A month | `bookingRange > ends a month at closing time on the day before the same date next month` (`lib/pricing.test.js`) |
-| 48 | Ends at closing time | `isWithinOpeningHours > accepts a weekday booking that ends at closing time` (`lib/pricing.test.js`) |
-| 49 | Ends after closing time | `isWithinOpeningHours > rejects a weekday booking that ends after closing time` (`lib/pricing.test.js`) |
-| 50 | Saturday afternoon | `isWithinOpeningHours > rejects a Saturday booking after 13:00` (`lib/pricing.test.js`) |
-| 51 | Sunday booking | `isWithinOpeningHours > rejects any booking on Sunday` (`lib/pricing.test.js`) |
-| 52 | Closed day in a form | `fitToOpeningHours > moves a Sunday to the next Monday` (`lib/pricing.test.js`) |
-| 53 | Hourly price | `computePrice > charges two hours at the hourly rate` (`lib/pricing.test.js`) |
-| 54 | Free formula | `computePrice > charges nothing for a formula with a 0 € rate` (`lib/pricing.test.js`) |
-| 55 | Guest | `Layout > shows the sign-in link to a guest` (`components/Layout.test.jsx`) |
-| 56 | Client | `Layout > shows the client links and first name` (`components/Layout.test.jsx`) |
-| 57 | Admin | `Layout > shows the admin links` (`components/Layout.test.jsx`) |
-| 58 | Page content | `Layout > shows the page inside the layout` (`components/Layout.test.jsx`) |
-| 59 | Allowed role | `RequireRole > shows the page to an allowed role` (`components/RequireRole.test.jsx`) |
-| 60 | Guest on a client page | `RequireRole > sends a guest to the home page` (`components/RequireRole.test.jsx`) |
-| 61 | Admin on a client page | `RequireRole > sends an admin to the admin home page` (`components/RequireRole.test.jsx`) |
-| 62 | Horaires | `HoursPage > shows the opening hours` (`pages/InfoPages.test.jsx`) |
-| 63 | Tab title | `HoursPage > sets the browser tab title` (`pages/InfoPages.test.jsx`) |
-| 64 | Contact | `ContactPage > shows the postal address` (`pages/InfoPages.test.jsx`) |
-| 65 | Mentions légales | `LegalPage > shows the four sections of the legal notice` (`pages/InfoPages.test.jsx`) |
-| 66 | Home page for a guest | `HomePage > invites a guest to see the spaces and sign up` (`pages/HomePage.test.jsx`) |
-| 67 | Home page for a client | `HomePage > invites a client to book` (`pages/HomePage.test.jsx`) |
-| 68 | Space types | `HomePage > shows how many spaces each type has and the lowest hourly price` (`pages/HomePage.test.jsx`) |
-| 69 | Spaces can't be loaded | `HomePage > shows an error when the spaces cannot be loaded` (`pages/HomePage.test.jsx`) |
-
-Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

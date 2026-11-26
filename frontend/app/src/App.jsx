@@ -1,10 +1,12 @@
 import { Route, Routes } from "react-router";
 import Layout from "./components/Layout.jsx";
-import HoursPage from "./pages/HoursPage.jsx";
-import ContactPage from "./pages/ContactPage.jsx";
-import LegalPage from "./pages/LegalPage.jsx";
 import RequireRole from "./components/RequireRole.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
+import HoursPage from "./pages/HoursPage.jsx";
+import LegalPage from "./pages/LegalPage.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import SignupPage from "./pages/SignupPage.jsx";
 
 // Temporary: replaced by the real pages one by one.
 function Placeholder({ title }) {
@@ -27,14 +29,8 @@ export default function App() {
           />
         </Route>
         <Route element={<RequireRole roles={["GUEST"]} />}>
-          <Route
-            path="/connexion"
-            element={<Placeholder title="Connexion" />}
-          />
-          <Route
-            path="/inscription"
-            element={<Placeholder title="Inscription" />}
-          />
+          <Route path="/connexion" element={<LoginPage />} />
+          <Route path="/inscription" element={<SignupPage />} />
         </Route>
         <Route element={<RequireRole roles={["CLIENT"]} />}>
           <Route path="/reserver" element={<Placeholder title="Réserver" />} />

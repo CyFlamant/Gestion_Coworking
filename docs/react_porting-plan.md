@@ -13,8 +13,8 @@ Bookings, accounts and sign-in do not exist in the backend yet, so the React app
 | 3. Layout | Header, navigation adapted to the user's role, user name, footer, and the prototype panel to switch roles during development | Done |
 | 4. Information pages | Horaires, Contact, Mentions légales | Done |
 | 5. Access by role | Each page is only shown to the roles allowed to use it; other users are sent to their own home page | Done |
-| 6. Home page | Presentation, the three space types with their number of spaces and lowest price, how booking works | In progress |
-| 7. Sign-in and sign-up | The Connexion and Inscription forms | To do |
+| 6. Home page | Presentation, the three space types with their number of spaces and lowest price, how booking works | Done |
+| 7. Sign-in and sign-up | The Connexion and Inscription forms | In progress |
 | 8. Available spaces | Search for free spaces by date, formula and type, with the price of each space | To do |
 | 9. Client bookings | Book a space and see or cancel one's own bookings | To do |
 | 10. Administration | Manage spaces and bookings: calendar, day view, forms in dialogs; tables adapted to phones | To do |
