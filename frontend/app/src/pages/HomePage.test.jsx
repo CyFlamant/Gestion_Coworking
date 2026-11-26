@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter, Outlet, Route, Routes } from "react-router";
+import { screen } from "@testing-library/react";
+import { Route } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import { ApiError, getSpaces } from "../lib/api.js";
+import { renderWithUser } from "../test/renderWithUser.jsx";
 import HomePage from "./HomePage.jsx";
 
 // Replaces getSpaces with a fake whose answer each test chooses; the rest of api.js stays real.
@@ -17,17 +18,8 @@ const SPACES = [
 ];
 const CLIENT = { id: "2", role: "CLIENT", firstName: "Marie" };
 
-// The outer route stands in for Layout and RequireRole: it passes the user down.
 function renderHome(user) {
-  return render(
-    <MemoryRouter>
-      <Routes>
-        <Route element={<Outlet context={user} />}>
-          <Route path="/" element={<HomePage />} />
-        </Route>
-      </Routes>
-    </MemoryRouter>,
-  );
+  return renderWithUser(<Route path="/" element={<HomePage />} />, { user });
 }
 
 describe("HomePage", () => {

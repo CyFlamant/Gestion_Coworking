@@ -4,6 +4,7 @@ import { Link, NavLink, Outlet } from "react-router";
 import { logout } from "../lib/api.js";
 import { getCurrentUser, roleOf } from "../lib/auth.js";
 import { brand } from "../lib/brand.js";
+import { goTo } from "../lib/browser.js";
 import { getLanguage, LANGUAGES, t } from "../lib/i18n/index.js";
 import DevBar from "./DevBar.jsx";
 
@@ -45,7 +46,7 @@ export default function Layout() {
     } catch {
       // No auth-service yet in real mode: nothing to sign out from.
     }
-    window.location.href = "/"; // full reload: the layout asks again who is signed in
+    goTo("/");
   }
 
   return (

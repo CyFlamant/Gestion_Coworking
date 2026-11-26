@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router";
+import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
 import ShapeIcon from "../components/ShapeIcon.jsx";
 import { getSpaces } from "../lib/api.js";
@@ -55,11 +56,7 @@ export default function HomePage() {
 
       <section className="inner section">
         <h2>{t("home.spacesTitle")}</h2>
-        {error && (
-          <p className="alert alert--error" role="alert">
-            {error}
-          </p>
-        )}
+        <ErrorAlert>{error}</ErrorAlert>
         {spaces && (
           <div className="type-panels">
             {SPACE_TYPES.map((type) => (

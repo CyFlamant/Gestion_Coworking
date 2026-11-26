@@ -1,8 +1,8 @@
 // Prototype-only panel: switch the simulated role and data source. Shown in development only (npm run dev).
+import { HOME_BY_ROLE } from "../lib/auth.js";
+import { goTo, reload } from "../lib/browser.js";
 import { getApiMode, setApiMode } from "../lib/config.js";
 import { t } from "../lib/i18n/index.js";
-import { HOME_BY_ROLE } from "../lib/auth.js";
-
 import {
   DEMO_ADMIN_ID,
   DEMO_CLIENT_ID,
@@ -25,17 +25,17 @@ export default function DevBar({ role }) {
   // Each change reloads the page, so the layout asks again who is signed in.
   function changeRole(event) {
     setSessionUserId(SESSION_BY_ROLE[event.target.value]);
-    window.location.href = HOME_BY_ROLE[event.target.value];
+    goTo(HOME_BY_ROLE[event.target.value]);
   }
 
   function changeMode(event) {
     setApiMode(event.target.value);
-    window.location.reload();
+    reload();
   }
 
   function reset() {
     resetDb();
-    window.location.href = "/";
+    goTo("/");
   }
 
   return (

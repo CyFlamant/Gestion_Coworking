@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
 import TextField from "../components/TextField.jsx";
 import { login } from "../lib/api.js";
@@ -38,11 +39,7 @@ export default function LoginPage() {
         <h1>{t("signIn.title")}</h1>
         <p className="muted">{t("signIn.lead")}</p>
         <form className="form" noValidate onSubmit={submit}>
-          {errors.alert && (
-            <p className="alert alert--error" role="alert">
-              {errors.alert}
-            </p>
-          )}
+          <ErrorAlert>{errors.alert}</ErrorAlert>
           <TextField
             id="signin-email"
             label={t("signIn.email")}

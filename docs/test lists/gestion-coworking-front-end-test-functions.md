@@ -36,5 +36,22 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 30 | Demo account | `LoginPage > fills in a demo account` (`pages/AccountPages.test.jsx`) |
 | 31 | Sign up | `SignupPage > creates the account and goes to the home page` (`pages/AccountPages.test.jsx`) |
 | 32 | Sign-up errors | `SignupPage > shows the API's errors next to the fields` (`pages/AccountPages.test.jsx`) |
+| 33 | Slot description | `SlotFields > describes the chosen slot` (`components/SlotFields.test.jsx`) |
+| 34 | Hourly formula | `SlotFields > asks for the start hour and duration with the hourly formula` (`components/SlotFields.test.jsx`) |
+| 35 | Half-day formula | `SlotFields > offers the morning and the afternoon with the half-day formula` (`components/SlotFields.test.jsx`) |
+| 36 | Saturday | `SlotFields > disables the day formula on a Saturday` (`components/SlotFields.test.jsx`) |
+| 37 | Sunday | `SlotFields > refuses a Sunday and keeps the previous date` (`components/SlotFields.test.jsx`) |
+| 38 | New values | `SlotFields > gives the new values to its parent` (`components/SlotFields.test.jsx`) |
+| 39 | Spaces and rates | `SpacesPage > shows every space with its rates` (`pages/SpacesPage.test.jsx`) |
+| 40 | Search | `SpacesPage > searches for the free spaces on the chosen slot` (`pages/SpacesPage.test.jsx`) |
+| 41 | New search | `SpacesPage > searches again when the slot changes` (`pages/SpacesPage.test.jsx`) |
+| 42 | Booked and free | `SpacesPage > marks which spaces are booked and counts the free ones` (`pages/SpacesPage.test.jsx`) |
+| 43 | Price for the slot | `SpacesPage > shows the price of each space for the chosen slot` (`pages/SpacesPage.test.jsx`) |
+| 44 | Type filter | `SpacesPage > filters the spaces by type` (`pages/SpacesPage.test.jsx`) |
+| 45 | Type from the home page | `SpacesPage > preselects the type chosen on the home page` (`pages/SpacesPage.test.jsx`) |
+| 46 | Guest | `SpacesPage > invites a guest to sign in to book a free space` (`pages/SpacesPage.test.jsx`) |
+| 47 | Client books | `SpacesPage > takes a client to the booking page with the chosen space and slot` (`pages/SpacesPage.test.jsx`) |
+| 48 | Search not available | `SpacesPage > shows every space as free when the search is not available` (`pages/SpacesPage.test.jsx`) |
+| 49 | Spaces can't be loaded | `SpacesPage > shows an error when the spaces cannot be loaded` (`pages/SpacesPage.test.jsx`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

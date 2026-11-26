@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
 import TextField from "../components/TextField.jsx";
 import { register } from "../lib/api.js";
@@ -50,11 +51,7 @@ export default function SignupPage() {
         <h1>{t("signUp.title")}</h1>
         <p className="muted">{t("signUp.lead")}</p>
         <form className="form" noValidate onSubmit={submit}>
-          {errors.alert && (
-            <p className="alert alert--error" role="alert">
-              {errors.alert}
-            </p>
-          )}
+          <ErrorAlert>{errors.alert}</ErrorAlert>
           <div className="field-row">
             <TextField
               {...fieldProps("firstName")}

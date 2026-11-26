@@ -1,12 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import {
-  MemoryRouter,
-  Outlet,
-  Route,
-  Routes,
-  useOutletContext,
-} from "react-router";
+import { screen } from "@testing-library/react";
+import { Route, useOutletContext } from "react-router";
 import { describe, expect, it } from "vitest";
+import { renderWithUser } from "../test/renderWithUser.jsx";
 import RequireRole from "./RequireRole.jsx";
 
 const CLIENT = { id: "2", role: "CLIENT", firstName: "Marie" };
@@ -18,20 +13,16 @@ function WhoAmI() {
   return <p>Page client de {user.firstName}</p>;
 }
 
-// The outer route stands in for Layout: it passes the user down, as Layout does.
 function renderAt(path, user) {
-  return render(
-    <MemoryRouter initialEntries={[path]}>
-      <Routes>
-        <Route element={<Outlet context={user} />}>
-          <Route path="/" element={<p>Accueil</p>} />
-          <Route path="/admin/reservations" element={<p>Accueil admin</p>} />
-          <Route element={<RequireRole roles={["CLIENT"]} />}>
-            <Route path="/reserver" element={<WhoAmI />} />
-          </Route>
-        </Route>
-      </Routes>
-    </MemoryRouter>,
+  return renderWithUser(
+    <>
+      <Route path="/" element={<p>Accueil</p>} />
+      <Route path="/admin/reservations" element={<p>Accueil admin</p>} />
+      <Route element={<RequireRole roles={["CLIENT"]} />}>
+        <Route path="/reserver" element={<WhoAmI />} />
+      </Route>
+    </>,
+    { user, path },
   );
 }
 

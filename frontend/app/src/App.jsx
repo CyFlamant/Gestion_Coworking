@@ -7,6 +7,7 @@ import HoursPage from "./pages/HoursPage.jsx";
 import LegalPage from "./pages/LegalPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
+import SpacesPage from "./pages/SpacesPage.jsx";
 
 // Temporary: replaced by the real pages one by one.
 function Placeholder({ title }) {
@@ -44,10 +45,7 @@ export default function App() {
             path="/admin/reservations"
             element={<Placeholder title="Réservations" />}
           />
-          <Route
-            path="/admin/espaces"
-            element={<Placeholder title="Espaces" />}
-          />
+          <Route path="/espaces" element={<SpacesPage />} />
         </Route>
         {/* Open to everyone */}
         <Route path="/contact" element={<ContactPage />} />

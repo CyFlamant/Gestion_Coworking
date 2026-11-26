@@ -4,7 +4,7 @@ The tests of the React application, grouped by subject. Each test checks one beh
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-32 tests.
+49 tests.
 
 ## A. Prices and opening hours
 
@@ -111,3 +111,62 @@ Run them with `npm test` in `frontend/app`. The test function names are in `gest
 
 **32. Sign-up errors**: the API rejects the e-mail.
 - Expected: the message is shown under the e-mail field, which is marked as invalid; no message above the form.
+
+## F. Slot fields (formula, date, time)
+
+Shared by the search, booking and admin pages. The examples start on Tuesday 17 November 2026, with the day formula.
+
+**33. Slot description**: the chosen slot.
+- Expected: "Mardi 17 novembre 2026, de 8:00 à 19:00" is shown.
+
+**34. Hourly formula**: the "À l’heure" formula is chosen.
+- Expected: a start hour (9:00) and a duration (2 h) are asked; the slot becomes 9:00–11:00.
+
+**35. Half-day formula**: the "Demi-journée" formula is chosen.
+- Expected: a choice between the morning and the afternoon.
+
+**36. Saturday**: the date is changed to a Saturday.
+- Expected: the day formula is disabled, and the hourly formula is selected instead.
+
+**37. Sunday**: the date is changed to a Sunday.
+- Expected: the message "L’espace de coworking est fermé ce jour-là." is shown; the date stays as it was, and nothing is passed on.
+
+**38. New values**: the "Mois" formula is chosen.
+- Expected: the new values, with the month formula, are passed to the page.
+
+## G. Available spaces
+
+"Today" is fixed on Monday 16 November 2026, so the default search is Tuesday 17, a full day. Openspace 1 is booked.
+
+**39. Spaces and rates**: the page opens.
+- Expected: every space is shown with its four rates.
+
+**40. Search**: the page opens.
+- Expected: the free spaces are asked for Tuesday 17, 8:00–19:00.
+
+**41. New search**: the formula is changed to "À l’heure".
+- Expected: the free spaces are asked again, for 9:00–11:00.
+
+**42. Booked and free**: the search has answered.
+- Expected: Openspace 1 shows "Déjà réservé", Openspace 2 shows "Disponible", and "2 espace(s) disponible(s) sur 3" is shown.
+
+**43. Price for the slot**: the day formula is chosen.
+- Expected: each space shows its price for the slot (50,00 € for Bureau 1).
+
+**44. Type filter**: "Bureaux individuels" is chosen.
+- Expected: only the offices are shown.
+
+**45. Type from the home page**: the page opens from the "Bureaux individuels" panel (`/espaces#office`).
+- Expected: only the offices are shown.
+
+**46. Guest**: no one is signed in.
+- Expected: free spaces show "Se connecter pour réserver"; booked spaces show no link.
+
+**47. Client books**: a client clicks "Réserver" on a free space.
+- Expected: the booking page opens, with the space and the slot remembered.
+
+**48. Search not available**: the search fails (real mode: the endpoint doesn't exist yet).
+- Expected: the message is shown, and every space is shown as free.
+
+**49. Spaces can't be loaded**: the API fails.
+- Expected: an error message with the reason.
