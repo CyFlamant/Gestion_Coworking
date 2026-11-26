@@ -53,5 +53,20 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 47 | Client books | `SpacesPage > takes a client to the booking page with the chosen space and slot` (`pages/SpacesPage.test.jsx`) |
 | 48 | Search not available | `SpacesPage > shows every space as free when the search is not available` (`pages/SpacesPage.test.jsx`) |
 | 49 | Spaces can't be loaded | `SpacesPage > shows an error when the spaces cannot be loaded` (`pages/SpacesPage.test.jsx`) |
+| 50 | Choice from the spaces page | `BookPage > starts from the space and slot chosen on the spaces page` (`pages/BookPage.test.jsx`) |
+| 51 | No previous choice | `BookPage > starts with two hours tomorrow when nothing was chosen` (`pages/BookPage.test.jsx`) |
+| 52 | A free space is chosen | `BookPage > chooses a free space of the type` (`pages/BookPage.test.jsx`) |
+| 53 | Booked spaces in the list | `BookPage > marks the booked spaces in the list` (`pages/BookPage.test.jsx`) |
+| 54 | Price summary | `BookPage > shows the price of the booking` (`pages/BookPage.test.jsx`) |
+| 55 | Chosen space already booked | `BookPage > warns when the chosen space is already booked` (`pages/BookPage.test.jsx`) |
+| 56 | No space free | `BookPage > says so when no space of the type is free` (`pages/BookPage.test.jsx`) |
+| 57 | Book | `BookPage > books the space and goes to the client's bookings` (`pages/BookPage.test.jsx`) |
+| 58 | Booking refused | `BookPage > shows the API's error and stays on the page when the booking fails` (`pages/BookPage.test.jsx`) |
+| 59 | Upcoming bookings | `MyBookingsPage > lists the upcoming bookings` (`pages/MyBookingsPage.test.jsx`) |
+| 60 | Booking in progress | `MyBookingsPage > shows a booking in progress, without the cancel option` (`pages/MyBookingsPage.test.jsx`) |
+| 61 | Cancel | `MyBookingsPage > cancels a booking once the client confirms` (`pages/MyBookingsPage.test.jsx`) |
+| 62 | Keep | `MyBookingsPage > keeps the booking when the client changes their mind` (`pages/MyBookingsPage.test.jsx`) |
+| 63 | Nothing coming up | `MyBookingsPage > invites the client to book when nothing is coming up` (`pages/MyBookingsPage.test.jsx`) |
+| 64 | Bookings can't be loaded | `MyBookingsPage > shows an error when the bookings cannot be loaded` (`pages/MyBookingsPage.test.jsx`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

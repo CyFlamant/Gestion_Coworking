@@ -8,8 +8,18 @@ export function saveDraft(values) {
     writeSession(DRAFT_KEY, { ...values, date: toDateInput(values.date) });
 }
 
-export function takeDraft() {
+// Reads the draft without forgetting it (safe to call twice, as React may do in development).
+export function readDraft() {
     const draft = readSession(DRAFT_KEY);
-    writeSession(DRAFT_KEY, null);
     return draft ? { ...draft, date: fromDateInput(draft.date) } : null;
+}
+
+export function clearDraft() {
+    writeSession(DRAFT_KEY, null);
+}
+
+export function takeDraft() {
+    const draft = readDraft();
+    clearDraft();
+    return draft;
 }

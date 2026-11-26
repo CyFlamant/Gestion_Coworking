@@ -4,7 +4,7 @@ The tests of the React application, grouped by subject. Each test checks one beh
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-49 tests.
+64 tests.
 
 ## A. Prices and opening hours
 
@@ -169,4 +169,57 @@ Shared by the search, booking and admin pages. The examples start on Tuesday 17 
 - Expected: the message is shown, and every space is shown as free.
 
 **49. Spaces can't be loaded**: the API fails.
+- Expected: an error message with the reason.
+
+## H. Booking a space
+
+A signed-in client books on the "Réserver" page. "Today" is Monday 16 November 2026; Openspace 1 is booked on the slot.
+
+**50. Choice from the spaces page**: the client clicked "Réserver" on Bureau 1 for a full day.
+- Expected: the form starts with Bureau 1 and the day formula.
+
+**51. No previous choice**: the client opens the page directly.
+- Expected: the form starts with two hours tomorrow, 9:00–11:00.
+
+**52. A free space is chosen**: the first open space is booked.
+- Expected: the free Openspace 2 is selected.
+
+**53. Booked spaces in the list**.
+- Expected: "Openspace 1 — déjà réservé" and "Openspace 2" are offered.
+
+**54. Price summary**: a full day on Bureau 1.
+- Expected: "1 jour(s)" and a total of 50,00 €.
+
+**55. Chosen space already booked**: the client chose Openspace 1 on the spaces page.
+- Expected: "Cet espace est déjà réservé sur ce créneau." is shown, and the booking can't be confirmed.
+
+**56. No space free**: every open space is booked on the slot.
+- Expected: "Aucun espace de ce type n’est disponible pour ce créneau." replaces the list, and the booking can't be confirmed.
+
+**57. Book**: the client confirms a full day on Bureau 1.
+- Expected: the booking is sent with that space and slot (Tuesday 17, 8:00–19:00), then "Mes réservations" opens.
+
+**58. Booking refused**: the API refuses the booking.
+- Expected: the error message is shown, and the page stays.
+
+## I. My bookings
+
+"Today" is Monday 16 November 2026 at 10:00. The client has a booking tomorrow, one that started this morning, and one last week.
+
+**59. Upcoming bookings**: the page opens.
+- Expected: tomorrow's booking is shown with its space, slot and price; the past ones aren't.
+
+**60. Booking in progress**: this morning's booking (9:00–11:00) has started but not ended.
+- Expected: it is listed, without an "Annuler" button.
+
+**61. Cancel**: the client clicks "Annuler", then confirms.
+- Expected: the booking is cancelled and the list is loaded again; it is gone, and the booking in progress is still shown.
+
+**62. Keep**: the client clicks "Annuler", then "Garder".
+- Expected: the dialog closes; nothing is cancelled and the booking is still shown.
+
+**63. Nothing coming up**: the client has no upcoming booking.
+- Expected: "Vous n’avez aucune réservation à venir." and a "Réserver un espace" link.
+
+**64. Bookings can't be loaded**: the API fails.
 - Expected: an error message with the reason.
