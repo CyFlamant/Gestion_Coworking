@@ -1,17 +1,19 @@
 package io.github.cyflamant.gestioncoworking.integration;
 
+import static io.github.cyflamant.gestioncoworking.SpaceFixtures.space;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.jayway.jsonpath.JsonPath;
 import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
+
+import com.jayway.jsonpath.JsonPath;
 import jakarta.persistence.EntityManager;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -59,13 +61,7 @@ class SpaceApiIntegrationTest {
     @Test
     void availableSearchLeavesOutBookedSpace() throws Exception {
         // Arrange: a space booked on 1 December 2026 from 9:00 to 13:00
-        Space space = new Space();
-        space.setName("Salle réservée");
-        space.setType(Space.SpaceType.ROOM);
-        space.setHourRate(new BigDecimal("15.00"));
-        space.setHalfDayRate(new BigDecimal("50.00"));
-        space.setDayRate(new BigDecimal("90.00"));
-        space.setMonthRate(new BigDecimal("1500.00"));
+        Space space = space("Salle réservée", Space.SpaceType.ROOM);
         entityManager.persist(space);
 
         Booking booking = new Booking();

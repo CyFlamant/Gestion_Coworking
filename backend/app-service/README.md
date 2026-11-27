@@ -64,17 +64,17 @@ app-service/
 │   ├── repository/                 database access (Spring Data JPA)
 │   │   └── SpaceRepository.java        CRUD + findAvailable (free-space search query)
 │   ├── entity/                     JPA entities, mapped to the tables
-│   │   ├── Space.java
-│   │   └── Booking.java                only read by the free-space search so far
+│   │   ├── Space.java                  no validation (done on SpaceRequest), no bookings list
+│   │   └── Booking.java                only read by the free-space search so far; points to its Space
 │   └── security/                   who is calling and what they may do
 │       ├── SecurityConfig.java         filter chain, URL rules, CORS
 │       ├── PlaceholderAuthenticationFilter.java  signs every request in as the fixed user
 │       ├── CurrentUserProvider.java    interface: id of the current user
-│       └── PlaceholderUserProvider.java  its fixed implementation
+│       └── SecurityContextUserProvider.java  its implementation: reads the id from the security context
 ├── src/main/resources/
 │   ├── application.properties
 │   └── db/migration/V1__… to V6__…  Flyway migrations (the schema)
-└── src/test/java/.../gestioncoworking/  same packages as main, plus integration/
+└── src/test/java/.../gestioncoworking/  same packages as main, plus integration/ and SpaceFixtures (test spaces)
 ```
 
 ## Layers
@@ -89,7 +89,7 @@ Each layer only calls the one below it.
 | Repository | `repository/` | Reads and writes the tables | Hold rules |
 | Entity | `entity/` | Java image of a table row | Leave the back end: entities are never sent as JSON |
 
-Rules on the data are checked twice: on the request (`SpaceRequest`, answered with 400) and on the entity before Hibernate saves it (`Space`).
+Rules on the data are checked on the request (`SpaceRequest`, answered with 400). Entities carry no validation; the database constraints (`NOT NULL`) are the last safety net.
 
 ## Data flows
 
@@ -132,7 +132,7 @@ JSON body ──Jackson──▶ SpaceRequest ──toEntity()──▶ Space �
 JSON answer ◀──Jackson── SpaceResponse ◀──from()── Space ◀──────────────────────────────────────────┘
 ```
 
-`SpaceResponse` has no `bookings` field, so the bookings of a space are never loaded or sent.
+The relation goes one way: a `Booking` points to its `Space`, and `Space` has no list of bookings, so they are never loaded or sent with a space.
 
 ### Errors
 
@@ -155,7 +155,7 @@ User-facing messages are in French.
 
 ## Security
 
-- **Current user:** `PlaceholderAuthenticationFilter` signs every request in as `app.placeholder-user-id` with `app.placeholder-user-role`. If the role is empty, the request stays anonymous (guest). A user already set, e.g. by `@WithMockUser` in tests, is kept. The auth-service will replace this filter with a JWT check. `CurrentUserProvider` gives the same id to code that needs it (bookings).
+- **Current user:** `PlaceholderAuthenticationFilter` signs every request in as `app.placeholder-user-id` with `app.placeholder-user-role`. If the role is empty, the request stays anonymous (guest). A user already set, e.g. by `@WithMockUser` in tests, is kept. The auth-service will replace this filter with a JWT check. Code that needs the current user (bookings) asks `CurrentUserProvider`; its implementation `SecurityContextUserProvider` reads the id from the security context, so it keeps working when the JWT filter replaces the placeholder.
 - **URL rules:** `GET /api/spaces/**` is open to everyone, including guests. Everything else needs a user (401 otherwise).
 - **Role rules:** creating, updating and deleting a space need `ADMIN` (403 otherwise).
 - **CORS:** origins from `app.cors.allowed-origins`; methods `GET POST PUT DELETE OPTIONS`; headers `Content-Type` and `Authorization` (for the future JWT).
@@ -222,11 +222,14 @@ erDiagram
 
 | Kind | Annotation | Database | Files |
 | --- | --- | --- | --- |
-| Entity validation | none (plain Validator) | no | `entity/SpaceValidationTest` |
+| Request validation | none (plain Validator) | no | `dto/SpaceRequestValidationTest` |
+| Current user | none (security context set by hand) | no | `security/SecurityContextUserProviderTest` |
 | Service | `@ExtendWith(MockitoExtension.class)`, repository mocked | no | `service/SpaceServiceTest` |
 | Repository | `@DataJpaTest` on the real MariaDB, rolled back | yes | `repository/SpaceRepositoryTest` |
 | Controller | `@WebMvcTest` + `SecurityConfig`, service mocked, `@WithMockUser` for the role | no | `controller/*Test`, `security/CorsConfigTest` |
 | Whole app | `@SpringBootTest` (+ MockMvc), rolled back | yes | `GestionCoworkingApplicationTests`, `integration/SpaceApiIntegrationTest` |
+
+`SpaceFixtures` gives valid test spaces (`validSpace()`, `space(name, type)`), not saved.
 
 Every test is described in `docs/test-lists/gestion-coworking-back-end-tests.md`, with the test method names in `…-back-end-test-functions.md`.
 

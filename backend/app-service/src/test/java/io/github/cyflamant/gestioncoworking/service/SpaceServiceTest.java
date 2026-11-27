@@ -1,7 +1,8 @@
 package io.github.cyflamant.gestioncoworking.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static io.github.cyflamant.gestioncoworking.SpaceFixtures.validSpace;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -11,17 +12,17 @@ import static org.mockito.Mockito.when;
 import io.github.cyflamant.gestioncoworking.entity.Space;
 import io.github.cyflamant.gestioncoworking.repository.SpaceRepository;
 
-import java.util.List;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
-
-import java.math.BigDecimal;
 
 @ExtendWith(MockitoExtension.class)
 class SpaceServiceTest {
@@ -160,17 +161,6 @@ class SpaceServiceTest {
         assertThatThrownBy(() -> spaceService.delete(1))
                 .isInstanceOf(SpaceHasBookingsException.class)
                 .hasMessage("Impossible de supprimer l'espace 1 : il a des réservations");
-    }
-
-    private Space validSpace() {
-        Space space = new Space();
-        space.setName("Bureau 1");
-        space.setType(Space.SpaceType.OFFICE);
-        space.setHourRate(new BigDecimal("10.00"));
-        space.setHalfDayRate(new BigDecimal("35.00"));
-        space.setDayRate(new BigDecimal("60.00"));
-        space.setMonthRate(new BigDecimal("900.00"));
-        return space;
     }
 
     @Test

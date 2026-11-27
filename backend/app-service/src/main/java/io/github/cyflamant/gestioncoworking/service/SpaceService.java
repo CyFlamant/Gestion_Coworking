@@ -41,13 +41,7 @@ public class SpaceService {
 
     public Space update(Integer id, Space changes) {
         Space existing = findById(id);
-        existing.setName(changes.getName());
-        existing.setType(changes.getType());
-        existing.setHourRate(changes.getHourRate());
-        existing.setHalfDayRate(changes.getHalfDayRate());
-        existing.setDayRate(changes.getDayRate());
-        existing.setMonthRate(changes.getMonthRate());
-
+        existing.updateFrom(changes);
         return spaceRepository.save(existing);
     }
 

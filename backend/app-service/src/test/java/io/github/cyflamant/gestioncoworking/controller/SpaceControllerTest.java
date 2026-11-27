@@ -1,5 +1,8 @@
 package io.github.cyflamant.gestioncoworking.controller;
 
+import static io.github.cyflamant.gestioncoworking.SpaceFixtures.validSpace;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -7,24 +10,20 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
-import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
 import io.github.cyflamant.gestioncoworking.security.SecurityConfig;
-import io.github.cyflamant.gestioncoworking.service.SpaceHasBookingsException;
 import io.github.cyflamant.gestioncoworking.service.InvalidSlotException;
+import io.github.cyflamant.gestioncoworking.service.SpaceHasBookingsException;
 import io.github.cyflamant.gestioncoworking.service.SpaceNotFoundException;
 import io.github.cyflamant.gestioncoworking.service.SpaceService;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,11 +32,11 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.http.MediaType;
 
 @WebMvcTest(SpaceController.class)
 @Import(SecurityConfig.class)
@@ -75,25 +74,6 @@ class SpaceControllerTest {
         mockMvc.perform(get("/api/spaces/99"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.detail").value("Espace introuvable : 99"));
-    }
-
-    @Test
-    void findByIdDoesNotExposeBookings() throws Exception {
-        // Arrange: space 1 has a booking that points back to it (like a real JPA
-        // relation)
-        Space space = validSpace();
-        space.setId(1);
-        Booking booking = new Booking();
-        booking.setSpace(space);
-        space.getBookings().add(booking);
-        when(spaceService.findById(1)).thenReturn(space);
-
-        // Act + Assert: the JSON has no bookings field
-        mockMvc.perform(get("/api/spaces/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.bookings").doesNotExist());
-
     }
 
     @Test
@@ -295,17 +275,6 @@ class SpaceControllerTest {
                 .andExpect(jsonPath("$.detail").value("Accès refusé"));
 
         verify(spaceService, never()).delete(any());
-    }
-
-    private Space validSpace() {
-        Space space = new Space();
-        space.setName("Bureau 1");
-        space.setType(Space.SpaceType.OFFICE);
-        space.setHourRate(new BigDecimal("10.00"));
-        space.setHalfDayRate(new BigDecimal("35.00"));
-        space.setDayRate(new BigDecimal("60.00"));
-        space.setMonthRate(new BigDecimal("900.00"));
-        return space;
     }
 
     @Test

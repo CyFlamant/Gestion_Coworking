@@ -8,17 +8,19 @@ Run them with `.\mvnw.cmd test` in `backend/app-service` (MariaDB must be runnin
 
 ## A. Space data rules
 
-**1. Negative rate**: a space with a negative hourly rate.
-- Expected: validation rejects the space.
+The rules are on the request sent to create or update a space (`SpaceRequest`).
 
-**2. Zero rate**: a space with a rate of 0 €.
-- Expected: validation accepts the space (a free formula).
+**1. Negative rate**: a request with a negative hourly rate.
+- Expected: validation rejects the request.
 
-**3. Missing type**: a space without a type.
+**2. Zero rate**: a request with a rate of 0 €.
+- Expected: validation accepts the request (a free formula).
+
+**3. Missing type**: a request without a type.
 - Expected: validation rejects it with the message "Champ obligatoire".
 
-**4. Negative monthly rate**: a space with a negative monthly rate.
-- Expected: validation rejects the space.
+**4. Negative monthly rate**: a request with a negative monthly rate.
+- Expected: validation rejects the request.
 
 ## B. Space business logic
 
@@ -93,82 +95,82 @@ The requests are made by an admin, unless stated otherwise.
 **25. Read an unknown space**: `GET /api/spaces/99`.
 - Expected: 404 with "Espace introuvable : 99".
 
-**26. Bookings stay hidden**: reading a space that has bookings.
-- Expected: 200 without a bookings field.
-
-**27. Create a space**: `POST /api/spaces` with a valid space.
+**26. Create a space**: `POST /api/spaces` with a valid space.
 - Expected: 201 with the created space.
 
-**28. Blank name**: creating a space with an empty name.
+**27. Blank name**: creating a space with an empty name.
 - Expected: 400 with "Champ obligatoire" on the name field.
 
-**29. Id in the request**: creating a space with an id in the body.
+**28. Id in the request**: creating a space with an id in the body.
 - Expected: 201; the id sent is ignored.
 
-**30. Unknown type**: creating a space with a type that doesn't exist.
+**29. Unknown type**: creating a space with a type that doesn't exist.
 - Expected: 400 with "Valeur invalide" on the type field.
 
-**31. Broken JSON**: a request body that isn't valid JSON.
+**30. Broken JSON**: a request body that isn't valid JSON.
 - Expected: 400 with "Format JSON invalide".
 
-**32. List the spaces**: `GET /api/spaces`.
+**31. List the spaces**: `GET /api/spaces`.
 - Expected: 200 with all spaces.
 
-**33. Update a space**: `PUT /api/spaces/1`.
+**32. Update a space**: `PUT /api/spaces/1`.
 - Expected: 200 with the updated space.
 
-**34. Update an unknown space**: `PUT /api/spaces/99`.
+**33. Update an unknown space**: `PUT /api/spaces/99`.
 - Expected: 404.
 
-**35. Delete a space**: `DELETE /api/spaces/1`.
+**34. Delete a space**: `DELETE /api/spaces/1`.
 - Expected: 204.
 
-**36. Delete an unknown space**: `DELETE /api/spaces/99`.
+**35. Delete an unknown space**: `DELETE /api/spaces/99`.
 - Expected: 404.
 
-**37. Delete a space that has bookings**.
+**36. Delete a space that has bookings**.
 - Expected: 409 with "Impossible de supprimer l'espace 1 : il a des réservations".
 
-**38. A client creates a space**.
+**37. A client creates a space**.
 - Expected: 403 with "Accès refusé".
 
-**39. A client lists the spaces**.
+**38. A client lists the spaces**.
 - Expected: 200 (reading is open to everyone).
 
-**40. A client updates a space**.
+**39. A client updates a space**.
 - Expected: 403 with "Accès refusé".
 
-**41. A client deletes a space**.
+**40. A client deletes a space**.
 - Expected: 403.
 
-**42. Search free spaces**: `GET /api/spaces/available?start=2026-12-01T09:00:00&end=2026-12-01T13:00:00&type=OFFICE`.
+**41. Search free spaces**: `GET /api/spaces/available?start=2026-12-01T09:00:00&end=2026-12-01T13:00:00&type=OFFICE`.
 - Expected: 200 with the free spaces found for that slot and type.
 
-**43. A guest searches free spaces**: no user, no type.
+**42. A guest searches free spaces**: no user, no type.
 - Expected: 200 (searching is open to everyone); every type is searched.
 
-**44. Search without start**: only `end` is given.
+**43. Search without start**: only `end` is given.
 - Expected: 400 with "Champ obligatoire" on start.
 
-**45. Search with a bad date**: `start=demain`.
+**44. Search with a bad date**: `start=demain`.
 - Expected: 400 with "Valeur invalide" on start.
 
-**46. Search with an unknown type**: `type=CAVE`.
+**45. Search with an unknown type**: `type=CAVE`.
 - Expected: 400 with "Valeur invalide" on type.
 
-**47. Search with the end before the start**: the service refuses the slot.
+**46. Search with the end before the start**: the service refuses the slot.
 - Expected: 400 with "La fin doit être après le début" on end.
 
 ## E. Current user and security
 
-**48. Who am I**: `GET /api/me` as a signed-in admin.
+**47. Who am I**: `GET /api/me` as a signed-in admin.
 - Expected: 200 with the user's id and role.
 
-**49. Who am I, as a guest**: `GET /api/me` with no user.
+**48. Who am I, as a guest**: `GET /api/me` with no user.
 - Expected: 401.
 
-**50. Placeholder user**: until the auth-service exists, the current user is fixed in the configuration.
-- Expected: the provider returns the configured user id.
+**49. Current user**: a user is signed in (by the placeholder filter until the auth-service exists).
+- Expected: the provider returns that user's id.
+
+**50. No signed-in user**: the provider is asked for the current user while nobody is signed in.
+- Expected: an error (protected endpoints answer 401 before this can happen).
 
 **51. Allowed front-end origin**: a browser preflight from the React development server (`http://localhost:5173`).
 - Expected: 200 with that origin allowed, without being signed in.

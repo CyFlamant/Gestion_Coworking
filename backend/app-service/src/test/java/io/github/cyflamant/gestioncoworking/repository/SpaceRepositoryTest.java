@@ -1,13 +1,16 @@
 package io.github.cyflamant.gestioncoworking.repository;
 
+import static io.github.cyflamant.gestioncoworking.SpaceFixtures.space;
+import static io.github.cyflamant.gestioncoworking.SpaceFixtures.validSpace;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.github.cyflamant.gestioncoworking.entity.Space;
 import io.github.cyflamant.gestioncoworking.entity.Booking;
-import java.math.BigDecimal;
+import io.github.cyflamant.gestioncoworking.entity.Space;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -25,13 +28,7 @@ class SpaceRepositoryTest {
 
     @Test
     void savedSpaceCanBeFoundById() {
-        Space space = new Space();
-        space.setName("Bureau 1");
-        space.setType(Space.SpaceType.OFFICE);
-        space.setHourRate(new BigDecimal("10.00"));
-        space.setHalfDayRate(new BigDecimal("35.00"));
-        space.setDayRate(new BigDecimal("60.00"));
-        space.setMonthRate(new BigDecimal("900.00"));
+        Space space = validSpace();
 
         Space saved = spaceRepository.saveAndFlush(space); // INSERT runs now
         entityManager.clear(); // forget cached objects
@@ -119,14 +116,7 @@ class SpaceRepositoryTest {
     }
 
     private Space persistSpace(String name, Space.SpaceType type) {
-        Space space = new Space();
-        space.setName(name);
-        space.setType(type);
-        space.setHourRate(new BigDecimal("10.00"));
-        space.setHalfDayRate(new BigDecimal("35.00"));
-        space.setDayRate(new BigDecimal("60.00"));
-        space.setMonthRate(new BigDecimal("900.00"));
-        return entityManager.persist(space);
+        return entityManager.persist(space(name, type));
     }
 
     private void persistBooking(Space space, LocalDateTime start, LocalDateTime end) {

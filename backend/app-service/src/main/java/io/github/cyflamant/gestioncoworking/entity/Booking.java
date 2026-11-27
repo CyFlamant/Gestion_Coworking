@@ -1,8 +1,3 @@
-/**
- *
- * @author CFlamant
- */
-
 package io.github.cyflamant.gestioncoworking.entity;
 
 import jakarta.persistence.Column;
@@ -21,6 +16,11 @@ import java.util.UUID;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+/**
+ * A booking of a space by a user (the user id comes from the auth-service).
+ *
+ * @author CFlamant
+ */
 @Entity
 @Table(name = "bookings")
 public class Booking {

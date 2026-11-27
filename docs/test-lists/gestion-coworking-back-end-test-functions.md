@@ -4,10 +4,10 @@ Test number and title from `gestion-coworking-back-end-tests.md`, and the Java t
 
 | # | Test | Function (file) |
 |---|---|---|
-| 1 | Negative rate | `negativeRateIsRejected` (`entity/SpaceValidationTest.java`) |
-| 2 | Zero rate | `zeroRateIsAccepted` (`entity/SpaceValidationTest.java`) |
-| 3 | Missing type | `missingTypeIsRejected` (`entity/SpaceValidationTest.java`) |
-| 4 | Negative monthly rate | `negativeMonthRateIsRejected` (`entity/SpaceValidationTest.java`) |
+| 1 | Negative rate | `negativeRateIsRejected` (`dto/SpaceRequestValidationTest.java`) |
+| 2 | Zero rate | `zeroRateIsAccepted` (`dto/SpaceRequestValidationTest.java`) |
+| 3 | Missing type | `missingTypeIsRejected` (`dto/SpaceRequestValidationTest.java`) |
+| 4 | Negative monthly rate | `negativeMonthRateIsRejected` (`dto/SpaceRequestValidationTest.java`) |
 | 5 | Read an unknown space | `findByIdThrowsWhenSpaceDoesNotExist` (`service/SpaceServiceTest.java`) |
 | 6 | Read a space | `findByIdReturnsSpaceWhenItExists` (`service/SpaceServiceTest.java`) |
 | 7 | Create a space | `createSavesAndReturnsSpace` (`service/SpaceServiceTest.java`) |
@@ -29,31 +29,31 @@ Test number and title from `gestion-coworking-back-end-tests.md`, and the Java t
 | 23 | No type | `findAvailableReturnsEveryTypeWithoutType` (`repository/SpaceRepositoryTest.java`) |
 | 24 | Read a space | `findByIdReturnsSpace` (`controller/SpaceControllerTest.java`) |
 | 25 | Read an unknown space | `findByIdReturns404WhenSpaceDoesNotExist` (`controller/SpaceControllerTest.java`) |
-| 26 | Bookings stay hidden | `findByIdDoesNotExposeBookings` (`controller/SpaceControllerTest.java`) |
-| 27 | Create a space | `createReturns201WithCreatedSpace` (`controller/SpaceControllerTest.java`) |
-| 28 | Blank name | `createReturns400WhenNameIsBlank` (`controller/SpaceControllerTest.java`) |
-| 29 | Id in the request | `createIgnoresIdInBody` (`controller/SpaceControllerTest.java`) |
-| 30 | Unknown type | `createReturns400WhenTypeIsUnknown` (`controller/SpaceControllerTest.java`) |
-| 31 | Broken JSON | `createReturns400WhenJsonIsMalformed` (`controller/SpaceControllerTest.java`) |
-| 32 | List the spaces | `findAllReturnsAllSpaces` (`controller/SpaceControllerTest.java`) |
-| 33 | Update a space | `updateReturnsUpdatedSpace` (`controller/SpaceControllerTest.java`) |
-| 34 | Update an unknown space | `updateReturns404WhenSpaceDoesNotExist` (`controller/SpaceControllerTest.java`) |
-| 35 | Delete a space | `deleteReturns204` (`controller/SpaceControllerTest.java`) |
-| 36 | Delete an unknown space | `deleteReturns404WhenSpaceDoesNotExist` (`controller/SpaceControllerTest.java`) |
-| 37 | Delete a space that has bookings | `deleteReturns409WhenSpaceHasBookings` (`controller/SpaceControllerTest.java`) |
-| 38 | A client creates a space | `createReturns403ForClient` (`controller/SpaceControllerTest.java`) |
-| 39 | A client lists the spaces | `findAllIsAllowedForClient` (`controller/SpaceControllerTest.java`) |
-| 40 | A client updates a space | `updateReturns403ForClient` (`controller/SpaceControllerTest.java`) |
-| 41 | A client deletes a space | `deleteReturns403ForClient` (`controller/SpaceControllerTest.java`) |
-| 42 | Search free spaces | `findAvailableReturnsFreeSpaces` (`controller/SpaceControllerTest.java`) |
-| 43 | A guest searches free spaces | `findAvailableIsAllowedForGuestWithoutType` (`controller/SpaceControllerTest.java`) |
-| 44 | Search without start | `findAvailableReturns400WhenStartIsMissing` (`controller/SpaceControllerTest.java`) |
-| 45 | Search with a bad date | `findAvailableReturns400WhenDateIsInvalid` (`controller/SpaceControllerTest.java`) |
-| 46 | Search with an unknown type | `findAvailableReturns400WhenTypeIsUnknown` (`controller/SpaceControllerTest.java`) |
-| 47 | Search with the end before the start | `findAvailableReturns400WhenEndIsNotAfterStart` (`controller/SpaceControllerTest.java`) |
-| 48 | Who am I | `meReturnsIdAndRole` (`controller/MeControllerTest.java`) |
-| 49 | Who am I, as a guest | `meReturns401ForGuest` (`controller/MeControllerTest.java`) |
-| 50 | Placeholder user | `returnsConfiguredUserId` (`security/PlaceholderUserProviderTest.java`) |
+| 26 | Create a space | `createReturns201WithCreatedSpace` (`controller/SpaceControllerTest.java`) |
+| 27 | Blank name | `createReturns400WhenNameIsBlank` (`controller/SpaceControllerTest.java`) |
+| 28 | Id in the request | `createIgnoresIdInBody` (`controller/SpaceControllerTest.java`) |
+| 29 | Unknown type | `createReturns400WhenTypeIsUnknown` (`controller/SpaceControllerTest.java`) |
+| 30 | Broken JSON | `createReturns400WhenJsonIsMalformed` (`controller/SpaceControllerTest.java`) |
+| 31 | List the spaces | `findAllReturnsAllSpaces` (`controller/SpaceControllerTest.java`) |
+| 32 | Update a space | `updateReturnsUpdatedSpace` (`controller/SpaceControllerTest.java`) |
+| 33 | Update an unknown space | `updateReturns404WhenSpaceDoesNotExist` (`controller/SpaceControllerTest.java`) |
+| 34 | Delete a space | `deleteReturns204` (`controller/SpaceControllerTest.java`) |
+| 35 | Delete an unknown space | `deleteReturns404WhenSpaceDoesNotExist` (`controller/SpaceControllerTest.java`) |
+| 36 | Delete a space that has bookings | `deleteReturns409WhenSpaceHasBookings` (`controller/SpaceControllerTest.java`) |
+| 37 | A client creates a space | `createReturns403ForClient` (`controller/SpaceControllerTest.java`) |
+| 38 | A client lists the spaces | `findAllIsAllowedForClient` (`controller/SpaceControllerTest.java`) |
+| 39 | A client updates a space | `updateReturns403ForClient` (`controller/SpaceControllerTest.java`) |
+| 40 | A client deletes a space | `deleteReturns403ForClient` (`controller/SpaceControllerTest.java`) |
+| 41 | Search free spaces | `findAvailableReturnsFreeSpaces` (`controller/SpaceControllerTest.java`) |
+| 42 | A guest searches free spaces | `findAvailableIsAllowedForGuestWithoutType` (`controller/SpaceControllerTest.java`) |
+| 43 | Search without start | `findAvailableReturns400WhenStartIsMissing` (`controller/SpaceControllerTest.java`) |
+| 44 | Search with a bad date | `findAvailableReturns400WhenDateIsInvalid` (`controller/SpaceControllerTest.java`) |
+| 45 | Search with an unknown type | `findAvailableReturns400WhenTypeIsUnknown` (`controller/SpaceControllerTest.java`) |
+| 46 | Search with the end before the start | `findAvailableReturns400WhenEndIsNotAfterStart` (`controller/SpaceControllerTest.java`) |
+| 47 | Who am I | `meReturnsIdAndRole` (`controller/MeControllerTest.java`) |
+| 48 | Who am I, as a guest | `meReturns401ForGuest` (`controller/MeControllerTest.java`) |
+| 49 | Current user | `returnsIdOfSignedInUser` (`security/SecurityContextUserProviderTest.java`) |
+| 50 | No signed-in user | `throwsWhenNoUserIsSignedIn` (`security/SecurityContextUserProviderTest.java`) |
 | 51 | Allowed front-end origin | `preflightFromAllowedOriginSucceedsWithoutAuthentication` (`security/CorsConfigTest.java`) |
 | 52 | Former prototype address | `preflightFromRemovedPrototypeOriginIsRejected` (`security/CorsConfigTest.java`) |
 | 53 | Unknown origin | `preflightFromUnknownOriginIsRejected` (`security/CorsConfigTest.java`) |

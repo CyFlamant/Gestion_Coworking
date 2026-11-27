@@ -1,6 +1,6 @@
 # Back-end plan: spaces
 
-The app-service (`backend/app-service`) already has full space management: list, read, create, update and delete, with roles, validation and French error messages. This plan finishes the spaces part of the back end for the first deliverable: a code clean-up, a correct status for "space has bookings", and the search for free spaces. Bookings and users get their own plans later.
+The app-service (`backend/app-service`) already has full space management: list, read, create, update and delete, with roles, validation and French error messages. This plan finishes the spaces part of the back end for the first deliverable: a code clean-up, a correct status for "space has bookings", the search for free spaces, and a refactoring that prepares the code for bookings. Bookings and users get their own plans later.
 
 How the back end is built (file structure, layers, data flows, endpoints, schema) is described in `backend/app-service/README.md`.
 
@@ -21,6 +21,11 @@ Each step starts with tests where code changes, ends with all tests passing (bac
 | 3. Free-space search: back end | `GET /api/spaces/available?start=&end=&type=`, see "Free-space search" below: repository query, service, controller, errors, integration test | Done |
 | 4. Free-space search: front end | `getAvailableSpaces` in `src/lib/api.js` calls the real endpoint instead of `planned(...)`; contract test against a recorded answer; the mock refuses an end not after the start, like the back end; check Espaces disponibles and Réserver in real mode (the search works, booking itself still answers "Pas encore disponible") | Done |
 | 5. Documentation | Test lists (back end and front end), both READMEs (endpoint table: `available` exists), `to-do.md` | Done |
+| 6. Current user from Spring Security | `PlaceholderUserProvider` becomes `SecurityContextUserProvider`: it reads the user id from the security context (set by `PlaceholderAuthenticationFilter`, later by the JWT filter) instead of `app.placeholder-user-id`. Tests: the signed-in user's id; no user is an error | Done |
+| 7. One-way relation Booking → Space | Remove the unused `Space.bookings` list; the free-space search already queries `Booking.space`. The test "Bookings stay hidden" goes with it | Done |
+| 8. Validation on the request only | Remove the validation annotations from `Space` (the database constraints stay); `SpaceValidationTest` becomes `SpaceRequestValidationTest` and tests `SpaceRequest` | Done |
+| 9. Shared test data | `SpaceFixtures` (test code) replaces the copies of `validSpace()` and the space building in the repository and integration tests | Done |
+| 10. Small clean-ups | `Space.updateFrom(changes)` holds the field copy that `SpaceService.update` did by hand; import order in the tests; `@author` comments above the classes; empty generated blocks removed from `pom.xml` | Done |
 
 ## Free-space search
 
@@ -55,6 +60,13 @@ Tests, written first (numbers follow in the test lists):
 - **End after start:** the back end refuses an empty or reversed slot, which the mock does not check. The mock gets the same check in step 4 so that both modes answer the same way.
 - **No new migration:** the foreign key on `bookings.space_id` already gives an index for the search; a combined index on (`space_id`, `start_date_time`) can wait until there are many bookings.
 - **Migration names:** `V1__init.sql` to `V3__init.sql` keep their names. Flyway has already applied them, and renaming them would break existing databases.
+
+## Refactoring (steps 6 to 10)
+
+Done before the bookings plan so that bookings start from the same patterns: the current user taken from Spring Security, entities with one-way relations, validation on the request records, shared test data. No change in what the API answers.
+
+- **Step 10, field copy:** the copy goes on the entity (`Space.updateFrom`), not on `SpaceRequest`, so the service keeps working with entities only and never sees the HTTP records.
+- **`Booking` keeps its validation annotations** for now: it has no request record yet. The bookings plan moves them to its request record, as in step 8.
 
 ## Out of scope (later)
 

@@ -7,20 +7,15 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
+ * A space that can be booked (open-space seat, office or meeting room), with its rates.
+ * The values are validated on the request (SpaceRequest); the database constraints are the last safety net.
  *
  * @author CFlamant
  */
-
 @Entity
 @Table(name = "spaces")
 public class Space {
@@ -34,36 +29,33 @@ public class Space {
     private Integer id;
 
     @Column(name = "type")
-    @NotNull(message = "Champ obligatoire")
     @Enumerated(EnumType.STRING)
     private SpaceType type;
 
     @Column(name = "hour_rate", precision = 6, scale = 2)
-    @NotNull(message = "Champ obligatoire")
-    @PositiveOrZero(message = "Le tarif ne peut pas être négatif")
     private BigDecimal hourRate;
 
     @Column(name = "half_day_rate", precision = 6, scale = 2)
-    @NotNull(message = "Champ obligatoire")
-    @PositiveOrZero(message = "Le tarif ne peut pas être négatif")
     private BigDecimal halfDayRate;
 
     @Column(name = "day_rate", precision = 6, scale = 2)
-    @NotNull(message = "Champ obligatoire")
-    @PositiveOrZero(message = "Le tarif ne peut pas être négatif")
     private BigDecimal dayRate;
 
     @Column(name = "month_rate", precision = 8, scale = 2)
-    @NotNull(message = "Champ obligatoire")
-    @PositiveOrZero(message = "Le tarif ne peut pas être négatif")
     private BigDecimal monthRate;
 
     @Column(name = "name")
-    @NotBlank(message = "Champ obligatoire")
     private String name;
 
-    @OneToMany(mappedBy = "space")
-    private List<Booking> bookings = new ArrayList<>();
+    // Copies everything but the id
+    public void updateFrom(Space changes) {
+        name = changes.name;
+        type = changes.type;
+        hourRate = changes.hourRate;
+        halfDayRate = changes.halfDayRate;
+        dayRate = changes.dayRate;
+        monthRate = changes.monthRate;
+    }
 
     public Integer getId() {
         return id;
@@ -103,14 +95,6 @@ public class Space {
 
     public void setDayRate(BigDecimal dayRate) {
         this.dayRate = dayRate;
-    }
-
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
     }
 
     public String getName() {
