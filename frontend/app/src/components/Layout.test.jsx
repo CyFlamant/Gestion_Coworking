@@ -39,14 +39,16 @@ function SavesAndLeaves() {
   );
 }
 
-function renderLayout() {
+function renderLayout(path = "/") {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<p>Contenu de la page</p>} />
           <Route path="/depart" element={<SavesAndLeaves />} />
           <Route path="/suivante" element={<p>Page suivante</p>} />
+          <Route path="/contact" element={<p>Page contact</p>} />
+          <Route path="/inscription" element={<p>Page inscription</p>} />
         </Route>
       </Routes>
     </MemoryRouter>,
@@ -118,6 +120,26 @@ describe("Layout", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Confirmer" }));
     expect(await screen.findByText("Page suivante")).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("Réservation confirmée.");
+  });
+
+  it("closes the mobile menu when the page changes", async () => {
+    getCurrentUser.mockResolvedValue(null);
+    renderLayout();
+    const menu = await screen.findByRole("button", { name: "Menu" });
+    fireEvent.click(menu);
+    expect(menu).toHaveAttribute("aria-expanded", "true");
+    fireEvent.click(screen.getByRole("link", { name: "Contact" })); // a footer link, not a menu link
+    expect(await screen.findByText("Page contact")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Menu" })).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("marks the sign-in link as current on the sign-up page too", async () => {
+    getCurrentUser.mockResolvedValue(null);
+    renderLayout("/inscription");
+    expect(await screen.findByRole("link", { name: "Connexion / Inscription" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   });
 
   it("signs out and says so on the next page", async () => {

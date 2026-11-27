@@ -1,6 +1,6 @@
 // Page shell: user bar, header with role-based navigation, footer. The current page renders in <Outlet />.
 import { useEffect, useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router";
+import { Link, Outlet, useLocation } from "react-router";
 import { logout } from "../lib/api.js";
 import { getCurrentUser, roleOf } from "../lib/auth.js";
 import { brand } from "../lib/brand.js";
@@ -11,10 +11,11 @@ import DevBar from "./DevBar.jsx";
 import FlashMessage from "./FlashMessage.jsx";
 
 const YEAR = new Date().getFullYear();
+// also: other addresses where the link is marked as the current page.
 const NAV = {
   GUEST: [
     { to: "/espaces", label: "nav.spaces" },
-    { to: "/connexion", label: "nav.signIn" },
+    { to: "/connexion", label: "nav.signIn", also: ["/inscription"] },
   ],
   CLIENT: [
     { to: "/reserver", label: "nav.book" },
@@ -29,8 +30,10 @@ const NAV = {
 export default function Layout() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  // The page (location.key) on which the mobile menu was opened: any page change closes it.
+  const [menuOpenOn, setMenuOpenOn] = useState(null);
+  const menuOpen = menuOpenOn === location.key;
 
   // Runs once after the first render: asks the API who is signed in.
   useEffect(() => {
@@ -77,7 +80,7 @@ export default function Layout() {
             className="btn btn--small nav-toggle"
             aria-expanded={menuOpen}
             aria-controls="site-nav"
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={() => setMenuOpenOn(menuOpen ? null : location.key)}
           >
             {t("nav.menu")}
           </button>
@@ -87,17 +90,16 @@ export default function Layout() {
             aria-label={t("nav.main")}
           >
             <ul className="site-nav__list">
-              {NAV[role].map((item) => (
-                <li key={item.to}>
-                  <NavLink
-                    className="site-nav__link"
-                    to={item.to}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {t(item.label)}
-                  </NavLink>
-                </li>
-              ))}
+              {NAV[role].map((item) => {
+                const current = location.pathname === item.to || item.also?.includes(location.pathname);
+                return (
+                  <li key={item.to}>
+                    <Link className="site-nav__link" to={item.to} aria-current={current ? "page" : undefined}>
+                      {t(item.label)}
+                    </Link>
+                  </li>
+                );
+              })}
               {user && (
                 <li>
                   <button

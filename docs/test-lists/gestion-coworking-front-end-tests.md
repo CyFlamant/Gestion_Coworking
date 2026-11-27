@@ -6,7 +6,7 @@ The tests don't use the prototype's demo data (`lib/mock/db.js`). Each one gives
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-110 tests.
+112 tests.
 
 ## A. Prices and opening hours
 
@@ -376,3 +376,13 @@ Some confirmations are shown on the next page: "Bienvenue !" after signing in, "
 
 **110. Sign out**: a signed-in client clicks "Déconnexion".
 - Expected: the home page is loaded, with "Vous êtes déconnecté." saved for it.
+
+## P. Navigation menu
+
+More checks on the page frame (section B).
+
+**111. Menu closes on page change**: on a phone, the menu is opened, then a footer link is followed.
+- Expected: the next page is shown with the menu closed.
+
+**112. Sign-up page**: a guest is on the Inscription page.
+- Expected: the "Connexion / Inscription" link is marked as the current page.

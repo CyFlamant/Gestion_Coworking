@@ -114,5 +114,7 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 108 | Shown once | `FlashMessage > shows it only once` (`components/FlashMessage.test.jsx`) |
 | 109 | Page change inside the app | `Layout > shows a message saved by the previous page` (`components/Layout.test.jsx`) |
 | 110 | Sign out | `Layout > signs out and says so on the next page` (`components/Layout.test.jsx`) |
+| 111 | Menu closes on page change | `Layout > closes the mobile menu when the page changes` (`components/Layout.test.jsx`) |
+| 112 | Sign-up page | `Layout > marks the sign-in link as current on the sign-up page too` (`components/Layout.test.jsx`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.
