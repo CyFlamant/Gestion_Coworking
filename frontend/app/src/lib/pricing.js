@@ -1,4 +1,4 @@
-// Booking ranges and prices. Pure functions: candidates for unit tests once ported (and for the backend price rule).
+// Booking ranges and prices. Pure functions, tested in pricing.test.js; the backend will need the same price rule.
 import { OPENING_HOURS } from './config.js';
 import { addDays, addMonths, atHour, sameDay, startOfDay } from './dates.js';
 

@@ -15,7 +15,7 @@ function write(area, key, value) {
     if (value == null) window[area].removeItem(key);
     else window[area].setItem(key, JSON.stringify(value));
   } catch {
-    // Ignored: the prototype still works for the current page.
+    // Ignored: the app still works for the current page.
   }
 }
 

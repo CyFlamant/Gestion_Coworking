@@ -1,13 +1,13 @@
 import { readLocal, writeLocal } from './storage.js';
 
-// 'mock' answers every request in the browser (js/mock/); 'real' calls the Spring Boot services.
+// 'mock' answers every request in the browser (lib/mock/); 'real' calls the Spring Boot services.
 export const API_MODE = 'mock';
 export const BASE_URL = 'http://localhost:8080'; // app-service
 export const AUTH_BASE_URL = 'http://localhost:8081'; // auth-service (planned)
 
 const API_MODE_KEY = 'proto.apiMode';
 
-// The prototype dev bar can override API_MODE without editing this file.
+// The dev bar (development only) can override API_MODE without editing this file.
 export function getApiMode() {
   return readLocal(API_MODE_KEY) ?? API_MODE;
 }
