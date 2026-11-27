@@ -67,12 +67,13 @@ function spaceFromBody(body) {
 
 on('GET', /^\/api\/spaces$/, () => respond(200, getDb().spaces.map(spaceResponse)));
 
-// planned: search for available spaces (spec: "Recherche d'espaces disponibles par date/heure et type")
+// Search for available spaces (spec: "Recherche d'espaces disponibles par date/heure et type")
 on('GET', /^\/api\/spaces\/available$/, ({ query }) => {
   const start = query.get('start');
   const end = query.get('end');
   if (!start || !end) return invalid({ [start ? 'end' : 'start']: 'Champ obligatoire' });
   const [from, to] = [parseLocal(start), parseLocal(end)];
+  if (to <= from) return invalid({ end: 'La fin doit être après le début' }); // InvalidSlotException
   const type = query.get('type');
   const { spaces, bookings } = getDb();
   const busy = new Set(

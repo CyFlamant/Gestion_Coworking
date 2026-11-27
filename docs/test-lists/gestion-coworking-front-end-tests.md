@@ -6,7 +6,7 @@ The tests don't use the demo data of the mock (`lib/mock/db.js`). Each one gives
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-128 tests.
+131 tests.
 
 ## A. Prices and opening hours
 
@@ -167,7 +167,7 @@ Shared by the search, booking and admin pages. The examples start on Tuesday 17 
 **47. Client books**: a client clicks "Réserver" on a free space.
 - Expected: the booking page opens, with the space and the slot remembered.
 
-**48. Search not available**: the search fails (real mode: the endpoint doesn't exist yet).
+**48. Search not available**: the search fails (e.g. the server cannot be reached).
 - Expected: the message is shown, and every space is shown as free.
 
 **49. Spaces can't be loaded**: the API fails.
@@ -438,11 +438,24 @@ The functions that call the app-service, in real mode. Each test gives them an a
 **125. Space with bookings**: an admin deletes a space that has bookings (409).
 - Expected: an error with the back end's message, "Impossible de supprimer l'espace 53 : il a des réservations".
 
-**126. Server unreachable**: the back end is not running.
+**126. Free-space search**: the free spaces of a slot are searched, with a type.
+- Expected: the start, end and type are sent in the address; the free spaces come back with their rates as numbers.
+
+**127. Invalid search slot**: the back end refuses a slot whose end is not after its start (400).
+- Expected: an error with "Données invalides" and "La fin doit être après le début" on the end.
+
+**128. Server unreachable**: the back end is not running.
 - Expected: an error with "Impossible de joindre le serveur."
 
-**127. Signed-in user**: `/api/me` answers with the user's id and role.
+**129. Signed-in user**: `/api/me` answers with the user's id and role.
 - Expected: that id and role.
 
-**128. Guest**: `/api/me` answers 401.
+**130. Guest**: `/api/me` answers 401.
 - Expected: no user (guest).
+
+## T. Mock answers
+
+The in-browser mock answers like the back end, so both modes behave the same way.
+
+**131. Invalid search slot (mock)**: the free spaces are searched with an end before the start.
+- Expected: an error with "Données invalides" and "La fin doit être après le début" on the end, as the back end answers.

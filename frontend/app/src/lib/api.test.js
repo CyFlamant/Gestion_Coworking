@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createSpace, deleteSpace, getSpace, getSpaces } from "./api.js";
+import { createSpace, deleteSpace, getAvailableSpaces, getSpace, getSpaces } from "./api.js";
 import { getCurrentUser } from "./auth.js";
 import { BASE_URL, setApiMode } from "./config.js";
 
@@ -20,6 +20,10 @@ const RECORDED = {
     '{"detail":"Espace introuvable : 999999","instance":"/api/spaces/999999","status":404,"title":"Not Found"}',
   hasBookings:
     '{"detail":"Impossible de supprimer l\'espace 53 : il a des réservations","instance":"/api/spaces/53","status":409,"title":"Conflict"}',
+  available:
+    '[{"id":118,"name":"Contrat test","type":"OFFICE","hourRate":4.50,"halfDayRate":14.00,"dayRate":25.00,"monthRate":250.00}]',
+  invalidSlot:
+    '{"detail":"Données invalides","instance":"/api/spaces/available","status":400,"title":"Bad Request","errors":{"end":"La fin doit être après le début"}}',
 };
 
 const SPACE = { name: "Contrat test", type: "OFFICE", hourRate: 4.5, halfDayRate: 14, dayRate: 25, monthRate: 250 };
@@ -119,6 +123,26 @@ describe("api (real back end)", () => {
     });
   });
 
+  it("searches the free spaces of a slot, with the type when given", async () => {
+    answer(200, RECORDED.available);
+    const found = await getAvailableSpaces({ start: "2026-12-01T09:00:00", end: "2026-12-01T13:00:00", type: "OFFICE" });
+    expect(found).toEqual([{ id: 118, ...SPACE }]);
+    const url = new URL(fetch.mock.calls[0][0]);
+    expect(`${url.origin}${url.pathname}`).toBe(`${BASE_URL}/api/spaces/available`);
+    expect(Object.fromEntries(url.searchParams)).toEqual({
+      start: "2026-12-01T09:00:00",
+      end: "2026-12-01T13:00:00",
+      type: "OFFICE",
+    });
+  });
+
+  it("gives the message of a search slot whose end is not after its start", async () => {
+    answer(400, RECORDED.invalidSlot);
+    const error = await errorOf(() => getAvailableSpaces({ start: "2026-12-01T13:00:00", end: "2026-12-01T09:00:00" }));
+    expect(error).toMatchObject({ status: 400, detail: "Données invalides" });
+    expect(error.errors).toEqual({ end: "La fin doit être après le début" });
+  });
+
   it("says the server cannot be reached", async () => {
     fetch.mockRejectedValue(new TypeError("Failed to fetch"));
     expect(await errorOf(() => getSpaces())).toMatchObject({
@@ -138,5 +162,15 @@ describe("getCurrentUser (real back end)", () => {
   it("returns null for a guest", async () => {
     answer(401);
     expect(await getCurrentUser()).toBeNull();
+  });
+});
+
+describe("getAvailableSpaces (mock)", () => {
+  beforeEach(() => setApiMode("mock"));
+
+  it("refuses a slot whose end is not after its start, like the back end", async () => {
+    const error = await errorOf(() => getAvailableSpaces({ start: "2026-12-01T13:00:00", end: "2026-12-01T09:00:00" }));
+    expect(error).toMatchObject({ status: 400, detail: "Données invalides" });
+    expect(error.errors).toEqual({ end: "La fin doit être après le début" });
   });
 });

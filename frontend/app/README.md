@@ -28,13 +28,13 @@ Demo accounts (mock only): `marie.dubois@exemple.be` (client) and `admin@exemple
 
 ### Backend endpoints
 
-Only `/api/me` and `/api/spaces` exist in the app-service so far. The other functions are marked *planned* in `api.js`: in real mode they fail with "Pas encore disponible" (501) until the backend has them.
+Only `/api/me`, `/api/spaces` and the free-space search exist in the app-service so far. The other functions are marked *planned* in `api.js`: in real mode they fail with "Pas encore disponible" (501) until the backend has them.
 
 | Function | Request | State |
 | --- | --- | --- |
 | `getMe` | `GET /api/me` | exists |
 | `getSpaces`, `getSpace`, `createSpace`, `updateSpace`, `deleteSpace` | `/api/spaces`, `/api/spaces/{id}` | exists |
-| `getAvailableSpaces` | `GET /api/spaces/available?start=&end=&type=` | planned |
+| `getAvailableSpaces` | `GET /api/spaces/available?start=&end=&type=` | exists |
 | `getBookings` (admin), `getMyBookings` | `GET /api/bookings`, `GET /api/bookings/me` | planned |
 | `createBooking`, `updateBooking` (admin), `deleteBooking` | `POST /api/bookings`, `PUT` / `DELETE /api/bookings/{id}` | planned |
 | `getClients` (admin) | `GET /api/users?role=CLIENT` (auth-service) | planned |

@@ -73,13 +73,13 @@ export const createSpace = (space) => request('POST', '/api/spaces', space);
 export const updateSpace = (id, space) => request('PUT', `/api/spaces/${id}`, space);
 export const deleteSpace = (id) => request('DELETE', `/api/spaces/${id}`);
 
-// ---------- app-service (planned) ----------
-
 // start/end: LocalDateTime strings; type optional.
 export const getAvailableSpaces = ({ start, end, type }) => {
   const query = new URLSearchParams({ start, end, ...(type ? { type } : {}) });
-  return planned('GET', `/api/spaces/available?${query}`);
+  return request('GET', `/api/spaces/available?${query}`);
 };
+
+// ---------- app-service (planned) ----------
 
 export const getBookings = () => planned('GET', '/api/bookings');
 export const getMyBookings = () => planned('GET', '/api/bookings/me');
