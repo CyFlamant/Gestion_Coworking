@@ -19,7 +19,7 @@ const RECORDED = {
   notFound:
     '{"detail":"Espace introuvable : 999999","instance":"/api/spaces/999999","status":404,"title":"Not Found"}',
   hasBookings:
-    '{"detail":"Impossible de supprimer l\'espace 53 : il a des réservations","instance":"/api/spaces/53","status":500,"title":"Internal Server Error"}',
+    '{"detail":"Impossible de supprimer l\'espace 53 : il a des réservations","instance":"/api/spaces/53","status":409,"title":"Conflict"}',
 };
 
 const SPACE = { name: "Contrat test", type: "OFFICE", hourRate: 4.5, halfDayRate: 14, dayRate: 25, monthRate: 250 };
@@ -112,9 +112,9 @@ describe("api (real back end)", () => {
   });
 
   it("gives the back end's message when a space with bookings cannot be deleted", async () => {
-    answer(500, RECORDED.hasBookings);
+    answer(409, RECORDED.hasBookings);
     expect(await errorOf(() => deleteSpace(53))).toMatchObject({
-      status: 500,
+      status: 409,
       detail: "Impossible de supprimer l'espace 53 : il a des réservations",
     });
   });

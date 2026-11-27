@@ -244,11 +244,11 @@ class SpaceControllerTest {
     }
 
     @Test
-    void deleteReturns500WhenSpaceHasBookings() throws Exception {
+    void deleteReturns409WhenSpaceHasBookings() throws Exception {
         doThrow(new SpaceHasBookingsException(1)).when(spaceService).delete(1);
 
         mockMvc.perform(delete("/api/spaces/1"))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.detail").value("Impossible de supprimer l'espace 1 : il a des réservations"));
     }
 

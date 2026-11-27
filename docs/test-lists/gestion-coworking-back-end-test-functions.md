@@ -32,7 +32,7 @@ Test number and title from `gestion-coworking-back-end-tests.md`, and the Java t
 | 26 | Update an unknown space | `updateReturns404WhenSpaceDoesNotExist` (`controller/SpaceControllerTest.java`) |
 | 27 | Delete a space | `deleteReturns204` (`controller/SpaceControllerTest.java`) |
 | 28 | Delete an unknown space | `deleteReturns404WhenSpaceDoesNotExist` (`controller/SpaceControllerTest.java`) |
-| 29 | Delete a space that has bookings | `deleteReturns500WhenSpaceHasBookings` (`controller/SpaceControllerTest.java`) |
+| 29 | Delete a space that has bookings | `deleteReturns409WhenSpaceHasBookings` (`controller/SpaceControllerTest.java`) |
 | 30 | A client creates a space | `createReturns403ForClient` (`controller/SpaceControllerTest.java`) |
 | 31 | A client lists the spaces | `findAllIsAllowedForClient` (`controller/SpaceControllerTest.java`) |
 | 32 | A client updates a space | `updateReturns403ForClient` (`controller/SpaceControllerTest.java`) |

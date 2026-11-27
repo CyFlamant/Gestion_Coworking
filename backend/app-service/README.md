@@ -143,7 +143,7 @@ A service or Spring exception goes up to `GlobalExceptionHandler`, which answers
 | No user (guest) on a protected URL | 401 | empty body | none |
 | Wrong role (`@PreAuthorize`) | 403 | `Accès refusé` | none |
 | `SpaceNotFoundException` | 404 | `Espace introuvable : 99` | none |
-| `SpaceHasBookingsException` | 500 (409 planned) | `Impossible de supprimer l'espace 1 : il a des réservations` | none |
+| `SpaceHasBookingsException` | 409 | `Impossible de supprimer l'espace 1 : il a des réservations` | none |
 
 User-facing messages are in French.
 
@@ -163,7 +163,7 @@ User-facing messages are in French.
 | `GET /api/spaces/{id}` | everyone | none | 200, one space; 404 |
 | `POST /api/spaces` | ADMIN | space | 201, created space; 400, 403 |
 | `PUT /api/spaces/{id}` | ADMIN | space | 200, updated space; 400, 403, 404 |
-| `DELETE /api/spaces/{id}` | ADMIN | none | 204; 403, 404, 500 if it has bookings |
+| `DELETE /api/spaces/{id}` | ADMIN | none | 204; 403, 404, 409 if it has bookings |
 | `GET /api/me` | any user | none | 200, `{ id, role }`; 401 for a guest |
 
 A space in JSON (an `id` sent in a request body is ignored):

@@ -55,7 +55,7 @@ export default function AdminSpacesPage() {
       setVersion((v) => v + 1);
     } catch (err) {
       setNotice(null);
-      setError(err.detail ?? String(err)); // e.g. 500 "… il a des réservations"
+      setError(err.detail ?? String(err)); // e.g. 409 "… il a des réservations"
     }
   }
 

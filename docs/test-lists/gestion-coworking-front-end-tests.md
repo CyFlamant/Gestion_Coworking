@@ -435,7 +435,7 @@ The functions that call the app-service, in real mode. Each test gives them an a
 **124. Space not found**: a space that does not exist is read (404).
 - Expected: an error with the back end's message, "Espace introuvable : 999999".
 
-**125. Space with bookings**: an admin deletes a space that has bookings (500).
+**125. Space with bookings**: an admin deletes a space that has bookings (409).
 - Expected: an error with the back end's message, "Impossible de supprimer l'espace 53 : il a des réservations".
 
 **126. Server unreachable**: the back end is not running.

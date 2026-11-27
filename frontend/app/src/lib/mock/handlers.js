@@ -119,8 +119,7 @@ on('DELETE', /^\/api\/spaces\/(\d+)$/, ({ params: [id] }) => {
   const space = findSpace(id);
   if (!space) return problem(404, `Espace introuvable : ${id}`);
   if (db.bookings.some((b) => b.spaceId === space.id)) {
-    // The backend currently answers 500 for this case (SpaceHasBookingsException).
-    return problem(500, `Impossible de supprimer l'espace ${id} : il a des réservations`);
+    return problem(409,`Impossible de supprimer l'espace ${id} : il a des réservations`);
   }
   db.spaces = db.spaces.filter((s) => s !== space);
   saveDb();
