@@ -1,6 +1,6 @@
 # app-service
 
-The Spring Boot back end of Gestion Coworking (Spring Boot 4.1, Java 21, MariaDB/MySQL). It manages the spaces. Bookings follow in a later plan. Users and sign-in will come from a separate auth-service; until it exists, every request runs as one fixed user.
+The Spring Boot back end of Gestion Coworking (Spring Boot 4.1, Java 21, MariaDB/MySQL). It manages the spaces and searches the free ones. Bookings follow in a later plan. Users and sign-in will come from a separate auth-service; until it exists, every request runs as one fixed user.
 
 The work in progress is described in `docs/backend-spaces-plan.md`.
 
@@ -59,12 +59,13 @@ app-service/
 │   ├── service/                    business rules
 │   │   ├── SpaceService.java
 │   │   ├── SpaceNotFoundException.java
-│   │   └── SpaceHasBookingsException.java
+│   │   ├── SpaceHasBookingsException.java
+│   │   └── InvalidSlotException.java   search slot whose end is not after its start
 │   ├── repository/                 database access (Spring Data JPA)
-│   │   └── SpaceRepository.java
+│   │   └── SpaceRepository.java        CRUD + findAvailable (free-space search query)
 │   ├── entity/                     JPA entities, mapped to the tables
 │   │   ├── Space.java
-│   │   └── Booking.java                mapped, not used by any endpoint yet
+│   │   └── Booking.java                only read by the free-space search so far
 │   └── security/                   who is calling and what they may do
 │       ├── SecurityConfig.java         filter chain, URL rules, CORS
 │       ├── PlaceholderAuthenticationFilter.java  signs every request in as the fixed user
@@ -122,6 +123,8 @@ sequenceDiagram
 
 The other space endpoints follow the same path. `GET` skips the role check, `POST` has no `findById`, and `DELETE` answers 204 with no body.
 
+The free-space search (`GET /api/spaces/available`) reads its query parameters instead of a body: Spring converts `start` and `end` to `LocalDateTime` and `type` to `SpaceType`, `SpaceService.findAvailable` checks that the end is after the start, and `SpaceRepository.findAvailable` runs one query: the spaces of that type with no booking where `booking.start < end` and `booking.end > start`. A booking that only touches the slot does not block it.
+
 ### Objects along the way
 
 ```
@@ -140,6 +143,9 @@ A service or Spring exception goes up to `GlobalExceptionHandler`, which answers
 | Invalid field (`@Valid`) | 400 | `Données invalides` | `{ "name": "Champ obligatoire" }` (first message per field) |
 | Value of the wrong type or unknown enum | 400 | `Données invalides` | `{ "type": "Valeur invalide" }` |
 | Body is not valid JSON | 400 | `Format JSON invalide` | none |
+| Missing query parameter | 400 | `Données invalides` | `{ "start": "Champ obligatoire" }` |
+| Query parameter of the wrong type (bad date, unknown type) | 400 | `Données invalides` | `{ "start": "Valeur invalide" }` |
+| `InvalidSlotException` (end not after start) | 400 | `Données invalides` | `{ "end": "La fin doit être après le début" }` |
 | No user (guest) on a protected URL | 401 | empty body | none |
 | Wrong role (`@PreAuthorize`) | 403 | `Accès refusé` | none |
 | `SpaceNotFoundException` | 404 | `Espace introuvable : 99` | none |
@@ -160,6 +166,7 @@ User-facing messages are in French.
 | Method and path | Role | Body | Answer |
 | --- | --- | --- | --- |
 | `GET /api/spaces` | everyone | none | 200, list of spaces |
+| `GET /api/spaces/available?start=&end=&type=` | everyone | none | 200, free spaces between `start` and `end` (ISO local date-times, e.g. `2026-12-01T09:00:00`), of one `type` or all; 400 |
 | `GET /api/spaces/{id}` | everyone | none | 200, one space; 404 |
 | `POST /api/spaces` | ADMIN | space | 201, created space; 400, 403 |
 | `PUT /api/spaces/{id}` | ADMIN | space | 200, updated space; 400, 403, 404 |

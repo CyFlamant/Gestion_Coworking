@@ -2,6 +2,7 @@ package io.github.cyflamant.gestioncoworking.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -19,10 +20,12 @@ import io.github.cyflamant.gestioncoworking.entity.Booking;
 import io.github.cyflamant.gestioncoworking.entity.Space;
 import io.github.cyflamant.gestioncoworking.security.SecurityConfig;
 import io.github.cyflamant.gestioncoworking.service.SpaceHasBookingsException;
+import io.github.cyflamant.gestioncoworking.service.InvalidSlotException;
 import io.github.cyflamant.gestioncoworking.service.SpaceNotFoundException;
 import io.github.cyflamant.gestioncoworking.service.SpaceService;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -31,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
@@ -302,6 +306,82 @@ class SpaceControllerTest {
         space.setDayRate(new BigDecimal("60.00"));
         space.setMonthRate(new BigDecimal("900.00"));
         return space;
+    }
+
+    @Test
+    void findAvailableReturnsFreeSpaces() throws Exception {
+        // Arrange: the service answers only for the exact slot and type of the request
+        Space space = validSpace();
+        space.setId(1);
+        when(spaceService.findAvailable(LocalDateTime.of(2026, 12, 1, 9, 0), LocalDateTime.of(2026, 12, 1, 13, 0),
+                Space.SpaceType.OFFICE)).thenReturn(List.of(space));
+
+        mockMvc.perform(get("/api/spaces/available")
+                .param("start", "2026-12-01T09:00:00")
+                .param("end", "2026-12-01T13:00:00")
+                .param("type", "OFFICE"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("Bureau 1"));
+    }
+
+    @Test
+    @WithAnonymousUser // visitors can search too
+    void findAvailableIsAllowedForGuestWithoutType() throws Exception {
+        when(spaceService.findAvailable(any(), any(), any())).thenReturn(List.of(validSpace()));
+
+        mockMvc.perform(get("/api/spaces/available")
+                .param("start", "2026-12-01T09:00:00")
+                .param("end", "2026-12-01T13:00:00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+
+        verify(spaceService).findAvailable(any(), any(), isNull()); // no type: every type
+    }
+
+    @Test
+    void findAvailableReturns400WhenStartIsMissing() throws Exception {
+        mockMvc.perform(get("/api/spaces/available")
+                .param("end", "2026-12-01T13:00:00"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Données invalides"))
+                .andExpect(jsonPath("$.errors.start").value("Champ obligatoire"));
+
+        verify(spaceService, never()).findAvailable(any(), any(), any());
+    }
+
+    @Test
+    void findAvailableReturns400WhenDateIsInvalid() throws Exception {
+        mockMvc.perform(get("/api/spaces/available")
+                .param("start", "demain")
+                .param("end", "2026-12-01T13:00:00"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Données invalides"))
+                .andExpect(jsonPath("$.errors.start").value("Valeur invalide"));
+    }
+
+    @Test
+    void findAvailableReturns400WhenTypeIsUnknown() throws Exception {
+        mockMvc.perform(get("/api/spaces/available")
+                .param("start", "2026-12-01T09:00:00")
+                .param("end", "2026-12-01T13:00:00")
+                .param("type", "CAVE"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Données invalides"))
+                .andExpect(jsonPath("$.errors.type").value("Valeur invalide"));
+    }
+
+    @Test
+    void findAvailableReturns400WhenEndIsNotAfterStart() throws Exception {
+        when(spaceService.findAvailable(any(), any(), any())).thenThrow(new InvalidSlotException());
+
+        mockMvc.perform(get("/api/spaces/available")
+                .param("start", "2026-12-01T13:00:00")
+                .param("end", "2026-12-01T09:00:00"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Données invalides"))
+                .andExpect(jsonPath("$.errors.end").value("La fin doit être après le début"));
     }
 
 }

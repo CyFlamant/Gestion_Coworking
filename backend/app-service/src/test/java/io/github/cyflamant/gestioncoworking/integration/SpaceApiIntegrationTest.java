@@ -6,6 +6,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.jayway.jsonpath.JsonPath;
+import io.github.cyflamant.gestioncoworking.entity.Booking;
+import io.github.cyflamant.gestioncoworking.entity.Space;
+import jakarta.persistence.EntityManager;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +29,9 @@ class SpaceApiIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Test
     void createdSpaceCanBeReadBack() throws Exception {
@@ -45,6 +54,41 @@ class SpaceApiIntegrationTest {
                 .andExpect(jsonPath("$.name").value("Salle intégration"))
                 .andExpect(jsonPath("$.type").value("ROOM"))
                 .andExpect(jsonPath("$.monthRate").value(1500.0));
+    }
+
+    @Test
+    void availableSearchLeavesOutBookedSpace() throws Exception {
+        // Arrange: a space booked on 1 December 2026 from 9:00 to 13:00
+        Space space = new Space();
+        space.setName("Salle réservée");
+        space.setType(Space.SpaceType.ROOM);
+        space.setHourRate(new BigDecimal("15.00"));
+        space.setHalfDayRate(new BigDecimal("50.00"));
+        space.setDayRate(new BigDecimal("90.00"));
+        space.setMonthRate(new BigDecimal("1500.00"));
+        entityManager.persist(space);
+
+        Booking booking = new Booking();
+        booking.setSpace(space);
+        booking.setUserId(UUID.fromString("00000000-0000-0000-0000-000000000001"));
+        booking.setStartDateTime(LocalDateTime.of(2026, 12, 1, 9, 0));
+        booking.setEndDateTime(LocalDateTime.of(2026, 12, 1, 13, 0));
+        entityManager.persist(booking);
+        entityManager.flush(); // INSERTs run now, in the test's transaction
+
+        // Act + Assert: not free from 10:00 to 11:00 the same day
+        mockMvc.perform(get("/api/spaces/available")
+                .param("start", "2026-12-01T10:00:00")
+                .param("end", "2026-12-01T11:00:00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.id == %s)]", space.getId()).isEmpty());
+
+        // Act + Assert: free the next day
+        mockMvc.perform(get("/api/spaces/available")
+                .param("start", "2026-12-02T10:00:00")
+                .param("end", "2026-12-02T11:00:00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.id == %s)]", space.getId()).isNotEmpty());
     }
 
 }

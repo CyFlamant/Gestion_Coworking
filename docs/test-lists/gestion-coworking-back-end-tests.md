@@ -4,7 +4,7 @@ The tests of the app-service (Spring Boot), grouped by subject. Each test checks
 
 Run them with `.\mvnw.cmd test` in `backend/app-service` (MariaDB must be running). The test function names are in `gestion-coworking-back-end-test-functions.md`; the front-end tests are in `gestion-coworking-front-end-tests.md`.
 
-42 tests.
+57 tests.
 
 ## A. Space data rules
 
@@ -52,96 +52,143 @@ Run them with `.\mvnw.cmd test` in `backend/app-service` (MariaDB must be runnin
 **14. Delete a space that has bookings**.
 - Expected: the service raises "space has bookings".
 
+**15. Search free spaces**: a slot and a type are given.
+- Expected: the service returns the spaces the repository finds for them.
+
+**16. Slot with no length**: searching with an end equal to the start.
+- Expected: the service raises "La fin doit être après le début" and runs no search.
+
+**17. Reversed slot**: searching with an end before the start.
+- Expected: the service raises "La fin doit être après le début" and runs no search.
+
 ## C. Space storage
 
-**15. Save and read back**: a space is saved in the database, then read again.
+The free-space tests search the slot of Tuesday 1 December 2026, 9:00 to 13:00. The database may hold other data, so each test only looks at its own spaces.
+
+**18. Save and read back**: a space is saved in the database, then read again.
 - Expected: the space read back has the same name, type and rates.
+
+**19. Booked space**: a space has a booking from 10:00 to 14:00.
+- Expected: it is not among the free spaces.
+
+**20. Booked another day**: a space has a booking on 2 December only.
+- Expected: it is among the free spaces.
+
+**21. Bookings that only touch the slot**: a space is booked from 8:00 to 9:00 and from 13:00 to 14:00.
+- Expected: it is among the free spaces.
+
+**22. Type filter**: a free room and a free office; the search asks for rooms.
+- Expected: only rooms are returned, the room among them, not the office.
+
+**23. No type**: a free room and a free office; the search gives no type.
+- Expected: both are returned.
 
 ## D. Spaces API (HTTP)
 
 The requests are made by an admin, unless stated otherwise.
 
-**16. Read a space**: `GET /api/spaces/1`.
+**24. Read a space**: `GET /api/spaces/1`.
 - Expected: 200 with the space's id, name, type and rates.
 
-**17. Read an unknown space**: `GET /api/spaces/99`.
+**25. Read an unknown space**: `GET /api/spaces/99`.
 - Expected: 404 with "Espace introuvable : 99".
 
-**18. Bookings stay hidden**: reading a space that has bookings.
+**26. Bookings stay hidden**: reading a space that has bookings.
 - Expected: 200 without a bookings field.
 
-**19. Create a space**: `POST /api/spaces` with a valid space.
+**27. Create a space**: `POST /api/spaces` with a valid space.
 - Expected: 201 with the created space.
 
-**20. Blank name**: creating a space with an empty name.
+**28. Blank name**: creating a space with an empty name.
 - Expected: 400 with "Champ obligatoire" on the name field.
 
-**21. Id in the request**: creating a space with an id in the body.
+**29. Id in the request**: creating a space with an id in the body.
 - Expected: 201; the id sent is ignored.
 
-**22. Unknown type**: creating a space with a type that doesn't exist.
+**30. Unknown type**: creating a space with a type that doesn't exist.
 - Expected: 400 with "Valeur invalide" on the type field.
 
-**23. Broken JSON**: a request body that isn't valid JSON.
+**31. Broken JSON**: a request body that isn't valid JSON.
 - Expected: 400 with "Format JSON invalide".
 
-**24. List the spaces**: `GET /api/spaces`.
+**32. List the spaces**: `GET /api/spaces`.
 - Expected: 200 with all spaces.
 
-**25. Update a space**: `PUT /api/spaces/1`.
+**33. Update a space**: `PUT /api/spaces/1`.
 - Expected: 200 with the updated space.
 
-**26. Update an unknown space**: `PUT /api/spaces/99`.
+**34. Update an unknown space**: `PUT /api/spaces/99`.
 - Expected: 404.
 
-**27. Delete a space**: `DELETE /api/spaces/1`.
+**35. Delete a space**: `DELETE /api/spaces/1`.
 - Expected: 204.
 
-**28. Delete an unknown space**: `DELETE /api/spaces/99`.
+**36. Delete an unknown space**: `DELETE /api/spaces/99`.
 - Expected: 404.
 
-**29. Delete a space that has bookings**.
+**37. Delete a space that has bookings**.
 - Expected: 409 with "Impossible de supprimer l'espace 1 : il a des réservations".
 
-**30. A client creates a space**.
+**38. A client creates a space**.
 - Expected: 403 with "Accès refusé".
 
-**31. A client lists the spaces**.
+**39. A client lists the spaces**.
 - Expected: 200 (reading is open to everyone).
 
-**32. A client updates a space**.
+**40. A client updates a space**.
 - Expected: 403 with "Accès refusé".
 
-**33. A client deletes a space**.
+**41. A client deletes a space**.
 - Expected: 403.
+
+**42. Search free spaces**: `GET /api/spaces/available?start=2026-12-01T09:00:00&end=2026-12-01T13:00:00&type=OFFICE`.
+- Expected: 200 with the free spaces found for that slot and type.
+
+**43. A guest searches free spaces**: no user, no type.
+- Expected: 200 (searching is open to everyone); every type is searched.
+
+**44. Search without start**: only `end` is given.
+- Expected: 400 with "Champ obligatoire" on start.
+
+**45. Search with a bad date**: `start=demain`.
+- Expected: 400 with "Valeur invalide" on start.
+
+**46. Search with an unknown type**: `type=CAVE`.
+- Expected: 400 with "Valeur invalide" on type.
+
+**47. Search with the end before the start**: the service refuses the slot.
+- Expected: 400 with "La fin doit être après le début" on end.
 
 ## E. Current user and security
 
-**34. Who am I**: `GET /api/me` as a signed-in admin.
+**48. Who am I**: `GET /api/me` as a signed-in admin.
 - Expected: 200 with the user's id and role.
 
-**35. Who am I, as a guest**: `GET /api/me` with no user.
+**49. Who am I, as a guest**: `GET /api/me` with no user.
 - Expected: 401.
 
-**36. Placeholder user**: until the auth-service exists, the current user is fixed in the configuration.
+**50. Placeholder user**: until the auth-service exists, the current user is fixed in the configuration.
 - Expected: the provider returns the configured user id.
 
-**37. Allowed front-end origin**: a browser preflight from the React development server (`http://localhost:5173`).
+**51. Allowed front-end origin**: a browser preflight from the React development server (`http://localhost:5173`).
 - Expected: 200 with that origin allowed, without being signed in.
 
-**38. Former prototype address**: a preflight from `http://localhost:5500`, the address of the removed HTML prototype.
+**52. Former prototype address**: a preflight from `http://localhost:5500`, the address of the removed HTML prototype.
 - Expected: 403, with no origin allowed.
 
-**39. Unknown origin**: a preflight from another site.
+**53. Unknown origin**: a preflight from another site.
 - Expected: 403, with no origin allowed.
 
-**40. Delete from the front end**: a preflight for a `DELETE` request.
+**54. Delete from the front end**: a preflight for a `DELETE` request.
 - Expected: 200 (the method is allowed).
 
 ## F. Whole application
 
-**41. Application starts**: the whole Spring context with the database.
+**55. Application starts**: the whole Spring context with the database.
 - Expected: it starts without error.
 
-**42. Create then read back through the API**: a space is created with `POST`, then read with `GET`, against the real database.
+**56. Create then read back through the API**: a space is created with `POST`, then read with `GET`, against the real database.
 - Expected: the space read back matches the one created.
+
+**57. Free-space search against the database**: a space is booked on 1 December 2026 from 9:00 to 13:00.
+- Expected: it is missing from the free spaces from 10:00 to 11:00 that day, and present for the same hours the next day.

@@ -3,6 +3,7 @@ package io.github.cyflamant.gestioncoworking.service;
 import io.github.cyflamant.gestioncoworking.entity.Space;
 import io.github.cyflamant.gestioncoworking.repository.SpaceRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,6 +29,14 @@ public class SpaceService {
 
     public List<Space> findAll() {
         return spaceRepository.findAll();
+    }
+
+    // type: null for every type
+    public List<Space> findAvailable(LocalDateTime start, LocalDateTime end, Space.SpaceType type) {
+        if (!end.isAfter(start)) {
+            throw new InvalidSlotException();
+        }
+        return spaceRepository.findAvailable(start, end, type);
     }
 
     public Space update(Integer id, Space changes) {

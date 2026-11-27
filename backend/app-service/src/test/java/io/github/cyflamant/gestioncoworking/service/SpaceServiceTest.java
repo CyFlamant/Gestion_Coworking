@@ -12,6 +12,7 @@ import io.github.cyflamant.gestioncoworking.entity.Space;
 import io.github.cyflamant.gestioncoworking.repository.SpaceRepository;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -170,6 +171,37 @@ class SpaceServiceTest {
         space.setDayRate(new BigDecimal("60.00"));
         space.setMonthRate(new BigDecimal("900.00"));
         return space;
+    }
+
+    @Test
+    void findAvailableReturnsFreeSpacesFromRepository() {
+        LocalDateTime start = LocalDateTime.of(2026, 12, 1, 9, 0);
+        LocalDateTime end = LocalDateTime.of(2026, 12, 1, 13, 0);
+        Space space = validSpace();
+        when(spaceRepository.findAvailable(start, end, Space.SpaceType.OFFICE)).thenReturn(List.of(space));
+
+        assertThat(spaceService.findAvailable(start, end, Space.SpaceType.OFFICE)).containsExactly(space);
+    }
+
+    @Test
+    void findAvailableRejectsSlotThatEndsWhenItStarts() {
+        LocalDateTime start = LocalDateTime.of(2026, 12, 1, 9, 0);
+
+        assertThatThrownBy(() -> spaceService.findAvailable(start, start, null))
+                .isInstanceOf(InvalidSlotException.class)
+                .hasMessage("La fin doit être après le début");
+        verify(spaceRepository, never()).findAvailable(any(), any(), any());
+    }
+
+    @Test
+    void findAvailableRejectsSlotThatEndsBeforeItStarts() {
+        LocalDateTime start = LocalDateTime.of(2026, 12, 1, 13, 0);
+        LocalDateTime end = LocalDateTime.of(2026, 12, 1, 9, 0);
+
+        assertThatThrownBy(() -> spaceService.findAvailable(start, end, null))
+                .isInstanceOf(InvalidSlotException.class)
+                .hasMessage("La fin doit être après le début");
+        verify(spaceRepository, never()).findAvailable(any(), any(), any());
     }
 
 }
