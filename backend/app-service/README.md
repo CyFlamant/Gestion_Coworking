@@ -2,7 +2,7 @@
 
 The Spring Boot back end of Gestion Coworking (Spring Boot 4.1, Java 21, MariaDB/MySQL). It manages the spaces and searches the free ones. Bookings follow in a later plan. Users and sign-in will come from a separate auth-service; until it exists, every request runs as one fixed user.
 
-The work in progress is described in `docs/backend-spaces-plan.md`.
+How the spaces part was finished is described in `docs/backend-spaces-plan.md`; bookings and users get their own plans.
 
 ## Commands
 

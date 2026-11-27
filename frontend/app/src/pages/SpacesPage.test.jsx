@@ -120,10 +120,10 @@ describe("SpacesPage", () => {
   });
 
   it("shows every space as free when the search is not available", async () => {
-    getAvailableSpaces.mockRejectedValue(new ApiError(501, "Pas encore disponible : ce service n’est pas encore développé."));
+    getAvailableSpaces.mockRejectedValue(new ApiError(0, "Impossible de joindre le serveur."));
     renderPage();
     expect(within(await card("Openspace 1")).getByText("Disponible")).toBeInTheDocument();
-    expect(screen.getByText(/Pas encore disponible/)).toBeInTheDocument();
+    expect(screen.getByText("Impossible de joindre le serveur.")).toBeInTheDocument();
   });
 
   it("shows an error when the spaces cannot be loaded", async () => {

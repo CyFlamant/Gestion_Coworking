@@ -3,7 +3,7 @@ import { getAvailableSpaces } from "../lib/api.js";
 
 // Asks the API which spaces are free between start and end (local ISO strings), again each time they change.
 // free: Set of the free space ids; null until the first answer, or when the search failed.
-// searchError: the API's message when the search failed (real mode: the endpoint does not exist yet), else null.
+// searchError: the API's message when the search failed (e.g. the server cannot be reached), else null.
 export function useFreeSpaces(start, end) {
   const [free, setFree] = useState(null);
   const [searchError, setSearchError] = useState(null);
