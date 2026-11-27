@@ -3,36 +3,33 @@ import { Link } from "react-router";
 import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
 import TextField from "../components/TextField.jsx";
+import { useSubmit } from "../hooks/useSubmit.js";
 import { login } from "../lib/api.js";
 import { HOME_BY_ROLE } from "../lib/auth.js";
 import { goTo } from "../lib/browser.js";
 import { setFlash } from "../lib/flash.js";
-import { formErrors, NO_ERRORS } from "../lib/forms.js";
 import { t } from "../lib/i18n/index.js";
 import { DEMO_PASSWORD, getDb } from "../lib/mock/db.js";
 
 // Connexion. Mock: checks the demo accounts; later: the auth-service returns a JWT.
 export default function LoginPage() {
   const [values, setValues] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState(NO_ERRORS);
-  const [submitting, setSubmitting] = useState(false);
-
-  const change = (name) => (event) =>
-    setValues({ ...values, [name]: event.target.value });
-
-  async function submit(event) {
-    event.preventDefault(); // the form is sent by our code, not by the browser
-    setErrors(NO_ERRORS);
-    setSubmitting(true);
-    try {
-      const user = await login(values);
+  const { submit, errors, submitting } = useSubmit(
+    () => login(values),
+    (user) => {
       setFlash(t("signIn.welcome"));
       goTo(HOME_BY_ROLE[user.role]);
-    } catch (error) {
-      setErrors(formErrors(error));
-      setSubmitting(false);
-    }
-  }
+    },
+  );
+
+  // Props every field needs, built from its name: id, label, value, change handler, error.
+  const fieldProps = (name) => ({
+    id: `signin-${name}`,
+    label: t(`signIn.${name}`),
+    value: values[name],
+    onChange: (event) => setValues({ ...values, [name]: event.target.value }),
+    error: errors.fields[name],
+  });
 
   return (
     <main className="inner page">
@@ -40,26 +37,17 @@ export default function LoginPage() {
       <div className="card card--narrow form">
         <h1>{t("signIn.title")}</h1>
         <p className="muted">{t("signIn.lead")}</p>
-        <form className="form" noValidate onSubmit={submit}>
+        <form
+          className="form"
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault(); // the form is sent by our code, not by the browser
+            submit();
+          }}
+        >
           <ErrorAlert>{errors.alert}</ErrorAlert>
-          <TextField
-            id="signin-email"
-            label={t("signIn.email")}
-            type="email"
-            autoComplete="email"
-            value={values.email}
-            onChange={change("email")}
-            error={errors.fields.email}
-          />
-          <TextField
-            id="signin-password"
-            label={t("signIn.password")}
-            type="password"
-            autoComplete="current-password"
-            value={values.password}
-            onChange={change("password")}
-            error={errors.fields.password}
-          />
+          <TextField {...fieldProps("email")} type="email" autoComplete="email" />
+          <TextField {...fieldProps("password")} type="password" autoComplete="current-password" />
           <div className="actions">
             <button
               type="submit"

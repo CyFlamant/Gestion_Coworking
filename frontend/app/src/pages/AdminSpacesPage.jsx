@@ -8,10 +8,10 @@ import ShapeIcon from "../components/ShapeIcon.jsx";
 import SpaceForm from "../components/SpaceForm.jsx";
 import StatusMessage from "../components/StatusMessage.jsx";
 import TypeChip from "../components/TypeChip.jsx";
+import { useSubmit } from "../hooks/useSubmit.js";
 import { createSpace, deleteSpace, getBookings, getSpaces, updateSpace } from "../lib/api.js";
 import { RATE_FIELDS, SPACE_TYPES } from "../lib/config.js";
 import { formatMoney } from "../lib/dates.js";
-import { formErrors, NO_ERRORS } from "../lib/forms.js";
 import { t } from "../lib/i18n/index.js";
 import { byTypeThenName } from "../lib/spaces.js";
 
@@ -167,20 +167,10 @@ export default function AdminSpacesPage() {
 
 // The space form in a dialog: creates a space, or updates the one given.
 function SpaceDialog({ space, onSaved, onClose }) {
-  const [errors, setErrors] = useState(NO_ERRORS);
-  const [saving, setSaving] = useState(false);
-
-  async function save(values) {
-    setErrors(NO_ERRORS);
-    setSaving(true);
-    try {
-      const result = space ? await updateSpace(space.id, values) : await createSpace(values);
-      onSaved(t(space ? "adminSpaces.updated" : "adminSpaces.created", { name: result.name }));
-    } catch (err) {
-      setErrors(formErrors(err));
-      setSaving(false);
-    }
-  }
+  const { submit: save, errors, submitting: saving } = useSubmit(
+    (values) => (space ? updateSpace(space.id, values) : createSpace(values)),
+    (result) => onSaved(t(space ? "adminSpaces.updated" : "adminSpaces.created", { name: result.name })),
+  );
 
   return (
     <Dialog

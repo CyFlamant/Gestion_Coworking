@@ -7,7 +7,7 @@ export default function ContactPage() {
       <PageTitle title={t("pages.contact")} />
       <div className="page-head__text">
         <h1>{t("pages.contact")}</h1>
-        <address className="lead stub__text">{t("stubs.contact")}</address>
+        <address className="lead info-page__text">{t("info.contact")}</address>
       </div>
     </main>
   );

@@ -227,7 +227,7 @@ export default {
     signInLink: 'Se connecter',
     created: 'Compte créé. Bienvenue !',
   },
-  stubs: {
+  info: {
     // [ ] = to fill in before deployment.
     legal: {
       editorTitle: 'Éditeur du site',

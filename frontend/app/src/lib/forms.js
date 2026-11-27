@@ -8,3 +8,8 @@ export function formErrors(error) {
 }
 
 export const NO_ERRORS = { fields: {}, alert: null };
+
+// For forms that show no message next to their fields (the booking forms): the one message to show.
+export function errorMessage(errors) {
+    return errors.alert ?? Object.values(errors.fields)[0] ?? null;
+}

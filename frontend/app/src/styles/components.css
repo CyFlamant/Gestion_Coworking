@@ -1223,13 +1223,13 @@
   opacity: 0.75;
 }
 
-/* Placeholder pages (stub.js): keeps the line breaks of the address */
-.stub__text {
+/* Information pages (Contact, Horaires, Mentions légales): \n in a text starts a new line */
+.info-page__text {
   white-space: pre-line;
   font-style: normal;
 }
 
-.stub__section {
+.info-page__section {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);

@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useSubmit } from "../hooks/useSubmit.js";
 import { createBooking, updateBooking } from "../lib/api.js";
 import { applyBookingChange, resolveSpaceId } from "../lib/booking.js";
 import { overlaps, parseLocal, startOfDay, toLocalIso } from "../lib/dates.js";
+import { errorMessage } from "../lib/forms.js";
 import { t } from "../lib/i18n/index.js";
 import { bookingRange } from "../lib/pricing.js";
 import BookingForm from "./BookingForm.jsx";
@@ -14,8 +16,6 @@ import ErrorAlert from "./ErrorAlert.jsx";
 export default function AdminBookingDialog({ booking, initial, data, onSaved, onDelete, onClose }) {
   const { type, spaceId: initialSpaceId, userId, ...slot } = initial;
   const [form, setForm] = useState({ type, spaceId: initialSpaceId, spaceChosen: true, userId, slot });
-  const [submitError, setSubmitError] = useState(null);
-  const [saving, setSaving] = useState(false);
 
   const range = bookingRange(form.slot);
   const busy = new Set(
@@ -26,25 +26,16 @@ export default function AdminBookingDialog({ booking, initial, data, onSaved, on
   const free = new Set(data.spaces.filter((space) => !busy.has(space.id)).map((space) => space.id));
   const spaceId = resolveSpaceId({ spaces: data.spaces, free, ...form });
 
-  async function submit(event) {
-    event.preventDefault();
-    setSubmitError(null);
-    setSaving(true);
-    const request = {
-      spaceId,
-      userId: form.userId || null,
-      startDateTime: toLocalIso(range.start),
-      endDateTime: toLocalIso(range.end),
-    };
-    try {
-      if (booking) await updateBooking(booking.id, request);
-      else await createBooking(request);
-      onSaved(t(booking ? "adminBookings.updated" : "adminBookings.created"), startOfDay(range.start));
-    } catch (err) {
-      setSubmitError(err.detail ?? String(err));
-      setSaving(false);
-    }
-  }
+  const request = {
+    spaceId,
+    userId: form.userId || null,
+    startDateTime: toLocalIso(range.start),
+    endDateTime: toLocalIso(range.end),
+  };
+  const { submit, errors, submitting: saving } = useSubmit(
+    () => (booking ? updateBooking(booking.id, request) : createBooking(request)),
+    () => onSaved(t(booking ? "adminBookings.updated" : "adminBookings.created"), startOfDay(range.start)),
+  );
 
   return (
     <Dialog
@@ -66,8 +57,15 @@ export default function AdminBookingDialog({ booking, initial, data, onSaved, on
         </>
       }
     >
-      <form id="admin-booking-form" noValidate onSubmit={submit}>
-        <ErrorAlert>{submitError}</ErrorAlert>
+      <form
+        id="admin-booking-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault();
+          submit();
+        }}
+      >
+        <ErrorAlert>{errorMessage(errors)}</ErrorAlert>
         <BookingForm
           idPrefix="admin-booking"
           spaces={data.spaces}

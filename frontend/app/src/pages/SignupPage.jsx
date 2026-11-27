@@ -3,10 +3,10 @@ import { Link } from "react-router";
 import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
 import TextField from "../components/TextField.jsx";
+import { useSubmit } from "../hooks/useSubmit.js";
 import { register } from "../lib/api.js";
 import { goTo } from "../lib/browser.js";
 import { setFlash } from "../lib/flash.js";
-import { formErrors, NO_ERRORS } from "../lib/forms.js";
 import { t } from "../lib/i18n/index.js";
 
 const EMPTY = {
@@ -20,8 +20,13 @@ const EMPTY = {
 // Inscription. Mock: creates a CLIENT account and signs it in; later: the auth-service.
 export default function SignupPage() {
   const [values, setValues] = useState(EMPTY);
-  const [errors, setErrors] = useState(NO_ERRORS);
-  const [submitting, setSubmitting] = useState(false);
+  const { submit, errors, submitting } = useSubmit(
+    () => register(values),
+    () => {
+      setFlash(t("signUp.created"));
+      goTo("/");
+    },
+  );
 
   // Props every field needs, built from its name: id, label, value, change handler, error.
   const fieldProps = (name) => ({
@@ -32,27 +37,20 @@ export default function SignupPage() {
     error: errors.fields[name],
   });
 
-  async function submit(event) {
-    event.preventDefault();
-    setErrors(NO_ERRORS);
-    setSubmitting(true);
-    try {
-      await register(values);
-      setFlash(t("signUp.created"));
-      goTo("/");
-    } catch (error) {
-      setErrors(formErrors(error));
-      setSubmitting(false);
-    }
-  }
-
   return (
     <main className="inner page">
       <PageTitle title={t("pages.signUp")} />
       <div className="card card--narrow form">
         <h1>{t("signUp.title")}</h1>
         <p className="muted">{t("signUp.lead")}</p>
-        <form className="form" noValidate onSubmit={submit}>
+        <form
+          className="form"
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault();
+            submit();
+          }}
+        >
           <ErrorAlert>{errors.alert}</ErrorAlert>
           <div className="field-row">
             <TextField

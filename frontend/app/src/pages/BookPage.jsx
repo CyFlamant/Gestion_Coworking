@@ -4,12 +4,14 @@ import BookingForm from "../components/BookingForm.jsx";
 import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
 import TypeChip from "../components/TypeChip.jsx";
+import { useSubmit } from "../hooks/useSubmit.js";
 import { createBooking, getAvailableSpaces, getSpaces } from "../lib/api.js";
 import { applyBookingChange, resolveSpaceId } from "../lib/booking.js";
 import { RATE_FIELDS, SPACE_TYPES } from "../lib/config.js";
 import { addDays, formatMoney, toLocalIso, today } from "../lib/dates.js";
 import { clearDraft, readDraft } from "../lib/draft.js";
 import { setFlash } from "../lib/flash.js";
+import { errorMessage } from "../lib/forms.js";
 import { t } from "../lib/i18n/index.js";
 import {
   bookingRange,
@@ -48,8 +50,6 @@ export default function BookPage() {
   const [spaces, setSpaces] = useState(null);
   const [loadError, setLoadError] = useState(null);
   const [free, setFree] = useState(null); // ids of the free spaces; null while unknown
-  const [submitError, setSubmitError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
 
   const range = bookingRange(booking.slot);
   const start = toLocalIso(range.start);
@@ -86,19 +86,13 @@ export default function BookPage() {
     setBooking((current) => applyBookingChange(current, changes));
   }
 
-  async function submit(event) {
-    event.preventDefault();
-    setSubmitError(null);
-    setSubmitting(true);
-    try {
-      await createBooking({ spaceId, startDateTime: start, endDateTime: end });
+  const { submit, errors, submitting } = useSubmit(
+    () => createBooking({ spaceId, startDateTime: start, endDateTime: end }),
+    () => {
       setFlash(t("booking.created"));
       navigate("/mes-reservations");
-    } catch (err) {
-      setSubmitError(err.detail ?? String(err));
-      setSubmitting(false);
-    }
-  }
+    },
+  );
 
   return (
     <main className="inner page">
@@ -111,8 +105,16 @@ export default function BookPage() {
       <ErrorAlert>{loadError}</ErrorAlert>
       {spaces && (
         <div className="split">
-          <form id="booking-form" className="card" noValidate onSubmit={submit}>
-            <ErrorAlert>{submitError}</ErrorAlert>
+          <form
+            id="booking-form"
+            className="card"
+            noValidate
+            onSubmit={(event) => {
+              event.preventDefault();
+              submit();
+            }}
+          >
+            <ErrorAlert>{errorMessage(errors)}</ErrorAlert>
             <BookingForm
               idPrefix="booking"
               spaces={spaces}

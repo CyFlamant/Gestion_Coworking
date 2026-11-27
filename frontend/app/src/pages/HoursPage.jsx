@@ -7,7 +7,7 @@ export default function HoursPage() {
       <PageTitle title={t("pages.hours")} />
       <div className="page-head__text">
         <h1>{t("pages.hours")}</h1>
-        <p className="lead">{t("stubs.hours")}</p>
+        <p className="lead">{t("info.hours")}</p>
       </div>
     </main>
   );

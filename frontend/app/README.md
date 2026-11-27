@@ -46,6 +46,7 @@ Only `/api/me` and `/api/spaces` exist in the app-service so far. The other func
 | --- | --- |
 | `src/pages/` | one component per page (`HomePage`, `SpacesPage`, `BookPage`, `AdminBookingsPage`…) |
 | `src/components/` | shared components: layout, forms, dialogs, calendar, day timeline… |
+| `src/hooks/` | custom React hooks (`useSubmit`: sends a form and keeps its errors) |
 | `src/lib/` | plain JavaScript, no React: API calls, prices and opening hours, dates, texts (`i18n/fr.js`), mock |
 | `src/styles/` | CSS: design tokens, base styles, components |
 | `src/test/` | test helpers |

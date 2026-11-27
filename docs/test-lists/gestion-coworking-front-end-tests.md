@@ -6,7 +6,7 @@ The tests don't use the prototype's demo data (`lib/mock/db.js`). Each one gives
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-112 tests.
+113 tests.
 
 ## A. Prices and opening hours
 
@@ -386,3 +386,10 @@ More checks on the page frame (section B).
 
 **112. Sign-up page**: a guest is on the Inscription page.
 - Expected: the "Connexion / Inscription" link is marked as the current page.
+
+## Q. Opening hours text
+
+The opening hours are written twice: as a sentence on the Horaires page (`fr.js`) and as the rules used for bookings (`config.js`).
+
+**113. Same hours in both places**: the sentence is compared with the rules.
+- Expected: Monday to Friday have the same hours, Sunday is closed, and the sentence states the weekday and Saturday hours of the rules. The test fails if one is changed without the other.
