@@ -4,7 +4,7 @@ The tests of the app-service (Spring Boot), grouped by subject. Each test checks
 
 Run them with `.\mvnw.cmd test` in `backend/app-service` (MariaDB must be running). The test function names are in `gestion-coworking-back-end-test-functions.md`; the front-end tests are in `gestion-coworking-front-end-tests.md`.
 
-57 tests.
+59 tests.
 
 ## A. Space data rules
 
@@ -194,3 +194,13 @@ The requests are made by an admin, unless stated otherwise.
 
 **57. Free-space search against the database**: a space is booked on 1 December 2026 from 9:00 to 13:00.
 - Expected: it is missing from the free spaces from 10:00 to 11:00 that day, and present for the same hours the next day.
+
+## G. Demo data
+
+`dev-data/demo-spaces.sql` is run by hand on the development database. The tests run it in a transaction that is rolled back, and only look at the demo spaces.
+
+**58. Demo spaces**: the script is run.
+- Expected: the seven spaces of the front end's mock are in the database, with the same types and rates.
+
+**59. Run twice**: the script is run twice.
+- Expected: each demo space is there only once.

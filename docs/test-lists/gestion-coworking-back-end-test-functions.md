@@ -61,5 +61,7 @@ Test number and title from `gestion-coworking-back-end-tests.md`, and the Java t
 | 55 | Application starts | `contextLoads` (`GestionCoworkingApplicationTests.java`) |
 | 56 | Create then read back through the API | `createdSpaceCanBeReadBack` (`integration/SpaceApiIntegrationTest.java`) |
 | 57 | Free-space search against the database | `availableSearchLeavesOutBookedSpace` (`integration/SpaceApiIntegrationTest.java`) |
+| 58 | Demo spaces | `scriptAddsTheSevenDemoSpacesOfTheMock` (`repository/DemoSpacesScriptTest.java`) |
+| 59 | Run twice | `scriptRunTwiceAddsEachSpaceOnce` (`repository/DemoSpacesScriptTest.java`) |
 
 Run one test from `backend/app-service`: `.\mvnw.cmd test -Dtest=<Class>#<method>`.
