@@ -135,5 +135,11 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 129 | Signed-in user | `getCurrentUser (real back end) > returns the signed-in user's id and role` (`lib/api.test.js`) |
 | 130 | Guest | `getCurrentUser (real back end) > returns null for a guest` (`lib/api.test.js`) |
 | 131 | Invalid search slot (mock) | `getAvailableSpaces (mock) > refuses a slot whose end is not after its start, like the back end` (`lib/api.test.js`) |
+| 132 | Read from the environment | `config > reads the data mode and the service addresses from the environment` (`lib/config.test.js`) |
+| 133 | Dev bar choice in development | `config > uses the mode chosen in the dev bar during development` (`lib/config.test.js`) |
+| 134 | Dev bar choice in production | `config > ignores a mode chosen in the dev bar in a production build` (`lib/config.test.js`) |
+| 135 | Development server | `.env files > starts the development server with the real back end` (`lib/config.test.js`) |
+| 136 | Production build | `.env files > builds for production with the real back end` (`lib/config.test.js`) |
+| 137 | Tests | `.env files > runs the tests with the mock` (`lib/config.test.js`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

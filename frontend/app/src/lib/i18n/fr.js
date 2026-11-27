@@ -254,7 +254,7 @@ export default {
     short: { GUEST: 'Visiteur', CLIENT: 'Client', ADMIN: 'Admin' },
     mode: 'Données',
     modeMock: 'Simulées (mock)',
-    modeReal: 'Backend réel (localhost:8080)',
+    modeReal: 'Backend réel ({url})',
     realNote: 'En mode réel, le rôle vient de app.placeholder-user-role. Le backend doit autoriser CORS.',
     reset: 'Réinitialiser les données',
   },

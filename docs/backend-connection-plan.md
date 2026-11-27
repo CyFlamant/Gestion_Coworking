@@ -15,7 +15,7 @@ As for the React port, each step starts with tests where code changes, ends with
 | Step | Content | Status |
 | --- | --- | --- |
 | 1. Contract tests | Front-end tests of the API layer against the real answers of the app-service: a space list, a created space, invalid fields (400), access refused (403), not found (404), space with bookings (500, now 409), server unreachable | Done |
-| 2. Configuration | Back-end address and mock/real mode set per environment (development, production) instead of in the code; the development panel can still switch between mock and real | To do |
+| 2. Configuration | Back-end address and mock/real mode set per environment (development, production) instead of in the code; the development panel can still switch between mock and real. Done with `.env.development` (real), `.env.production` (real) and `.env.test` (mock) in `frontend/app` | Done |
 | 3. Demo spaces in the database | The same seven demo spaces as the mock, in an SQL script run by hand on the development database, never in production | To do |
 | 4. Spaces with the real back end | Check every space screen with the real back end: home page, Espaces disponibles (catalogue and prices), admin Espaces (add, edit, delete, errors), as admin, as client and as guest | To do |
 | 5. Booking screens in real mode | Check that "Réserver" finds the free spaces but answers "Pas encore disponible" when a booking is saved, and that "Mes réservations" and admin "Réservations" show the "Pas encore disponible" error (see Decisions) | To do |

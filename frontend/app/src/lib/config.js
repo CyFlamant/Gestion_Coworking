@@ -1,15 +1,15 @@
 import { readLocal, writeLocal } from './storage.js';
 
-// 'mock' answers every request in the browser (lib/mock/); 'real' calls the Spring Boot services.
-export const API_MODE = 'mock';
-export const BASE_URL = 'http://localhost:8080'; // app-service
-export const AUTH_BASE_URL = 'http://localhost:8081'; // auth-service (planned)
+// Set per environment in frontend/app/.env.development, .env.production and .env.test ('mock' or 'real').
+export const API_MODE = import.meta.env.VITE_API_MODE;
+export const BASE_URL = import.meta.env.VITE_APP_SERVICE_URL; // app-service
+export const AUTH_BASE_URL = import.meta.env.VITE_AUTH_SERVICE_URL; // auth-service (planned)
 
 const API_MODE_KEY = 'proto.apiMode';
 
-// The dev bar (development only) can override API_MODE without editing this file.
+// The dev bar (development only) can override API_MODE; a production build always uses API_MODE.
 export function getApiMode() {
-  return readLocal(API_MODE_KEY) ?? API_MODE;
+  return (import.meta.env.DEV && readLocal(API_MODE_KEY)) || API_MODE;
 }
 
 export function setApiMode(mode) {

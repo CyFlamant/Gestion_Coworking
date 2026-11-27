@@ -6,7 +6,7 @@ The tests don't use the demo data of the mock (`lib/mock/db.js`). Each one gives
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-131 tests.
+137 tests.
 
 ## A. Prices and opening hours
 
@@ -459,3 +459,25 @@ The in-browser mock answers like the back end, so both modes behave the same way
 
 **131. Invalid search slot (mock)**: the free spaces are searched with an end before the start.
 - Expected: an error with "Données invalides" and "La fin doit être après le début" on the end, as the back end answers.
+
+## U. Configuration per environment
+
+The data mode (mock or real) and the service addresses come from the `.env` files of `frontend/app`, not from the code.
+
+**132. Read from the environment**: the environment gives the real mode and two addresses.
+- Expected: the app uses that mode and those addresses.
+
+**133. Dev bar choice in development**: the environment says real, and the mock is chosen in the dev bar.
+- Expected: the mock is used.
+
+**134. Dev bar choice in production**: the same, in a production build.
+- Expected: the dev bar's choice is ignored; the real back end is used.
+
+**135. Development server**: the values of the `.env` files for `npm run dev`.
+- Expected: real mode, app-service at `http://localhost:8080`, auth-service at `http://localhost:8081`.
+
+**136. Production build**: the values for `npm run build`.
+- Expected: real mode.
+
+**137. Tests**: the values for the test run.
+- Expected: mock mode.
