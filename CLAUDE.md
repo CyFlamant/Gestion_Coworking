@@ -41,7 +41,9 @@ npm run build      # production files in dist/
 
 ## Conventions
 
-- TDD: write the failing test first. Whenever new or changed code needs a test, remind the user to write it (and where it goes) before the implementation.
+- TDD: write the failing test first. Whenever new or changed code needs a test, give it to the user ready to insert (and where it goes) before the implementation; never leave code for the user to write.
 - Documentation and commit messages in English. Existing French docs in `docs/` stay as they are.
 - User-facing validation messages are in French (e.g. `"Champ obligatoire"`).
+- Plans: work follows a plan in `docs/` (e.g. `backend-connection-plan.md`). If the user's request does not name the plan it belongs to, ask which plan to follow (or whether a new one is needed) before starting. Every new plan ends with a "References" section listing the project docs (specs, other plans, `to-do.md`, test lists, READMEs, `CLAUDE.md`), as in `backend-connection-plan.md`.
+- Test lists: `docs/test-lists/` describes every test (back end and front end), one file of behaviours and one of test functions per side. Whenever a test is added, changed or removed, update both files of that side (number, title, expected result, function name, total count).
 - Git: the user makes all commits and pushes manually. Never commit, tag, push or force push; suggest a commit message instead. Core development happens on `main`; branches only for optional features.
