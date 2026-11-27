@@ -8,7 +8,7 @@ Coworking space management web app (student integration project, EAFC Namur). Sp
 
 Architecture:
 - `backend/app-service` — app-service: Spring Boot 4.1 / Java 21, bookings and spaces; see `backend/app-service/README.md`.
-- `frontend/app` — front end: React 19 (Vite, React Router), tested with Vitest. Bookings, accounts and sign-in still run on an in-browser mock until the backend has them; see `frontend/app/README.md`.
+- `frontend/app` — front end: React 19 (Vite, React Router), tested with Vitest. Calls the app-service in development and production (mode and addresses in `frontend/app/.env.*`); bookings, accounts and sign-in only work with the in-browser mock (switch in the dev bar) until the backend has them; see `frontend/app/README.md`.
 - Auth-service (planned) — separate Spring Boot project with its own DB, issues JWTs. Until it exists, the app-service uses a fixed user id.
 - Deployment (planned) — Docker, cloud host (Azure/AWS).
 

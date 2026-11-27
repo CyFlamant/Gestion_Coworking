@@ -19,10 +19,26 @@ npm run build      # production files in dist/
 
 `src/lib/api.js` has one function per backend endpoint. Each call goes either to the in-browser mock or to the real services:
 
-- **Mock** (default): `src/lib/mock/` answers in the browser, with demo spaces, clients and bookings kept in `localStorage`. It returns the same status codes and error bodies as the app-service.
-- **Real**: calls the app-service at `http://localhost:8080` (and later the auth-service at `http://localhost:8081`). The backend must allow `http://localhost:5173` in its CORS settings.
+- **Mock**: `src/lib/mock/` answers in the browser, with demo spaces, clients and bookings kept in `localStorage`. It returns the same status codes and error bodies as the app-service.
+- **Real**: calls the app-service (and later the auth-service). The backend must allow the front end's address (`http://localhost:5173` in development) in its CORS settings.
 
-The mode is set by `API_MODE` in `src/lib/config.js`. In development (`npm run dev`), the **Prototype** bar at the bottom right switches between mock and real, switches the simulated role (guest, client, admin) and resets the demo data. It is not part of a production build.
+The mode and the service addresses are set per environment, in `.env` files read by Vite (`src/lib/config.js` reads them):
+
+| File | Used by | Mode | Addresses |
+| --- | --- | --- | --- |
+| `.env.development` | `npm run dev` | real | `http://localhost:8080` (app-service), `http://localhost:8081` (auth-service) |
+| `.env.production` | `npm run build` | real | the same for now; change them when the services are deployed |
+| `.env.test` | `npx vitest`, `npm test` | mock | the same (the tests never call them) |
+
+Only `VITE_*` variables reach the app, and they end up in the browser code: never put a secret in these files. Personal overrides go in `.env.development.local` (ignored by git).
+
+In development, the **Prototype** bar at the bottom right switches between mock and real (the browser remembers the choice), switches the simulated role (mock only) and resets the demo data. It is not part of a production build, and a build always uses the mode of `.env.production`.
+
+With the real back end:
+
+- **Demo spaces:** the development database starts empty. Load the same seven spaces as the mock with `backend/app-service/dev-data/demo-spaces.sql` (see `backend/app-service/README.md`).
+- **Role:** there is no sign-in yet. The role (admin, client or guest) is chosen when starting the back end (see `backend/app-service/README.md`).
+- **Bookings:** "Réserver" finds the free spaces, but saving a booking, "Mes réservations" and the admin "Réservations" page show "Pas encore disponible" until the booking endpoints exist.
 
 Demo accounts (mock only): `marie.dubois@exemple.be` (client) and `admin@exemple.be` (admin), password `demo1234`.
 
@@ -51,6 +67,7 @@ Only `/api/me`, `/api/spaces` and the free-space search exist in the app-service
 | `src/styles/` | CSS: design tokens, base styles, components |
 | `src/test/` | test helpers |
 | `public/` | files served as they are (logo) |
+| `.env.development`, `.env.production`, `.env.test` | data mode and service addresses per environment |
 
 `src/App.jsx` lists the pages and which roles may open them. Tests sit next to the file they test (`BookPage.jsx` → `BookPage.test.jsx`); the list of all tests is in `docs/test-lists/`.
 

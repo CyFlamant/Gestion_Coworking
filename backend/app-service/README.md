@@ -25,6 +25,14 @@ To run as another role without editing `application.properties`:
 
 `ADMIN`, `CLIENT`, or an empty value for a guest.
 
+The development database starts with no spaces. To load the seven demo spaces of the front end's mock (once Flyway has created the tables, so start the app once first):
+
+```powershell
+C:\xampp\mysql\bin\mysql.exe -u root gestion_coworking -e "source dev-data/demo-spaces.sql"
+```
+
+A space whose name already exists is skipped, so running it again adds nothing. Never run it on a production database.
+
 ## Configuration
 
 `src/main/resources/application.properties`:
@@ -46,6 +54,7 @@ Java packages are under `src/main/java/io/github/cyflamant/gestioncoworking/`.
 ```
 app-service/
 ├── pom.xml                         dependencies (web, JPA, validation, security, Flyway, MySQL driver)
+├── dev-data/demo-spaces.sql        demo spaces for the development database, run by hand
 ├── src/main/java/.../gestioncoworking/
 │   ├── GestionCoworkingApplication.java   entry point
 │   ├── controller/                 HTTP layer: URLs, status codes, roles
@@ -225,7 +234,7 @@ erDiagram
 | Request validation | none (plain Validator) | no | `dto/SpaceRequestValidationTest` |
 | Current user | none (security context set by hand) | no | `security/SecurityContextUserProviderTest` |
 | Service | `@ExtendWith(MockitoExtension.class)`, repository mocked | no | `service/SpaceServiceTest` |
-| Repository | `@DataJpaTest` on the real MariaDB, rolled back | yes | `repository/SpaceRepositoryTest` |
+| Repository | `@DataJpaTest` on the real MariaDB, rolled back | yes | `repository/SpaceRepositoryTest`, `repository/DemoSpacesScriptTest` (runs `dev-data/demo-spaces.sql`) |
 | Controller | `@WebMvcTest` + `SecurityConfig`, service mocked, `@WithMockUser` for the role | no | `controller/*Test`, `security/CorsConfigTest` |
 | Whole app | `@SpringBootTest` (+ MockMvc), rolled back | yes | `GestionCoworkingApplicationTests`, `integration/SpaceApiIntegrationTest` |
 
