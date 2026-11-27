@@ -120,5 +120,17 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 114 | Choice kept | `SpacesPage > keeps a guest's choice for after sign-in` (`pages/SpacesPage.test.jsx`) |
 | 115 | After signing in | `LoginPage > goes on to the booking page when a space was chosen before signing in` (`pages/AccountPages.test.jsx`) |
 | 116 | After signing up | `SignupPage > goes on to the booking page when a space was chosen before signing up` (`pages/AccountPages.test.jsx`) |
+| 117 | Space list | `api (real back end) > reads the space list, with the rates as numbers` (`lib/api.test.js`) |
+| 118 | New space | `api (real back end) > sends a new space as JSON and returns it with its id` (`lib/api.test.js`) |
+| 119 | Space deleted | `api (real back end) > returns nothing once a space is deleted` (`lib/api.test.js`) |
+| 120 | Invalid fields | `api (real back end) > gives the message of each invalid field` (`lib/api.test.js`) |
+| 121 | Unreadable request | `api (real back end) > gives the message of a request the back end cannot read, with no field errors` (`lib/api.test.js`) |
+| 122 | Access refused | `api (real back end) > gives the back end's message when a client is refused` (`lib/api.test.js`) |
+| 123 | Not signed in | `api (real back end) > gives the back end's message when a guest must sign in first` (`lib/api.test.js`) |
+| 124 | Space not found | `api (real back end) > gives the back end's message for a space that does not exist` (`lib/api.test.js`) |
+| 125 | Space with bookings | `api (real back end) > gives the back end's message when a space with bookings cannot be deleted` (`lib/api.test.js`) |
+| 126 | Server unreachable | `api (real back end) > says the server cannot be reached` (`lib/api.test.js`) |
+| 127 | Signed-in user | `getCurrentUser (real back end) > returns the signed-in user's id and role` (`lib/api.test.js`) |
+| 128 | Guest | `getCurrentUser (real back end) > returns null for a guest` (`lib/api.test.js`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

@@ -8,25 +8,25 @@ As for the React port, each step starts with tests where code changes, ends with
 
 - **What already matches:** the space fields (`name`, `type`, the four rates), numbers sent as JSON numbers, and the error format (`detail`, plus an `errors` map for invalid fields). The front end already sends real requests for spaces when the mock is switched off, and the back end already allows the React development address (CORS).
 - **What is missing:** the back-end address and the mock/real mode are written in the code (`config.js`); the database has no spaces to show.
-- **Limits of the current back end:** every request is made as one fixed user, whose role (admin or client) is set in `application.properties`, so there is no guest and no sign-in yet; `/api/me` has no first name; the booking endpoints do not exist, so the pages that need bookings cannot work with the real back end.
+- **Limits of the current back end:** every request is made as one fixed user, whose role (admin, client, or empty for a guest) is set in `application.properties`, so there is no sign-in yet; `/api/me` has no first name; the booking endpoints do not exist, so the pages that need bookings cannot work with the real back end.
 
 ## Steps
 
 | Step | Content | Status |
 | --- | --- | --- |
-| 1. Contract tests | Front-end tests of the API layer against the real answers of the app-service: a space list, a created space, invalid fields (400), access refused (403), not found (404), space with bookings (500), server unreachable | To do |
+| 1. Contract tests | Front-end tests of the API layer against the real answers of the app-service: a space list, a created space, invalid fields (400), access refused (403), not found (404), space with bookings (500), server unreachable | Done |
 | 2. Configuration | Back-end address and mock/real mode set per environment (development, production) instead of in the code; the development panel can still switch between mock and real | To do |
-| 3. Demo spaces in the database | The same seven demo spaces as the mock, loaded in the development database only, never in production | To do |
-| 4. Spaces with the real back end | Check every space screen with the real back end: home page, Espaces disponibles (catalogue and prices), admin Espaces (add, edit, delete, errors), as admin and as client | To do |
-| 5. Booking screens in real mode | Decide and implement what the booking screens do while the booking endpoints do not exist (see Decisions) | To do |
+| 3. Demo spaces in the database | The same seven demo spaces as the mock, in an SQL script run by hand on the development database, never in production | To do |
+| 4. Spaces with the real back end | Check every space screen with the real back end: home page, Espaces disponibles (catalogue and prices), admin Espaces (add, edit, delete, errors), as admin, as client and as guest | To do |
+| 5. Booking screens in real mode | Check that "Réserver", "Mes réservations" and admin "Réservations" show the "Pas encore disponible" error (see Decisions) | To do |
 | 6. Back-end adjustments | "Space has bookings" answered with 409 instead of 500 (already in `to-do.md`) | To do |
 | 7. Documentation | Update the front-end README, the test lists and `to-do.md` | To do |
 
-## Decisions to make
+## Decisions
 
-- **Step 3, demo data:** load the demo spaces with a Flyway migration that only runs in development (separate folder, enabled by a development profile), or with an SQL script run by hand. Recommended: the development-only migration, so every developer gets the same data automatically.
-- **Step 5, booking screens:** with the real back end, "Réserver", "Mes réservations" and admin "Réservations" cannot load their data. Options: keep the current error messages; hide the booking links and buttons in real mode; or show a "bientôt disponible" message on those pages. Recommended: a clear "bientôt disponible" message, so the screens stay visible for the demonstration but nobody starts a booking that cannot be saved.
-- **Role for testing:** the role of the fixed user is changed in `application.properties` (`app.placeholder-user-role`), then the back end is restarted. Guest screens can only be tested with the mock until the auth-service exists.
+- **Step 3, demo data:** an SQL script run by hand, the simplest option for a single developer. A development-only Flyway migration was not chosen: it needs a profile and a separate migration folder.
+- **Step 5, booking screens:** with the real back end, "Réserver", "Mes réservations" and admin "Réservations" cannot load their data. They keep their current error message ("Pas encore disponible"); no links or buttons are hidden and no temporary screen is added.
+- **Role for testing:** the role of the fixed user is set when starting the back end, without editing `application.properties`: `.\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--app.placeholder-user-role=CLIENT"` (`ADMIN`, `CLIENT`, or an empty value for a guest: `/api/me` then answers 401). No mock guest is needed.
 
 ## Out of scope (later)
 

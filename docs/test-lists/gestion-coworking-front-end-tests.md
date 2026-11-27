@@ -6,7 +6,7 @@ The tests don't use the demo data of the mock (`lib/mock/db.js`). Each one gives
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-116 tests.
+128 tests.
 
 ## A. Prices and opening hours
 
@@ -406,3 +406,43 @@ A guest chooses a space on "Espaces disponibles", then signs in or creates an ac
 
 **116. After signing up**: a new client creates an account after choosing a space.
 - Expected: the booking page is loaded.
+
+## S. Answers of the real back end
+
+The functions that call the app-service, in real mode. Each test gives them an answer recorded from the running back end (27 November 2026), instead of calling it.
+
+**117. Space list**: the back end sends the list of spaces, with rates such as `4.50`.
+- Expected: the spaces, with each rate as a number.
+
+**118. New space**: a space is created.
+- Expected: it is sent as JSON with a POST; the space comes back with its id.
+
+**119. Space deleted**: the back end answers 204, with no content.
+- Expected: no data and no error.
+
+**120. Invalid fields**: the back end refuses a space with an empty name, no type and a negative rate (400).
+- Expected: an error with "Données invalides" and the message of each field.
+
+**121. Unreadable request**: the back end cannot read the request (400, "Format JSON invalide").
+- Expected: an error with that message and no field messages.
+
+**122. Access refused**: a client tries to create a space (403).
+- Expected: an error with "Accès refusé".
+
+**123. Not signed in**: a guest tries to create a space (401, no content).
+- Expected: an error with "Vous devez être connecté."
+
+**124. Space not found**: a space that does not exist is read (404).
+- Expected: an error with the back end's message, "Espace introuvable : 999999".
+
+**125. Space with bookings**: an admin deletes a space that has bookings (500).
+- Expected: an error with the back end's message, "Impossible de supprimer l'espace 53 : il a des réservations".
+
+**126. Server unreachable**: the back end is not running.
+- Expected: an error with "Impossible de joindre le serveur."
+
+**127. Signed-in user**: `/api/me` answers with the user's id and role.
+- Expected: that id and role.
+
+**128. Guest**: `/api/me` answers 401.
+- Expected: no user (guest).
