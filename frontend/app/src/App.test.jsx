@@ -83,5 +83,7 @@ describe("App", () => {
   it("says when a page does not exist", async () => {
     renderAt("/nimporte-quoi", "guest");
     expect(await screen.findByRole("heading", { level: 1, name: "Page introuvable" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Retour à l’accueil" })).toHaveAttribute("href", "/");
+    await waitFor(() => expect(document.title).toBe("Page introuvable · L’Échappée"));
   });
 });

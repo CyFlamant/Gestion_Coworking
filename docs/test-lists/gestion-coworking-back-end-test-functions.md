@@ -41,7 +41,7 @@ Test number and title from `gestion-coworking-back-end-tests.md`, and the Java t
 | 35 | Who am I, as a guest | `meReturns401ForGuest` (`controller/MeControllerTest.java`) |
 | 36 | Placeholder user | `returnsConfiguredUserId` (`security/PlaceholderUserProviderTest.java`) |
 | 37 | Allowed front-end origin | `preflightFromAllowedOriginSucceedsWithoutAuthentication` (`security/CorsConfigTest.java`) |
-| 38 | React development server | `preflightFromViteDevServerSucceeds` (`security/CorsConfigTest.java`) |
+| 38 | Former prototype address | `preflightFromRemovedPrototypeOriginIsRejected` (`security/CorsConfigTest.java`) |
 | 39 | Unknown origin | `preflightFromUnknownOriginIsRejected` (`security/CorsConfigTest.java`) |
 | 40 | Delete from the front end | `preflightForDeleteIsAllowed` (`security/CorsConfigTest.java`) |
 | 41 | Application starts | `contextLoads` (`GestionCoworkingApplicationTests.java`) |

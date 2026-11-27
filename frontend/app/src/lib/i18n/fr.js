@@ -1,7 +1,6 @@
 // French strings. NL and EN files will follow the same keys.
 export default {
   common: {
-    loading: 'Chargement…',
     cancel: 'Annuler',
     save: 'Enregistrer',
     delete: 'Supprimer',
@@ -40,6 +39,7 @@ export default {
     legal: 'Mentions légales',
     contact: 'Contact',
     hours: 'Horaires',
+    notFound: 'Page introuvable',
   },
   types: {
     OPENSPACE: 'Open space',
@@ -139,8 +139,6 @@ export default {
     next: 'Mois suivant',
   },
   myBookings: {
-    upcoming: 'À venir',
-    past: 'Passées',
     cancel: 'Annuler',
     cancelTitle: 'Annuler la réservation ?',
     cancelMessage: '{space}, {slot}. Cette action est définitive.',
@@ -148,7 +146,6 @@ export default {
     keep: 'Garder',
     cancelled: 'Réservation annulée.',
     emptyUpcoming: 'Vous n’avez aucune réservation à venir.',
-    emptyPast: 'Aucune réservation passée.',
     bookNow: 'Réserver un espace',
   },
   adminBookings: {
@@ -188,7 +185,6 @@ export default {
     namePlaceholder: 'Ex. Openspace 4',
     type: 'Type',
     chooseType: 'Choisir un type',
-    rates: 'Tarifs (€)',
     colSpace: 'Espace',
     colType: 'Type',
     colBookings: 'Réservations',
@@ -241,6 +237,10 @@ export default {
     },
     contact: 'L’Échappée\nChaussée d’Alsemberg 104\n1060 St Gilles',
     hours: 'Du lundi au vendredi de 8h à 19h et le samedi de 9h à 13h',
+  },
+  notFound: {
+    lead: 'Cette page n’existe pas ou a été déplacée.',
+    home: 'Retour à l’accueil',
   },
   logout: {
     done: 'Vous êtes déconnecté.',

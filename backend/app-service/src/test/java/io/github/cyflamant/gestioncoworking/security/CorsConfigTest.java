@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @Import(SecurityConfig.class)
 class CorsConfigTest {
 
-    private static final String ALLOWED_ORIGIN = "http://localhost:5500";
+    private static final String ALLOWED_ORIGIN = "http://localhost:5173"; // Vite dev server (frontend/app)
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,12 +32,12 @@ class CorsConfigTest {
     }
 
     @Test
-    void preflightFromViteDevServerSucceeds() throws Exception {
+    void preflightFromRemovedPrototypeOriginIsRejected() throws Exception {
         mockMvc.perform(options("/api/spaces")
-                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ORIGIN, "http://localhost:5500")
                 .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET"))
-                .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173"));
+                .andExpect(status().isForbidden())
+                .andExpect(header().doesNotExist(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
     }
 
     @Test

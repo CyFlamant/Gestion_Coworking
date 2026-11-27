@@ -126,11 +126,11 @@ The requests are made by an admin, unless stated otherwise.
 **36. Placeholder user**: until the auth-service exists, the current user is fixed in the configuration.
 - Expected: the provider returns the configured user id.
 
-**37. Allowed front-end origin**: a browser preflight from the prototype's address.
+**37. Allowed front-end origin**: a browser preflight from the React development server (`http://localhost:5173`).
 - Expected: 200 with that origin allowed, without being signed in.
 
-**38. React development server**: a preflight from `http://localhost:5173`.
-- Expected: 200 with that origin allowed.
+**38. Former prototype address**: a preflight from `http://localhost:5500`, the address of the removed HTML prototype.
+- Expected: 403, with no origin allowed.
 
 **39. Unknown origin**: a preflight from another site.
 - Expected: 403, with no origin allowed.

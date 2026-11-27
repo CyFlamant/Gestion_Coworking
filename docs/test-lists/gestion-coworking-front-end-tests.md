@@ -2,7 +2,7 @@
 
 The tests of the React application, grouped by subject. Each test checks one behaviour and was written before the code it tests (RED, then GREEN).
 
-The tests don't use the prototype's demo data (`lib/mock/db.js`). Each one gives the page its own small set of example spaces and bookings, described at the start of a section when it matters, and a fixed "today" when dates are involved.
+The tests don't use the demo data of the mock (`lib/mock/db.js`). Each one gives the page its own small set of example spaces and bookings, described at the start of a section when it matters, and a fixed "today" when dates are involved.
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
@@ -253,7 +253,7 @@ Checks that each address opens its real page for the right role. The pages thems
 - Expected: the home page is shown instead.
 
 **76. Unknown address**: `/nimporte-quoi`.
-- Expected: "Page introuvable" is shown.
+- Expected: the "Page introuvable" page is shown, with its tab title and a "Retour à l’accueil" link to the home page.
 
 ## K. Managing spaces (admin)
 

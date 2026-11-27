@@ -10,18 +10,11 @@ import HoursPage from "./pages/HoursPage.jsx";
 import LegalPage from "./pages/LegalPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import MyBookingsPage from "./pages/MyBookingsPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import SpacesPage from "./pages/SpacesPage.jsx";
 
-// Temporary: replaced by the real pages one by one.
-function Placeholder({ title }) {
-  return (
-    <main className="inner page">
-      <h1>{title}</h1>
-    </main>
-  );
-}
-
+// Every page, grouped by the roles allowed to open it.
 export default function App() {
   return (
     <Routes>
@@ -46,7 +39,7 @@ export default function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/horaires" element={<HoursPage />} />
         <Route path="/mentions-legales" element={<LegalPage />} />
-        <Route path="*" element={<Placeholder title="Page introuvable" />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );

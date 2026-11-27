@@ -1,8 +1,8 @@
 # React porting plan
 
-The HTML/CSS/JS prototype (`frontend/prototype`) is ported to a React application (`frontend/app`, Vite + React Router + Vitest). The port is done step by step: each step starts with tests, ends with all tests passing, and is committed on its own. The prototype stays as a reference until the last step.
+The HTML/CSS/JS prototype (`frontend/prototype`) was ported to a React application (`frontend/app`, Vite + React Router + Vitest). The port was done step by step: each step started with tests, ended with all tests passing, and was committed on its own. The prototype was kept as a reference until the last step, then removed; it remains in the git history.
 
-Bookings, accounts and sign-in do not exist in the backend yet, so the React app keeps the prototype's simulated (mock) API for them, with the same switch between simulated and real data.
+Bookings, accounts and sign-in do not exist in the backend yet, so the React app keeps the prototype's simulated (mock) API for them, with a switch between simulated and real data.
 
 ## Steps
 
@@ -18,7 +18,7 @@ Bookings, accounts and sign-in do not exist in the backend yet, so the React app
 | 8. Available spaces | Search for free spaces by date, formula and type, with the price of each space | Done |
 | 9. Client bookings | Book a space and see or cancel one's own bookings | Done |
 | 10. Administration | Manage spaces and bookings: calendar, day view, forms in dialogs; tables adapted to phones | Done |
-| 11. Clean-up | Remove the temporary pages and the prototype folder, update the documentation | To do |
+| 11. Clean-up | Remove the temporary pages and the prototype folder, update the documentation | Done |
 
 ## After the port
 

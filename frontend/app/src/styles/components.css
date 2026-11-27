@@ -684,10 +684,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.ticket--past {
-  opacity: 0.7;
-}
-
 @media (max-width: 560px) {
   .ticket {
     grid-template-columns: 60px minmax(0, 1fr);
@@ -872,34 +868,6 @@
 
 .icon-btn:hover {
   background: var(--color-surface);
-}
-
-/* ---------- Toast ---------- */
-
-.toasts {
-  position: fixed;
-  left: 50%;
-  bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
-  transform: translateX(-50%);
-  z-index: 400;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  width: min(480px, calc(100vw - 32px));
-}
-
-.toast {
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-card);
-  background: var(--color-fg);
-  color: var(--color-bg);
-  font-size: var(--text-sm);
-  box-shadow: var(--shadow-dialog);
-}
-
-.toast--error {
-  background: var(--color-danger);
-  color: var(--color-bg);
 }
 
 /* ---------- Calendar ---------- */

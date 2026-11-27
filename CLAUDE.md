@@ -6,10 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Coworking space management web app (student integration project, EAFC Namur). Specs are in `docs/` (French): `Cahier des charges.md` (requirements), `Plan d'implementation.md` (architecture, planning, class diagram), `pages accueil.md` (UI mockups). The `.docx` originals are kept for reference; edit the `.md` files.
 
-Planned architecture (only the backend app-service exists so far):
+Architecture:
 - `backend/app-service` — app-service: Spring Boot 4.1 / Java 21, bookings and spaces.
+- `frontend/app` — front end: React 19 (Vite, React Router), tested with Vitest. Bookings, accounts and sign-in still run on an in-browser mock until the backend has them; see `frontend/app/README.md`.
 - Auth-service (planned) — separate Spring Boot project with its own DB, issues JWTs. Until it exists, the app-service uses a fixed user id.
-- Front end (planned) — React.
 - Deployment (planned) — Docker, cloud host (Azure/AWS).
 
 ## Commands
@@ -24,6 +24,15 @@ Run from `backend/app-service` (Maven wrapper, no global Maven):
 ```
 
 Tests and the app need a running MySQL-compatible server at `localhost:3306` with database `gestion_coworking` (locally: XAMPP's MariaDB, user `root`, empty password). `contextLoads` fails with "Communications link failure" if it is not started.
+
+Front end, from `frontend/app`:
+
+```powershell
+npm run dev        # development server on http://localhost:5173
+npx vitest run     # all tests, once (npm test re-runs them on every save)
+npm run lint       # oxlint; keep it clean
+npm run build      # production files in dist/
+```
 
 ## Database / persistence
 
