@@ -18,9 +18,8 @@ As for the React port, each step starts with tests where code changes, ends with
 | 2. Configuration | Back-end address and mock/real mode set per environment (development, production) instead of in the code; the development panel can still switch between mock and real. Done with `.env.development` (real), `.env.production` (real) and `.env.test` (mock) in `frontend/app` | Done |
 | 3. Demo spaces in the database | The same seven demo spaces as the mock, in an SQL script run by hand on the development database, never in production: `backend/app-service/dev-data/demo-spaces.sql` | Done |
 | 4. Spaces with the real back end | Check every space screen with the real back end: home page, Espaces disponibles (catalogue and prices), admin Espaces (add, edit, delete, errors), as admin, as client and as guest. Fixed on the way: the space lists are sorted by type and name (the database returns them by id), and the "space has bookings" message names the space instead of its id | Done |
-| 5. Booking screens in real mode | Check that "Réserver" finds the free spaces but answers "Pas encore disponible" when a booking is saved, and that "Mes réservations" and admin "Réservations" show the "Pas encore disponible" error (see Decisions) | To do |
-| 6. Back-end adjustments | "Space has bookings" answered with 409 instead of 500 (already in `to-do.md`) | Moved to `backend-spaces-plan.md`, step 2 |
-| 7. Documentation | Update the front-end README, the test lists and `to-do.md` | To do |
+| 5. Booking screens in real mode | Check that "Réserver" finds the free spaces but answers "Pas encore disponible" when a booking is saved, and that "Mes réservations" and admin "Réservations" show the "Pas encore disponible" error (see Decisions) | Done |
+| 6. Documentation | Update the front-end README, the test lists and `to-do.md` | To do |
 
 ## Decisions
 

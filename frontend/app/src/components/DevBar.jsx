@@ -1,7 +1,7 @@
 // Prototype-only panel: switch the simulated role and data source. Shown in development only (npm run dev).
 import { HOME_BY_ROLE } from "../lib/auth.js";
 import { goTo, reload } from "../lib/browser.js";
-import { BASE_URL, getApiMode, setApiMode } from "../lib/config.js";
+import { APP_SERVICE_URL, getApiMode, setApiMode } from "../lib/config.js";
 import { t } from "../lib/i18n/index.js";
 import {
   DEMO_ADMIN_ID,
@@ -75,7 +75,7 @@ export default function DevBar({ role }) {
             onChange={changeMode}
           >
             <option value="mock">{t("devbar.modeMock")}</option>
-            <option value="real">{t("devbar.modeReal", { url: BASE_URL })}</option>
+            <option value="real">{t("devbar.modeReal", { url: APP_SERVICE_URL })}</option>
           </select>
         </div>
         {!mock && <p className="devbar__note">{t("devbar.realNote")}</p>}

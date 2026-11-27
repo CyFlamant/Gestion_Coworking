@@ -1,5 +1,5 @@
 // One function per endpoint. Same signatures in mock and real mode; errors are thrown as ApiError.
-import { AUTH_BASE_URL, BASE_URL, getApiMode } from './config.js';
+import { APP_SERVICE_URL, AUTH_SERVICE_URL, getApiMode } from './config.js';
 import { t } from './i18n/index.js';
 import { route } from './mock/handlers.js';
 
@@ -22,7 +22,7 @@ async function send(method, path, body) {
     return { status: response.status, data: response.body == null ? null : structuredClone(response.body) };
   }
 
-  const base = path.startsWith('/auth') ? AUTH_BASE_URL : BASE_URL;
+  const base = path.startsWith('/auth') ? AUTH_SERVICE_URL : APP_SERVICE_URL;
   let response;
   try {
     response = await fetch(base + path, {

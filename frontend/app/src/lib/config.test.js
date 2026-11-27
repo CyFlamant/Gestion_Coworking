@@ -25,8 +25,8 @@ describe("config", () => {
   it("reads the data mode and the service addresses from the environment", async () => {
     const config = await loadConfig();
     expect(config.getApiMode()).toBe("real");
-    expect(config.BASE_URL).toBe("https://app.exemple.be");
-    expect(config.AUTH_BASE_URL).toBe("https://auth.exemple.be");
+    expect(config.APP_SERVICE_URL).toBe("https://app.exemple.be");
+    expect(config.AUTH_SERVICE_URL).toBe("https://auth.exemple.be");
   });
 
   it("uses the mode chosen in the dev bar during development", async () => {

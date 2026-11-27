@@ -1,8 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createSpace, deleteSpace, getAvailableSpaces, getSpace, getSpaces } from "./api.js";
 import { getCurrentUser } from "./auth.js";
-import { BASE_URL, setApiMode } from "./config.js";
-import { DEMO_ADMIN_ID, resetDb, setSessionUserId } from "./mock/db.js";
+import { APP_SERVICE_URL, setApiMode } from "./config.js";
 
 // Contract tests: api.js in real mode, against answers recorded from the app-service
 // (Spring Boot, 27 November 2026). If the back end changes its answers, record them again here.
@@ -59,14 +58,14 @@ describe("api (real back end)", () => {
   it("reads the space list, with the rates as numbers", async () => {
     answer(200, RECORDED.list);
     expect(await getSpaces()).toEqual([{ id: 53, ...SPACE }]);
-    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/api/spaces`, expect.objectContaining({ method: "GET" }));
+    expect(fetch).toHaveBeenCalledWith(`${APP_SERVICE_URL}/api/spaces`, expect.objectContaining({ method: "GET" }));
   });
 
   it("sends a new space as JSON and returns it with its id", async () => {
     answer(201, RECORDED.created);
     expect(await createSpace(SPACE)).toEqual({ id: 53, ...SPACE });
     const [url, options] = fetch.mock.calls[0];
-    expect(url).toBe(`${BASE_URL}/api/spaces`);
+    expect(url).toBe(`${APP_SERVICE_URL}/api/spaces`);
     expect(options.method).toBe("POST");
     expect(options.headers).toEqual({ "Content-Type": "application/json" });
     expect(JSON.parse(options.body)).toEqual(SPACE);
@@ -75,7 +74,7 @@ describe("api (real back end)", () => {
   it("returns nothing once a space is deleted", async () => {
     answer(204);
     expect(await deleteSpace(53)).toBeNull();
-    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/api/spaces/53`, expect.objectContaining({ method: "DELETE" }));
+    expect(fetch).toHaveBeenCalledWith(`${APP_SERVICE_URL}/api/spaces/53`, expect.objectContaining({ method: "DELETE" }));
   });
 
   it("gives the message of each invalid field", async () => {
@@ -129,7 +128,7 @@ describe("api (real back end)", () => {
     const found = await getAvailableSpaces({ start: "2026-12-01T09:00:00", end: "2026-12-01T13:00:00", type: "OFFICE" });
     expect(found).toEqual([{ id: 118, ...SPACE }]);
     const url = new URL(fetch.mock.calls[0][0]);
-    expect(`${url.origin}${url.pathname}`).toBe(`${BASE_URL}/api/spaces/available`);
+    expect(`${url.origin}${url.pathname}`).toBe(`${APP_SERVICE_URL}/api/spaces/available`);
     expect(Object.fromEntries(url.searchParams)).toEqual({
       start: "2026-12-01T09:00:00",
       end: "2026-12-01T13:00:00",
@@ -157,36 +156,11 @@ describe("getCurrentUser (real back end)", () => {
   it("returns the signed-in user's id and role", async () => {
     answer(200, RECORDED.me);
     expect(await getCurrentUser()).toEqual({ id: "00000000-0000-0000-0000-000000000001", role: "CLIENT" });
-    expect(fetch).toHaveBeenCalledWith(`${BASE_URL}/api/me`, expect.objectContaining({ method: "GET" }));
+    expect(fetch).toHaveBeenCalledWith(`${APP_SERVICE_URL}/api/me`, expect.objectContaining({ method: "GET" }));
   });
 
   it("returns null for a guest", async () => {
     answer(401);
     expect(await getCurrentUser()).toBeNull();
-  });
-});
-
-describe("getAvailableSpaces (mock)", () => {
-  beforeEach(() => setApiMode("mock"));
-
-  it("refuses a slot whose end is not after its start, like the back end", async () => {
-    const error = await errorOf(() => getAvailableSpaces({ start: "2026-12-01T13:00:00", end: "2026-12-01T09:00:00" }));
-    expect(error).toMatchObject({ status: 400, detail: "Données invalides" });
-    expect(error.errors).toEqual({ end: "La fin doit être après le début" });
-  });
-});
-
-describe("deleteSpace (mock)", () => {
-  beforeEach(() => {
-    setApiMode("mock");
-    setSessionUserId(DEMO_ADMIN_ID);
-  });
-  afterEach(() => resetDb()); // demo data and signed-in user back to the start
-
-  it("refuses to delete a space with bookings, naming it like the back end", async () => {
-    expect(await errorOf(() => deleteSpace(1))).toMatchObject({
-      status: 409,
-      detail: "Impossible de supprimer l'espace « Openspace 1 » : il a des réservations",
-    });
   });
 });

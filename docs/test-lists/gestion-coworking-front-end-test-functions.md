@@ -134,7 +134,7 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 128 | Server unreachable | `api (real back end) > says the server cannot be reached` (`lib/api.test.js`) |
 | 129 | Signed-in user | `getCurrentUser (real back end) > returns the signed-in user's id and role` (`lib/api.test.js`) |
 | 130 | Guest | `getCurrentUser (real back end) > returns null for a guest` (`lib/api.test.js`) |
-| 131 | Invalid search slot (mock) | `getAvailableSpaces (mock) > refuses a slot whose end is not after its start, like the back end` (`lib/api.test.js`) |
+| 131 | Invalid search slot (mock) | `getAvailableSpaces (mock) > refuses a slot whose end is not after its start, like the back end` (`lib/mock/handlers.test.js`) |
 | 132 | Read from the environment | `config > reads the data mode and the service addresses from the environment` (`lib/config.test.js`) |
 | 133 | Dev bar choice in development | `config > uses the mode chosen in the dev bar during development` (`lib/config.test.js`) |
 | 134 | Dev bar choice in production | `config > ignores a mode chosen in the dev bar in a production build` (`lib/config.test.js`) |
@@ -143,6 +143,6 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 137 | Tests | `.env files > runs the tests with the mock` (`lib/config.test.js`) |
 | 138 | Order on Espaces disponibles | `SpacesPage > lists the spaces by type, then by name` (`pages/SpacesPage.test.jsx`) |
 | 139 | Order in Réserver | `BookPage > lists the spaces of the type by name` (`pages/BookPage.test.jsx`) |
-| 140 | Space with bookings (mock) | `deleteSpace (mock) > refuses to delete a space with bookings, naming it like the back end` (`lib/api.test.js`) |
+| 140 | Space with bookings (mock) | `deleteSpace (mock) > refuses to delete a space with bookings, naming it like the back end` (`lib/mock/handlers.test.js`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

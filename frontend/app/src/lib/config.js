@@ -2,8 +2,8 @@ import { readLocal, writeLocal } from './storage.js';
 
 // Set per environment in frontend/app/.env.development, .env.production and .env.test ('mock' or 'real').
 export const API_MODE = import.meta.env.VITE_API_MODE;
-export const BASE_URL = import.meta.env.VITE_APP_SERVICE_URL; // app-service
-export const AUTH_BASE_URL = import.meta.env.VITE_AUTH_SERVICE_URL; // auth-service (planned)
+export const APP_SERVICE_URL = import.meta.env.VITE_APP_SERVICE_URL; // app-service
+export const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL; // auth-service (planned)
 
 const API_MODE_KEY = 'proto.apiMode';
 
