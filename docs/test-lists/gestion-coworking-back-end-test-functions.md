@@ -63,5 +63,12 @@ Test number and title from `gestion-coworking-back-end-tests.md`, and the Java t
 | 57 | Free-space search against the database | `availableSearchLeavesOutBookedSpace` (`integration/SpaceApiIntegrationTest.java`) |
 | 58 | Demo spaces | `scriptAddsTheSevenDemoSpacesOfTheMock` (`repository/DemoSpacesScriptTest.java`) |
 | 59 | Run twice | `scriptRunTwiceAddsEachSpaceOnce` (`repository/DemoSpacesScriptTest.java`) |
+| 60 | No database connection in the shared settings | `sharedSettingsHaveNoDatabaseConnection` (`ConfigurationFilesTest.java`) |
+| 61 | Shared settings: no SQL logging, guest | `sharedSettingsDoNotLogSqlAndRunAsGuest` (`ConfigurationFilesTest.java`) |
+| 62 | Default profile | `developmentIsTheDefaultProfile` (`ConfigurationFilesTest.java`) |
+| 63 | Development settings | `developmentProfileUsesLocalDatabaseLogsSqlAndRunsAsAdmin` (`ConfigurationFilesTest.java`) |
+| 64 | Deployed origin allowed | `preflightFromDeployedOriginSucceeds` (`security/DeploymentSettingsTest.java`) |
+| 65 | Development origin refused | `preflightFromDevelopmentOriginIsRejectedOnceOriginsAreChanged` (`security/DeploymentSettingsTest.java`) |
+| 66 | Role set at deployment | `currentUserHasTheConfiguredRole` (`security/DeploymentSettingsTest.java`) |
 
 Run one test from `backend/app-service`: `.\mvnw.cmd test -Dtest=<Class>#<method>`.

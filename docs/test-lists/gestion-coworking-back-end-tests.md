@@ -4,7 +4,7 @@ The tests of the app-service (Spring Boot), grouped by subject. Each test checks
 
 Run them with `.\mvnw.cmd test` in `backend/app-service` (MariaDB must be running). The test function names are in `gestion-coworking-back-end-test-functions.md`; the front-end tests are in `gestion-coworking-front-end-tests.md`.
 
-59 tests.
+66 tests.
 
 ## A. Space data rules
 
@@ -204,3 +204,28 @@ The requests are made by an admin, unless stated otherwise.
 
 **59. Run twice**: the script is run twice.
 - Expected: each demo space is there only once.
+
+## H. Configuration per environment
+
+`application.properties` is used by every environment, `application-dev.properties` by development only (the default profile). A deployment changes settings with environment variables; the tests change them as test properties.
+
+**60. No database connection in the shared settings**: the content of `application.properties`.
+- Expected: no database address, user or password.
+
+**61. Shared settings: no SQL logging, guest**: the content of `application.properties`.
+- Expected: SQL queries are not logged; the role is empty (guest).
+
+**62. Default profile**: the content of `application.properties`.
+- Expected: the default profile is `dev`.
+
+**63. Development settings**: the content of `application-dev.properties`.
+- Expected: the local database (`localhost:3306/gestion_coworking`, user `root`), SQL logging, role `ADMIN`.
+
+**64. Deployed origin allowed**: the allowed origins are set to `https://coworking.exemple.be`; a preflight comes from that address.
+- Expected: 200, with that address allowed.
+
+**65. Development origin refused**: the same setting; a preflight comes from `http://localhost:5173`.
+- Expected: 403.
+
+**66. Role set at deployment**: the role is set to `CLIENT`; `/api/me` is called.
+- Expected: the role `CLIENT`.

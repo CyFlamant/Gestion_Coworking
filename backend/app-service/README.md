@@ -17,7 +17,7 @@ Run from `backend/app-service` (Maven wrapper, no global Maven):
 
 The app and the tests need a MySQL-compatible server at `localhost:3306` with an existing database `gestion_coworking` (locally: XAMPP's MariaDB, user `root`, empty password). Flyway creates the tables on startup. If the server is not started, startup fails with "Communications link failure".
 
-To run as another role without editing `application.properties`:
+To run as another role without editing `application-dev.properties`:
 
 ```powershell
 .\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--app.placeholder-user-role=CLIENT"
@@ -35,14 +35,26 @@ A space whose name already exists is skipped, so running it again adds nothing. 
 
 ## Configuration
 
-`src/main/resources/application.properties`:
+Two files in `src/main/resources/`:
+
+- `application.properties`: settings for every environment. No database connection, no SQL logging, guest role.
+- `application-dev.properties`: development only. Local database (`root`, empty password), SQL logging, role `ADMIN`.
+
+`dev` is the default profile (`spring.profiles.default`), so `mvnw spring-boot:run`, the tests and the IDE use it without options. Production sets another profile and gives its settings in environment variables, which take priority over the files (name of the key in capitals, dots replaced by `_`, dashes removed):
+
+| Environment variable | Production value |
+| --- | --- |
+| `SPRING_PROFILES_ACTIVE` | `prod` (anything but `dev`; forgetting it runs with the development settings) |
+| `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD` | Database connection. Without them, startup fails ("Failed to configure a DataSource") |
+| `APP_PLACEHOLDERUSERROLE` | Role of the fixed user; empty (guest) if not set |
+| `APP_CORS_ALLOWEDORIGINS` | Deployed front-end address(es), comma-separated |
 
 | Key | Use |
 | --- | --- |
-| `spring.datasource.url`, `.username`, `.password` | Database connection (local values only; see `docs/to-do.md` before deploying) |
+| `spring.datasource.url`, `.username`, `.password` | Database connection (development file, or environment variables) |
 | `spring.jpa.hibernate.ddl-auto=validate` | Hibernate checks the entities against the tables but never changes the schema (Flyway does) |
 | `spring.jpa.open-in-view=false` | The database session closes when the service returns; lazy relations cannot be loaded while the JSON answer is written |
-| `spring.jpa.show-sql=true` | Logs SQL queries (development only) |
+| `spring.jpa.show-sql=true` | Logs SQL queries (development file only) |
 | `app.placeholder-user-id` | Id of the fixed user, until the auth-service exists |
 | `app.placeholder-user-role` | Role of the fixed user: `ADMIN`, `CLIENT`, or empty for a guest |
 | `app.cors.allowed-origins` | Front-end addresses allowed to call the API (comma-separated) |
@@ -81,7 +93,8 @@ app-service/
 │       ├── CurrentUserProvider.java    interface: id of the current user
 │       └── SecurityContextUserProvider.java  its implementation: reads the id from the security context
 ├── src/main/resources/
-│   ├── application.properties
+│   ├── application.properties       settings for every environment
+│   ├── application-dev.properties   development only: local database, SQL logging, admin role
 │   └── db/migration/V1__… to V6__…  Flyway migrations (the schema)
 └── src/test/java/.../gestioncoworking/  same packages as main, plus integration/ and SpaceFixtures (test spaces)
 ```
@@ -232,10 +245,11 @@ erDiagram
 | Kind | Annotation | Database | Files |
 | --- | --- | --- | --- |
 | Request validation | none (plain Validator) | no | `dto/SpaceRequestValidationTest` |
+| Configuration files | none (files read as properties) | no | `ConfigurationFilesTest` |
 | Current user | none (security context set by hand) | no | `security/SecurityContextUserProviderTest` |
 | Service | `@ExtendWith(MockitoExtension.class)`, repository mocked | no | `service/SpaceServiceTest` |
 | Repository | `@DataJpaTest` on the real MariaDB, rolled back | yes | `repository/SpaceRepositoryTest`, `repository/DemoSpacesScriptTest` (runs `dev-data/demo-spaces.sql`) |
-| Controller | `@WebMvcTest` + `SecurityConfig`, service mocked, `@WithMockUser` for the role | no | `controller/*Test`, `security/CorsConfigTest` |
+| Controller | `@WebMvcTest` + `SecurityConfig`, service mocked, `@WithMockUser` for the role | no | `controller/*Test`, `security/CorsConfigTest`, `security/DeploymentSettingsTest` (settings overridden) |
 | Whole app | `@SpringBootTest` (+ MockMvc), rolled back | yes | `GestionCoworkingApplicationTests`, `integration/SpaceApiIntegrationTest` |
 
 `SpaceFixtures` gives valid test spaces (`validSpace()`, `space(name, type)`), not saved.
