@@ -6,6 +6,7 @@ import PageTitle from "../components/PageTitle.jsx";
 import Segmented from "../components/Segmented.jsx";
 import ShapeIcon from "../components/ShapeIcon.jsx";
 import SpaceForm from "../components/SpaceForm.jsx";
+import StatusMessage from "../components/StatusMessage.jsx";
 import TypeChip from "../components/TypeChip.jsx";
 import { createSpace, deleteSpace, getBookings, getSpaces, updateSpace } from "../lib/api.js";
 import { RATE_FIELDS, SPACE_TYPES } from "../lib/config.js";
@@ -87,11 +88,7 @@ export default function AdminSpacesPage() {
         {spaces && <p className="muted">{t("adminSpaces.count", { n: shown.length })}</p>}
       </div>
       <ErrorAlert>{error}</ErrorAlert>
-      {notice && (
-        <p className="alert alert--info" role="status">
-          {notice}
-        </p>
-      )}
+      <StatusMessage>{notice}</StatusMessage>
       {spaces &&
         (shown.length === 0 ? (
           <div className="empty">

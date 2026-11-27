@@ -1,31 +1,18 @@
 import { useEffect, useState } from "react";
-import BookingForm from "../components/BookingForm.jsx";
+import AdminBookingDialog from "../components/AdminBookingDialog.jsx";
+import AdminBookingList from "../components/AdminBookingList.jsx";
 import ConfirmDialog from "../components/ConfirmDialog.jsx";
 import DayTimeline from "../components/DayTimeline.jsx";
-import Dialog from "../components/Dialog.jsx";
 import ErrorAlert from "../components/ErrorAlert.jsx";
 import MonthCalendar from "../components/MonthCalendar.jsx";
 import PageTitle from "../components/PageTitle.jsx";
 import Segmented from "../components/Segmented.jsx";
-import ShapeIcon from "../components/ShapeIcon.jsx";
-import { createBooking, deleteBooking, getBookings, getClients, getSpaces, updateBooking } from "../lib/api.js";
-import { resolveSpaceId } from "../lib/booking.js";
+import StatusMessage from "../components/StatusMessage.jsx";
+import { deleteBooking, getBookings, getClients, getSpaces } from "../lib/api.js";
 import { SPACE_TYPES } from "../lib/config.js";
-import {
-  addDays,
-  formatDate,
-  formatMoney,
-  formatShortDate,
-  formatTime,
-  overlaps,
-  parseLocal,
-  startOfDay,
-  toDateInput,
-  toLocalIso,
-  today,
-} from "../lib/dates.js";
+import { addDays, formatDate, overlaps, parseLocal, startOfDay, toDateInput, today } from "../lib/dates.js";
 import { t } from "../lib/i18n/index.js";
-import { bookingRange, formValuesFromRange } from "../lib/pricing.js";
+import { formValuesFromRange } from "../lib/pricing.js";
 import { describeRange } from "../lib/slots.js";
 import { byTypeThenName } from "../lib/spaces.js";
 
@@ -178,11 +165,7 @@ export default function AdminBookingsPage() {
         />
       </div>
       <ErrorAlert>{error}</ErrorAlert>
-      {notice && (
-        <p className="alert alert--info" role="status">
-          {notice}
-        </p>
-      )}
+      <StatusMessage>{notice}</StatusMessage>
 
       {view === "calendar" ? (
         <div className="admin-grid">
@@ -212,7 +195,7 @@ export default function AdminBookingsPage() {
           </div>
         </div>
       ) : (
-        <BookingList
+        <AdminBookingList
           bookings={shownBookings.filter((b) => showPast || parseLocal(b.endDateTime) >= now)}
           showPast={showPast}
           onShowPast={setShowPast}
@@ -222,7 +205,7 @@ export default function AdminBookingsPage() {
       )}
 
       {editing && (
-        <BookingDialog
+        <AdminBookingDialog
           booking={editing.booking}
           initial={editing.initial}
           data={data}
@@ -252,154 +235,3 @@ export default function AdminBookingsPage() {
   );
 }
 
-// The bookings as a table, with a checkbox to include the past ones.
-function BookingList({ bookings, showPast, onShowPast, onEdit, onDelete }) {
-  return (
-    <div className="form">
-      <label className="field__hint">
-        <input type="checkbox" checked={showPast} onChange={(event) => onShowPast(event.target.checked)} />{" "}
-        {t("adminBookings.showPast")}
-      </label>
-      {bookings.length === 0 ? (
-        <p className="empty">{t("adminBookings.empty")}</p>
-      ) : (
-        <div className="table-wrap">
-          <table className="table table--cards">
-            <thead>
-              <tr>
-                {["colDate", "colTime", "colSpace", "colClient", "colFormula"].map((key) => (
-                  <th key={key} scope="col">
-                    {t(`adminBookings.${key}`)}
-                  </th>
-                ))}
-                <th scope="col" className="num">
-                  {t("adminBookings.colPrice")}
-                </th>
-                <th scope="col">
-                  <span className="visually-hidden">Actions</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map((booking) => {
-                const start = parseLocal(booking.startDateTime);
-                const end = parseLocal(booking.endDateTime);
-                const multiDay = startOfDay(start).getTime() !== startOfDay(end).getTime();
-                return (
-                  <tr key={booking.id}>
-                    <td data-label={t("adminBookings.colDate")}>
-                      {multiDay ? `${formatShortDate(start)} → ${formatShortDate(end)}` : formatShortDate(start)}
-                    </td>
-                    <td data-label={t("adminBookings.colTime")}>{`${formatTime(start)} – ${formatTime(end)}`}</td>
-                    <td data-label={t("adminBookings.colSpace")}>
-                      <span className="table__name">
-                        <ShapeIcon type={booking.spaceType} />
-                        {booking.spaceName}
-                      </span>
-                    </td>
-                    <td data-label={t("adminBookings.colClient")}>{booking.userName}</td>
-                    <td data-label={t("adminBookings.colFormula")}>{t(`formulas.${booking.formula}`)}</td>
-                    <td className="num" data-label={t("adminBookings.colPrice")}>
-                      {booking.price != null ? formatMoney(booking.price) : "—"}
-                    </td>
-                    <td>
-                      <div className="table__actions">
-                        <button type="button" className="btn btn--small" onClick={() => onEdit(booking)}>
-                          {t("common.edit")}
-                        </button>
-                        <button type="button" className="btn btn--small btn--danger" onClick={() => onDelete(booking)}>
-                          {t("common.delete")}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// The booking form in a dialog: creates a booking for a client, or updates the one given.
-// Free spaces are computed from the loaded bookings, leaving out the booking being edited.
-function BookingDialog({ booking, initial, data, onSaved, onDelete, onClose }) {
-  const { type, spaceId: initialSpaceId, userId, ...slot } = initial;
-  const [form, setForm] = useState({ type, spaceId: initialSpaceId, spaceChosen: true, userId, slot });
-  const [submitError, setSubmitError] = useState(null);
-  const [saving, setSaving] = useState(false);
-
-  const range = bookingRange(form.slot);
-  const busy = new Set(
-    data.bookings
-      .filter((b) => b.id !== booking?.id && overlaps(range.start, range.end, parseLocal(b.startDateTime), parseLocal(b.endDateTime)))
-      .map((b) => b.spaceId),
-  );
-  const free = new Set(data.spaces.filter((space) => !busy.has(space.id)).map((space) => space.id));
-  const spaceId = resolveSpaceId({ spaces: data.spaces, free, ...form });
-
-  function change(changes) {
-    setForm((current) => ({
-      ...current,
-      ...changes,
-      spaceChosen: "spaceId" in changes ? true : "type" in changes ? false : current.spaceChosen,
-    }));
-  }
-
-  async function submit(event) {
-    event.preventDefault();
-    setSubmitError(null);
-    setSaving(true);
-    const request = {
-      spaceId,
-      userId: form.userId || null,
-      startDateTime: toLocalIso(range.start),
-      endDateTime: toLocalIso(range.end),
-    };
-    try {
-      if (booking) await updateBooking(booking.id, request);
-      else await createBooking(request);
-      onSaved(t(booking ? "adminBookings.updated" : "adminBookings.created"), startOfDay(range.start));
-    } catch (err) {
-      setSubmitError(err.detail ?? String(err));
-      setSaving(false);
-    }
-  }
-
-  return (
-    <Dialog
-      title={t(booking ? "adminBookings.editTitle" : "adminBookings.newTitle")}
-      onClose={onClose}
-      actions={
-        <>
-          {booking && (
-            <button type="button" className="btn btn--danger push-left" onClick={() => onDelete(booking)}>
-              {t("common.delete")}
-            </button>
-          )}
-          <button type="button" className="btn btn--ghost" onClick={onClose}>
-            {t("common.cancel")}
-          </button>
-          <button type="submit" form="admin-booking-form" className="btn btn--primary" disabled={saving || !spaceId}>
-            {t("common.save")}
-          </button>
-        </>
-      }
-    >
-      <form id="admin-booking-form" noValidate onSubmit={submit}>
-        <ErrorAlert>{submitError}</ErrorAlert>
-        <BookingForm
-          idPrefix="admin-booking"
-          spaces={data.spaces}
-          clients={data.clients}
-          booking={form}
-          spaceId={spaceId}
-          free={free}
-          onChange={change}
-        />
-      </form>
-    </Dialog>
-  );
-}

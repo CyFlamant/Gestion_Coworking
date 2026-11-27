@@ -77,7 +77,7 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 71 | Page at `/contact` | `App > shows the page at /contact to a guest` (`App.test.jsx`) |
 | 72 | Page at `/horaires` | `App > shows the page at /horaires to a guest` (`App.test.jsx`) |
 | 73 | Page at `/mentions-legales` | `App > shows the page at /mentions-legales to a guest` (`App.test.jsx`) |
-| 74 | Admin page | `App > shows the admin pages to an admin` (`App.test.jsx`) |
+| 74 | Admin pages | `App > shows the admin pages to an admin` (`App.test.jsx`) |
 | 75 | Client page for a guest | `App > sends a guest who opens a client page to the home page` (`App.test.jsx`) |
 | 76 | Unknown address | `App > says when a page does not exist` (`App.test.jsx`) |
 | 77 | List | `AdminSpacesPage > lists the spaces with their rates and number of bookings` (`pages/AdminSpacesPage.test.jsx`) |

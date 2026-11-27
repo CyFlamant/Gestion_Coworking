@@ -246,8 +246,8 @@ Checks that each address opens its real page for the right role. The pages thems
 
 - Expected: the page's heading is shown, and the tab title is the one in the table, followed by "· L’Échappée".
 
-**74. Admin page**: an admin opens `/admin/espaces`.
-- Expected: the "Espaces" heading is shown, and the tab title is "Espaces · L’Échappée".
+**74. Admin pages**: an admin opens `/admin/espaces`, then `/admin/reservations`.
+- Expected: each page's heading is shown ("Espaces", "Réservations"), with its tab title ("Espaces · L’Échappée", "Réservations · L’Échappée").
 
 **75. Client page for a guest**: a guest opens `/reserver`.
 - Expected: the home page is shown instead.

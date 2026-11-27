@@ -5,7 +5,7 @@ import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
 import TypeChip from "../components/TypeChip.jsx";
 import { createBooking, getAvailableSpaces, getSpaces } from "../lib/api.js";
-import { resolveSpaceId } from "../lib/booking.js";
+import { applyBookingChange, resolveSpaceId } from "../lib/booking.js";
 import { RATE_FIELDS, SPACE_TYPES } from "../lib/config.js";
 import { addDays, formatMoney, toLocalIso, today } from "../lib/dates.js";
 import { clearDraft, readDraft } from "../lib/draft.js";
@@ -82,17 +82,7 @@ export default function BookPage() {
   const busy = Boolean(space && free && !free.has(space.id));
 
   function change(changes) {
-    setBooking((current) => ({
-      ...current,
-      ...changes,
-      // Picking a space keeps it; changing the type starts again from a free space of that type.
-      spaceChosen:
-        "spaceId" in changes
-          ? true
-          : "type" in changes
-            ? false
-            : current.spaceChosen,
-    }));
+    setBooking((current) => applyBookingChange(current, changes));
   }
 
   async function submit(event) {
