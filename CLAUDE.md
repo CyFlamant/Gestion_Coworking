@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Coworking space management web app (student integration project, EAFC Namur). Specs are in `docs/` (French): `Cahier des charges.md` (requirements), `Plan d'implementation.md` (architecture, planning, class diagram), `pages accueil.md` (UI mockups). The `.docx` originals are kept for reference; edit the `.md` files.
 
 Architecture:
-- `backend/app-service` — app-service: Spring Boot 4.1 / Java 21, bookings and spaces.
+- `backend/app-service` — app-service: Spring Boot 4.1 / Java 21, bookings and spaces; see `backend/app-service/README.md`.
 - `frontend/app` — front end: React 19 (Vite, React Router), tested with Vitest. Bookings, accounts and sign-in still run on an in-browser mock until the backend has them; see `frontend/app/README.md`.
 - Auth-service (planned) — separate Spring Boot project with its own DB, issues JWTs. Until it exists, the app-service uses a fixed user id.
 - Deployment (planned) — Docker, cloud host (Azure/AWS).

@@ -19,7 +19,7 @@ As for the React port, each step starts with tests where code changes, ends with
 | 3. Demo spaces in the database | The same seven demo spaces as the mock, in an SQL script run by hand on the development database, never in production | To do |
 | 4. Spaces with the real back end | Check every space screen with the real back end: home page, Espaces disponibles (catalogue and prices), admin Espaces (add, edit, delete, errors), as admin, as client and as guest | To do |
 | 5. Booking screens in real mode | Check that "Réserver", "Mes réservations" and admin "Réservations" show the "Pas encore disponible" error (see Decisions) | To do |
-| 6. Back-end adjustments | "Space has bookings" answered with 409 instead of 500 (already in `to-do.md`) | To do |
+| 6. Back-end adjustments | "Space has bookings" answered with 409 instead of 500 (already in `to-do.md`) | Moved to `backend-spaces-plan.md`, step 2 |
 | 7. Documentation | Update the front-end README, the test lists and `to-do.md` | To do |
 
 ## Decisions
@@ -44,6 +44,8 @@ Project documents to read with this plan (paths from the repository root):
 | `docs/Cahier des charges.md` | Requirements (French) |
 | `docs/Plan d'implementation.md` | Architecture, planning, class diagram (French) |
 | `docs/pages accueil.md` | UI mockups (French) |
+| `docs/backend-spaces-plan.md` | Back-end work on spaces: clean-up, 409, free-space search |
+| `backend/app-service/README.md` | Back end: file structure, layers, data flows, endpoints, schema |
 | `docs/react_porting-plan.md` | Previous plan: the port of the HTML prototype to React (done) |
 | `docs/to-do.md` | Open items, including deployment and back-end rules (local file, not tracked by git) |
 | `docs/test-lists/gestion-coworking-back-end-tests.md` | Back-end tests: behaviours (with `…-back-end-test-functions.md` for the test names) |
