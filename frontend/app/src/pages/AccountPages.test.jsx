@@ -3,6 +3,7 @@ import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, login, register } from "../lib/api.js";
 import { goTo } from "../lib/browser.js";
+import { clearDraft, saveDraft } from "../lib/draft.js";
 import { clearFlash, readFlash } from "../lib/flash.js";
 import LoginPage from "./LoginPage.jsx";
 import SignupPage from "./SignupPage.jsx";
@@ -15,11 +16,17 @@ vi.mock("../lib/api.js", async (importOriginal) => ({
 }));
 vi.mock("../lib/browser.js", () => ({ goTo: vi.fn() }));
 
-// Forget the calls and the message recorded by the previous test.
+// Forget the calls, the message and the chosen space recorded by the previous test.
 beforeEach(() => {
   vi.clearAllMocks();
   clearFlash();
+  clearDraft();
 });
+
+// What "Se connecter pour réserver" on Espaces disponibles saves: Bureau 1 for a full day.
+const CHOSEN_SPACE = {
+  spaceId: 3, type: "OFFICE", formula: "DAY", date: new Date(2026, 10, 17), startHour: 9, hours: 2, halfDay: "MORNING",
+};
 
 // Types a value in the field with that label, as a user would.
 function type(label, value) {
@@ -41,6 +48,16 @@ describe("LoginPage", () => {
       password: "demo1234",
     });
     expect(readFlash()).toMatch(/Bienvenue/); // shown on the next page
+  });
+
+  it("goes on to the booking page when a space was chosen before signing in", async () => {
+    saveDraft(CHOSEN_SPACE);
+    login.mockResolvedValue({ id: "2", role: "CLIENT" });
+    render(<LoginPage />, { wrapper: MemoryRouter });
+    type("Adresse e-mail", "marie.dubois@exemple.be");
+    type("Mot de passe", "demo1234");
+    fireEvent.click(screen.getByRole("button", { name: "Se connecter" }));
+    await waitFor(() => expect(goTo).toHaveBeenCalledWith("/reserver"));
   });
 
   it("shows the error and stays on the page when the password is wrong", async () => {
@@ -86,6 +103,14 @@ describe("SignupPage", () => {
       passwordConfirm: "motdepasse",
     });
     expect(readFlash()).toMatch(/Compte créé/); // shown on the next page
+  });
+
+  it("goes on to the booking page when a space was chosen before signing up", async () => {
+    saveDraft(CHOSEN_SPACE);
+    register.mockResolvedValue({ id: "5", role: "CLIENT" });
+    render(<SignupPage />, { wrapper: MemoryRouter });
+    fireEvent.click(screen.getByRole("button", { name: "Créer mon compte" }));
+    await waitFor(() => expect(goTo).toHaveBeenCalledWith("/reserver"));
   });
 
   it("shows the API's errors next to the fields", async () => {

@@ -117,5 +117,8 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 111 | Menu closes on page change | `Layout > closes the mobile menu when the page changes` (`components/Layout.test.jsx`) |
 | 112 | Sign-up page | `Layout > marks the sign-in link as current on the sign-up page too` (`components/Layout.test.jsx`) |
 | 113 | Same hours in both places | `HoursPage > states the same opening hours as the booking rules` (`pages/InfoPages.test.jsx`) |
+| 114 | Choice kept | `SpacesPage > keeps a guest's choice for after sign-in` (`pages/SpacesPage.test.jsx`) |
+| 115 | After signing in | `LoginPage > goes on to the booking page when a space was chosen before signing in` (`pages/AccountPages.test.jsx`) |
+| 116 | After signing up | `SignupPage > goes on to the booking page when a space was chosen before signing up` (`pages/AccountPages.test.jsx`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

@@ -14,12 +14,12 @@ import { t } from "../lib/i18n/index.js";
 export default function HomePage() {
   const user = useOutletContext();
   const [spaces, setSpaces] = useState(null); // null until loaded
-  const [error, setError] = useState(null);
+  const [loadError, setLoadError] = useState(null);
 
   useEffect(() => {
     getSpaces()
       .then(setSpaces)
-      .catch((err) => setError(t("common.loadError", { detail: err.detail })));
+      .catch((err) => setLoadError(t("common.loadError", { detail: err.detail })));
   }, []);
 
   return (
@@ -56,7 +56,7 @@ export default function HomePage() {
 
       <section className="inner section">
         <h2>{t("home.spacesTitle")}</h2>
-        <ErrorAlert>{error}</ErrorAlert>
+        <ErrorAlert>{loadError}</ErrorAlert>
         {spaces && (
           <div className="type-panels">
             {SPACE_TYPES.map((type) => (

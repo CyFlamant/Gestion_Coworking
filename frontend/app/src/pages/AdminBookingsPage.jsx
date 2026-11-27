@@ -16,6 +16,8 @@ import { formValuesFromRange } from "../lib/pricing.js";
 import { describeRange } from "../lib/slots.js";
 import { byTypeThenName } from "../lib/spaces.js";
 
+const NO_DATA = { spaces: [], bookings: [], clients: [] };
+
 // Réservations (admin): type + space filters, month calendar and day timeline, plus a list view.
 // Create, update and delete bookings for any client.
 export default function AdminBookingsPage() {
@@ -38,20 +40,12 @@ export default function AdminBookingsPage() {
       .catch((err) => setError(t("common.loadError", { detail: err.detail })));
   }, [version]);
 
-  if (!data) {
-    return (
-      <main className="inner page">
-        <PageTitle title={t("pages.adminBookings")} />
-        <h1>{t("pages.adminBookings")}</h1>
-        <ErrorAlert>{error}</ErrorAlert>
-      </main>
-    );
-  }
-
-  const ofType = data.spaces.filter((space) => type === "ALL" || space.type === type).sort(byTypeThenName);
+  // Until the data arrives, the page shows its head and filters with empty lists, like the other pages.
+  const loaded = data ?? NO_DATA;
+  const ofType = loaded.spaces.filter((space) => type === "ALL" || space.type === type).sort(byTypeThenName);
   const shownSpaces = ofType.filter((space) => spaceId === "ALL" || space.id === spaceId);
   const shownIds = new Set(shownSpaces.map((space) => space.id));
-  const shownBookings = data.bookings.filter((booking) => shownIds.has(booking.spaceId));
+  const shownBookings = loaded.bookings.filter((booking) => shownIds.has(booking.spaceId));
   const ofDay = shownBookings.filter((b) =>
     overlaps(date, addDays(date, 1), parseLocal(b.startDateTime), parseLocal(b.endDateTime)),
   );
@@ -99,7 +93,7 @@ export default function AdminBookingsPage() {
     }
   }
 
-  const first = shownSpaces[0] ?? data.spaces[0];
+  const first = shownSpaces[0] ?? loaded.spaces[0];
   const newPreset = { type: first?.type, spaceId: first?.id, formula: "HOUR", date: date < today() ? today() : date, startHour: 9, hours: 1, halfDay: "MORNING" };
 
   return (
@@ -110,7 +104,7 @@ export default function AdminBookingsPage() {
           <h1>{t("pages.adminBookings")}</h1>
           <p className="lead">{t("adminBookings.lead")}</p>
         </div>
-        <button type="button" className="btn btn--primary" onClick={() => openNew(newPreset)}>
+        <button type="button" className="btn btn--primary" disabled={!data} onClick={() => openNew(newPreset)}>
           {t("adminBookings.add")}
         </button>
       </div>
@@ -167,7 +161,7 @@ export default function AdminBookingsPage() {
       <ErrorAlert>{error}</ErrorAlert>
       <StatusMessage>{notice}</StatusMessage>
 
-      {view === "calendar" ? (
+      {data && view === "calendar" && (
         <div className="admin-grid">
           <div className="admin-grid__side">
             <MonthCalendar selected={date} marked={marked} onSelect={setDate} />
@@ -194,7 +188,8 @@ export default function AdminBookingsPage() {
             )}
           </div>
         </div>
-      ) : (
+      )}
+      {data && view === "list" && (
         <AdminBookingList
           bookings={shownBookings.filter((b) => showPast || parseLocal(b.endDateTime) >= now)}
           showPast={showPast}

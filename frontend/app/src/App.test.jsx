@@ -70,8 +70,7 @@ describe("App", () => {
 
     document.title = "";
     renderAt("/admin/reservations", "admin");
-    // This page shows a first heading while it loads, then a new one: waitFor looks again each time.
-    await waitFor(() => expect(screen.getByRole("heading", { level: 1, name: "Réservations" })).toBeInTheDocument());
+    expect(await screen.findByRole("heading", { level: 1, name: "Réservations" })).toBeInTheDocument();
     await waitFor(() => expect(document.title).toBe("Réservations · L’Échappée"));
   });
 

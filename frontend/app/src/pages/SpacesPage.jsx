@@ -66,8 +66,13 @@ export default function SpacesPage() {
     );
   }
 
-  function book(space) {
+  // Remembers the chosen space and slot for "Réserver", also for a guest who signs in first.
+  function choose(space) {
     saveDraft({ spaceId: space.id, type: space.type, ...values });
+  }
+
+  function book(space) {
+    choose(space);
     navigate("/reserver");
   }
 
@@ -125,6 +130,7 @@ export default function SpacesPage() {
                 isFree={isFree(space)}
                 role={roleOf(user)}
                 onBook={() => book(space)}
+                onSignIn={() => choose(space)}
               />
             ))}
           </div>
@@ -135,7 +141,7 @@ export default function SpacesPage() {
 }
 
 // One space: its rates (the one used for the slot is highlighted), whether it's free, the price and the action.
-function SpaceCard({ space, range, isFree, role, onBook }) {
+function SpaceCard({ space, range, isFree, role, onBook, onSignIn }) {
   const price = computePrice(space, range.start, range.end);
   return (
     <article className="card space-card">
@@ -167,7 +173,7 @@ function SpaceCard({ space, range, isFree, role, onBook }) {
           </button>
         )}
         {isFree && role !== "CLIENT" && (
-          <Link className="btn btn--small" to="/connexion">
+          <Link className="btn btn--small" to="/connexion" onClick={onSignIn}>
             {t("spaces.signInToBook")}
           </Link>
         )}

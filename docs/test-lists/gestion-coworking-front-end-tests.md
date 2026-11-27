@@ -6,7 +6,7 @@ The tests don't use the demo data of the mock (`lib/mock/db.js`). Each one gives
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-113 tests.
+116 tests.
 
 ## A. Prices and opening hours
 
@@ -393,3 +393,16 @@ The opening hours are written twice: as a sentence on the Horaires page (`fr.js`
 
 **113. Same hours in both places**: the sentence is compared with the rules.
 - Expected: Monday to Friday have the same hours, Sunday is closed, and the sentence states the weekday and Saturday hours of the rules. The test fails if one is changed without the other.
+
+## R. Signing in to book
+
+A guest chooses a space on "Espaces disponibles", then signs in or creates an account: they go on to "Réserver" with that space, instead of the home page.
+
+**114. Choice kept**: a guest clicks "Se connecter pour réserver" on Bureau 1, for a full day on Tuesday 17.
+- Expected: the sign-in page opens, and that space and slot are remembered.
+
+**115. After signing in**: a client signs in after choosing a space.
+- Expected: the booking page is loaded.
+
+**116. After signing up**: a new client creates an account after choosing a space.
+- Expected: the booking page is loaded.

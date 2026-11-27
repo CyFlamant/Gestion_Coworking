@@ -5,7 +5,7 @@ import PageTitle from "../components/PageTitle.jsx";
 import TextField from "../components/TextField.jsx";
 import { useSubmit } from "../hooks/useSubmit.js";
 import { login } from "../lib/api.js";
-import { HOME_BY_ROLE } from "../lib/auth.js";
+import { pageAfterSignIn } from "../lib/auth.js";
 import { goTo } from "../lib/browser.js";
 import { setFlash } from "../lib/flash.js";
 import { t } from "../lib/i18n/index.js";
@@ -18,7 +18,7 @@ export default function LoginPage() {
     () => login(values),
     (user) => {
       setFlash(t("signIn.welcome"));
-      goTo(HOME_BY_ROLE[user.role]);
+      goTo(pageAfterSignIn(user.role));
     },
   );
 

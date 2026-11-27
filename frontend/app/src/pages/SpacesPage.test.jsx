@@ -36,6 +36,7 @@ function renderPage({ user = null, path = "/espaces" } = {}) {
     <>
       <Route path="/espaces" element={<SpacesPage />} />
       <Route path="/reserver" element={<p>Page Réserver</p>} />
+      <Route path="/connexion" element={<p>Page Connexion</p>} />
     </>,
     { user, path },
   );
@@ -102,6 +103,13 @@ describe("SpacesPage", () => {
     renderPage();
     expect(within(await card("Bureau 1")).getByRole("link", { name: "Se connecter pour réserver" })).toBeInTheDocument();
     expect(within(await card("Openspace 1")).queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("keeps a guest's choice for after sign-in", async () => {
+    renderPage();
+    fireEvent.click(within(await card("Bureau 1")).getByRole("link", { name: "Se connecter pour réserver" }));
+    expect(await screen.findByText("Page Connexion")).toBeInTheDocument();
+    expect(takeDraft()).toMatchObject({ spaceId: 3, formula: "DAY", date: new Date(2026, 10, 17) });
   });
 
   it("takes a client to the booking page with the chosen space and slot", async () => {

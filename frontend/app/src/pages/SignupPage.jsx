@@ -5,6 +5,7 @@ import PageTitle from "../components/PageTitle.jsx";
 import TextField from "../components/TextField.jsx";
 import { useSubmit } from "../hooks/useSubmit.js";
 import { register } from "../lib/api.js";
+import { pageAfterSignIn } from "../lib/auth.js";
 import { goTo } from "../lib/browser.js";
 import { setFlash } from "../lib/flash.js";
 import { t } from "../lib/i18n/index.js";
@@ -24,7 +25,7 @@ export default function SignupPage() {
     () => register(values),
     () => {
       setFlash(t("signUp.created"));
-      goTo("/");
+      goTo(pageAfterSignIn("CLIENT")); // a new account is always a client
     },
   );
 
