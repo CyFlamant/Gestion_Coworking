@@ -53,7 +53,7 @@ public class SpaceService {
         try {
             spaceRepository.delete(existing);
         } catch (DataIntegrityViolationException ex) {
-            throw new SpaceHasBookingsException(id); // fk_bookings_space blocks the delete
+            throw new SpaceHasBookingsException(existing.getName()); // fk_bookings_space blocks the delete
         }
     }
 

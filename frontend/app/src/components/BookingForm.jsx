@@ -1,5 +1,6 @@
 import { SPACE_TYPES } from "../lib/config.js";
 import { t } from "../lib/i18n/index.js";
+import { byTypeThenName } from "../lib/spaces.js";
 import Segmented from "./Segmented.jsx";
 import ShapeIcon from "./ShapeIcon.jsx";
 import SlotFields from "./SlotFields.jsx";
@@ -18,7 +19,7 @@ export default function BookingForm({
   minDate,
   onChange,
 }) {
-  const ofType = spaces.filter((space) => space.type === booking.type);
+  const ofType = spaces.filter((space) => space.type === booking.type).sort(byTypeThenName);
   const isFree = (space) => !free || free.has(space.id);
   const noneFree = ofType.length > 0 && !ofType.some(isFree);
   const chosen = ofType.find((space) => space.id === spaceId);

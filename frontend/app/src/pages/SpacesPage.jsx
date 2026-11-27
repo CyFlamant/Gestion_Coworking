@@ -16,6 +16,7 @@ import { saveDraft } from "../lib/draft.js";
 import { t } from "../lib/i18n/index.js";
 import { bookingRange, computePrice, fitToOpeningHours } from "../lib/pricing.js";
 import { describeRange } from "../lib/slots.js";
+import { byTypeThenName } from "../lib/spaces.js";
 
 // Espaces disponibles: catalogue with rates + availability search (guests and clients).
 export default function SpacesPage() {
@@ -54,9 +55,9 @@ export default function SpacesPage() {
   const isFree = (space) => (searchError ? true : free.has(space.id));
   const ready = spaces && (free || searchError);
   const shown = ready
-    ? spaces.filter(
-        (space) => selectedType === "ALL" || space.type === selectedType,
-      )
+    ? spaces
+        .filter((space) => selectedType === "ALL" || space.type === selectedType)
+        .sort(byTypeThenName)
     : [];
 
   function chooseType(type) {

@@ -160,7 +160,7 @@ class SpaceServiceTest {
 
         assertThatThrownBy(() -> spaceService.delete(1))
                 .isInstanceOf(SpaceHasBookingsException.class)
-                .hasMessage("Impossible de supprimer l'espace 1 : il a des réservations");
+                .hasMessage("Impossible de supprimer l'espace « Bureau 1 » : il a des réservations");
     }
 
     @Test

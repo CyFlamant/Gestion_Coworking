@@ -141,5 +141,8 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 135 | Development server | `.env files > starts the development server with the real back end` (`lib/config.test.js`) |
 | 136 | Production build | `.env files > builds for production with the real back end` (`lib/config.test.js`) |
 | 137 | Tests | `.env files > runs the tests with the mock` (`lib/config.test.js`) |
+| 138 | Order on Espaces disponibles | `SpacesPage > lists the spaces by type, then by name` (`pages/SpacesPage.test.jsx`) |
+| 139 | Order in Réserver | `BookPage > lists the spaces of the type by name` (`pages/BookPage.test.jsx`) |
+| 140 | Space with bookings (mock) | `deleteSpace (mock) > refuses to delete a space with bookings, naming it like the back end` (`lib/api.test.js`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

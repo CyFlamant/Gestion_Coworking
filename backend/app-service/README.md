@@ -149,7 +149,7 @@ A service or Spring exception goes up to `GlobalExceptionHandler`, which answers
 | No user (guest) on a protected URL | 401 | empty body | none |
 | Wrong role (`@PreAuthorize`) | 403 | `Accès refusé` | none |
 | `SpaceNotFoundException` | 404 | `Espace introuvable : 99` | none |
-| `SpaceHasBookingsException` | 409 | `Impossible de supprimer l'espace 1 : il a des réservations` | none |
+| `SpaceHasBookingsException` | 409 | `Impossible de supprimer l'espace « Bureau 1 » : il a des réservations` | none |
 
 User-facing messages are in French.
 

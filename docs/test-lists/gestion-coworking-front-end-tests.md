@@ -6,7 +6,7 @@ The tests don't use the demo data of the mock (`lib/mock/db.js`). Each one gives
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-137 tests.
+140 tests.
 
 ## A. Prices and opening hours
 
@@ -436,7 +436,7 @@ The functions that call the app-service, in real mode. Each test gives them an a
 - Expected: an error with the back end's message, "Espace introuvable : 999999".
 
 **125. Space with bookings**: an admin deletes a space that has bookings (409).
-- Expected: an error with the back end's message, "Impossible de supprimer l'espace 53 : il a des réservations".
+- Expected: an error with the back end's message, "Impossible de supprimer l'espace « Contrat test » : il a des réservations".
 
 **126. Free-space search**: the free spaces of a slot are searched, with a type.
 - Expected: the start, end and type are sent in the address; the free spaces come back with their rates as numbers.
@@ -481,3 +481,16 @@ The data mode (mock or real) and the service addresses come from the `.env` file
 
 **137. Tests**: the values for the test run.
 - Expected: mock mode.
+
+## V. Found with the real back end
+
+Checked with the real back end and fixed: the database returns the spaces by id, while the mock's ids happened to follow the type order.
+
+**138. Order on Espaces disponibles**: the spaces arrive as Bureau 10, Bureau 1, Openspace 2, Openspace 1.
+- Expected: they are shown by type, then by name: Openspace 1, Openspace 2, Bureau 1, Bureau 10.
+
+**139. Order in Réserver**: the open spaces arrive as Openspace 10, Openspace 2, Openspace 1.
+- Expected: the space list shows Openspace 1, Openspace 2, Openspace 10.
+
+**140. Space with bookings (mock)**: an admin deletes Openspace 1, which has bookings, in the mock.
+- Expected: an error with "Impossible de supprimer l'espace « Openspace 1 » : il a des réservations", as the back end answers.

@@ -139,7 +139,7 @@ describe("AdminSpacesPage", () => {
   });
 
   it("explains why a space with bookings cannot be deleted", async () => {
-    deleteSpace.mockRejectedValue(new ApiError(409, "Impossible de supprimer l'espace 1 : il a des réservations"));
+    deleteSpace.mockRejectedValue(new ApiError(409, "Impossible de supprimer l'espace « Openspace 1 » : il a des réservations"));
     renderPage();
     fireEvent.click(within(await row("Openspace 1")).getByRole("button", { name: "Supprimer" }));
     fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Supprimer" }));

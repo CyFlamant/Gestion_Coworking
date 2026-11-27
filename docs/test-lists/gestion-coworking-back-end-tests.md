@@ -126,7 +126,7 @@ The requests are made by an admin, unless stated otherwise.
 - Expected: 404.
 
 **36. Delete a space that has bookings**.
-- Expected: 409 with "Impossible de supprimer l'espace 1 : il a des réservations".
+- Expected: 409 with "Impossible de supprimer l'espace « Bureau 1 » : il a des réservations".
 
 **37. A client creates a space**.
 - Expected: 403 with "Accès refusé".

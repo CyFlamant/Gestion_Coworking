@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { Route } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, createBooking, getAvailableSpaces, getSpaces } from "../lib/api.js";
@@ -75,6 +75,14 @@ describe("BookPage", () => {
     renderPage();
     expect(await screen.findByRole("option", { name: "Openspace 1 — déjà réservé" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Openspace 2" })).toBeInTheDocument();
+  });
+
+  it("lists the spaces of the type by name", async () => {
+    getSpaces.mockResolvedValue([{ ...SPACES[0], id: 4, name: "Openspace 10" }, SPACES[1], SPACES[0], SPACES[2]]);
+    renderPage();
+    const list = await screen.findByRole("combobox", { name: "Espace" });
+    expect(within(list).getAllByRole("option").map((option) => option.textContent))
+      .toEqual(["Openspace 1 — déjà réservé", "Openspace 2", "Openspace 10 — déjà réservé"]);
   });
 
   it("shows the price of the booking", async () => {

@@ -56,6 +56,14 @@ describe("SpacesPage", () => {
     expect(screen.getByRole("heading", { name: "Openspace 1" })).toBeInTheDocument();
   });
 
+  it("lists the spaces by type, then by name", async () => {
+    getSpaces.mockResolvedValue([{ ...SPACES[2], id: 4, name: "Bureau 10" }, SPACES[2], SPACES[1], SPACES[0]]);
+    renderPage();
+    await card("Bureau 10");
+    expect(screen.getAllByRole("article").map((article) => within(article).getByRole("heading").textContent))
+      .toEqual(["Openspace 1", "Openspace 2", "Bureau 1", "Bureau 10"]);
+  });
+
   it("searches for the free spaces on the chosen slot", async () => {
     renderPage();
     await waitFor(() =>

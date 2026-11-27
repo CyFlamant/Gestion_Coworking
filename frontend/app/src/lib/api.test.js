@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createSpace, deleteSpace, getAvailableSpaces, getSpace, getSpaces } from "./api.js";
 import { getCurrentUser } from "./auth.js";
 import { BASE_URL, setApiMode } from "./config.js";
+import { DEMO_ADMIN_ID, resetDb, setSessionUserId } from "./mock/db.js";
 
 // Contract tests: api.js in real mode, against answers recorded from the app-service
 // (Spring Boot, 27 November 2026). If the back end changes its answers, record them again here.
@@ -19,7 +20,7 @@ const RECORDED = {
   notFound:
     '{"detail":"Espace introuvable : 999999","instance":"/api/spaces/999999","status":404,"title":"Not Found"}',
   hasBookings:
-    '{"detail":"Impossible de supprimer l\'espace 53 : il a des réservations","instance":"/api/spaces/53","status":409,"title":"Conflict"}',
+    '{"detail":"Impossible de supprimer l\'espace « Contrat test » : il a des réservations","instance":"/api/spaces/53","status":409,"title":"Conflict"}',
   available:
     '[{"id":118,"name":"Contrat test","type":"OFFICE","hourRate":4.50,"halfDayRate":14.00,"dayRate":25.00,"monthRate":250.00}]',
   invalidSlot:
@@ -119,7 +120,7 @@ describe("api (real back end)", () => {
     answer(409, RECORDED.hasBookings);
     expect(await errorOf(() => deleteSpace(53))).toMatchObject({
       status: 409,
-      detail: "Impossible de supprimer l'espace 53 : il a des réservations",
+      detail: "Impossible de supprimer l'espace « Contrat test » : il a des réservations",
     });
   });
 
@@ -172,5 +173,20 @@ describe("getAvailableSpaces (mock)", () => {
     const error = await errorOf(() => getAvailableSpaces({ start: "2026-12-01T13:00:00", end: "2026-12-01T09:00:00" }));
     expect(error).toMatchObject({ status: 400, detail: "Données invalides" });
     expect(error.errors).toEqual({ end: "La fin doit être après le début" });
+  });
+});
+
+describe("deleteSpace (mock)", () => {
+  beforeEach(() => {
+    setApiMode("mock");
+    setSessionUserId(DEMO_ADMIN_ID);
+  });
+  afterEach(() => resetDb()); // demo data and signed-in user back to the start
+
+  it("refuses to delete a space with bookings, naming it like the back end", async () => {
+    expect(await errorOf(() => deleteSpace(1))).toMatchObject({
+      status: 409,
+      detail: "Impossible de supprimer l'espace « Openspace 1 » : il a des réservations",
+    });
   });
 });
