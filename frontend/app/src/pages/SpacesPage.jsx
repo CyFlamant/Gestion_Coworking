@@ -2,22 +2,19 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useOutletContext } from "react-router";
 import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
+import RateList from "../components/RateList.jsx";
 import Segmented from "../components/Segmented.jsx";
 import ShapeIcon from "../components/ShapeIcon.jsx";
 import SlotFields from "../components/SlotFields.jsx";
 import TypeChip from "../components/TypeChip.jsx";
-import { getAvailableSpaces, getSpaces } from "../lib/api.js";
+import { useFreeSpaces } from "../hooks/useFreeSpaces.js";
+import { getSpaces } from "../lib/api.js";
 import { roleOf } from "../lib/auth.js";
-import { RATE_FIELDS, SPACE_TYPES } from "../lib/config.js";
+import { SPACE_TYPES } from "../lib/config.js";
 import { addDays, formatMoney, toLocalIso, today } from "../lib/dates.js";
 import { saveDraft } from "../lib/draft.js";
 import { t } from "../lib/i18n/index.js";
-import {
-  bookingRange,
-  computePrice,
-  fitToOpeningHours,
-  rateKey,
-} from "../lib/pricing.js";
+import { bookingRange, computePrice, fitToOpeningHours } from "../lib/pricing.js";
 import { describeRange } from "../lib/slots.js";
 
 // Espaces disponibles: catalogue with rates + availability search (guests and clients).
@@ -41,12 +38,9 @@ export default function SpacesPage() {
   );
   const [spaces, setSpaces] = useState(null);
   const [loadError, setLoadError] = useState(null);
-  const [free, setFree] = useState(null); // ids of the free spaces, null until the search answers
-  const [searchError, setSearchError] = useState(null);
 
   const range = bookingRange(values);
-  const start = toLocalIso(range.start);
-  const end = toLocalIso(range.end);
+  const { free, searchError } = useFreeSpaces(toLocalIso(range.start), toLocalIso(range.end));
 
   useEffect(() => {
     getSpaces()
@@ -56,25 +50,7 @@ export default function SpacesPage() {
       );
   }, []);
 
-  // Searches again each time the slot changes. An answer that arrives after a newer search started is ignored.
-  useEffect(() => {
-    let outdated = false;
-    getAvailableSpaces({ start, end })
-      .then((found) => {
-        if (outdated) return;
-        setFree(new Set(found.map((space) => space.id)));
-        setSearchError(null);
-      })
-      .catch((err) => {
-        if (outdated) return;
-        setFree(null);
-        setSearchError(err.detail); // real mode: the search endpoint does not exist yet
-      });
-    return () => {
-      outdated = true;
-    };
-  }, [start, end]);
-
+  // When the search failed, every space is shown as free and the message is shown above.
   const isFree = (space) => (searchError ? true : free.has(space.id));
   const ready = spaces && (free || searchError);
   const shown = ready
@@ -170,20 +146,7 @@ function SpaceCard({ space, range, isFree, role, onBook }) {
         </h2>
         <TypeChip type={space.type} />
       </div>
-      <dl className="rate-list">
-        {RATE_FIELDS.map((key) => {
-          const active =
-            key === rateKey(price.formula) ? "is-active" : undefined;
-          return [
-            <dt key={`${key}-label`} className={active}>
-              {t(`rates.${key}`)}
-            </dt>,
-            <dd key={`${key}-value`} className={active}>
-              {formatMoney(space[key])}
-            </dd>,
-          ];
-        })}
-      </dl>
+      <RateList space={space} formula={price.formula} />
       {isFree ? (
         <span className="status status--ok">{t("spaces.available")}</span>
       ) : (

@@ -3,22 +3,19 @@ import { useNavigate } from "react-router";
 import BookingForm from "../components/BookingForm.jsx";
 import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
+import RateList from "../components/RateList.jsx";
 import TypeChip from "../components/TypeChip.jsx";
+import { useFreeSpaces } from "../hooks/useFreeSpaces.js";
 import { useSubmit } from "../hooks/useSubmit.js";
-import { createBooking, getAvailableSpaces, getSpaces } from "../lib/api.js";
+import { createBooking, getSpaces } from "../lib/api.js";
 import { applyBookingChange, resolveSpaceId } from "../lib/booking.js";
-import { RATE_FIELDS, SPACE_TYPES } from "../lib/config.js";
+import { SPACE_TYPES } from "../lib/config.js";
 import { addDays, formatMoney, toLocalIso, today } from "../lib/dates.js";
 import { clearDraft, readDraft } from "../lib/draft.js";
 import { setFlash } from "../lib/flash.js";
 import { errorMessage } from "../lib/forms.js";
 import { t } from "../lib/i18n/index.js";
-import {
-  bookingRange,
-  computePrice,
-  fitToOpeningHours,
-  rateKey,
-} from "../lib/pricing.js";
+import { bookingRange, computePrice, fitToOpeningHours } from "../lib/pricing.js";
 import { describeRange } from "../lib/slots.js";
 
 const DEFAULT_SLOT = {
@@ -49,11 +46,12 @@ export default function BookPage() {
   const [booking, setBooking] = useState(initialBooking);
   const [spaces, setSpaces] = useState(null);
   const [loadError, setLoadError] = useState(null);
-  const [free, setFree] = useState(null); // ids of the free spaces; null while unknown
 
   const range = bookingRange(booking.slot);
   const start = toLocalIso(range.start);
   const end = toLocalIso(range.end);
+  // When the search fails, `free` stays null (unknown): the API decides when the booking is sent.
+  const { free } = useFreeSpaces(start, end);
 
   useEffect(() => {
     clearDraft(); // read once in initialBooking; forgotten now so a later visit starts fresh
@@ -63,19 +61,6 @@ export default function BookPage() {
         setLoadError(t("common.loadError", { detail: err.detail })),
       );
   }, []);
-
-  useEffect(() => {
-    let outdated = false;
-    getAvailableSpaces({ start, end })
-      .then(
-        (found) =>
-          !outdated && setFree(new Set(found.map((space) => space.id))),
-      )
-      .catch(() => !outdated && setFree(null)); // unknown: the API decides when the booking is sent
-    return () => {
-      outdated = true;
-    };
-  }, [start, end]);
 
   const spaceId = spaces ? resolveSpaceId({ spaces, free, ...booking }) : null;
   const space = spaces?.find((s) => s.id === spaceId) ?? null;
@@ -134,22 +119,7 @@ export default function BookPage() {
               </div>
             )}
             <p className="muted">{describeRange(range)}</p>
-            {space && (
-              <dl className="rate-list">
-                {RATE_FIELDS.map((key) => {
-                  const active =
-                    key === rateKey(price.formula) ? "is-active" : undefined;
-                  return [
-                    <dt key={`${key}-label`} className={active}>
-                      {t(`rates.${key}`)}
-                    </dt>,
-                    <dd key={`${key}-value`} className={active}>
-                      {formatMoney(space[key])}
-                    </dd>,
-                  ];
-                })}
-              </dl>
-            )}
+            {space && <RateList space={space} formula={price.formula} />}
             {price && (
               <div className="summary__line">
                 <span>
