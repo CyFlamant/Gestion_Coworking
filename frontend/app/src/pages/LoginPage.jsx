@@ -6,6 +6,7 @@ import TextField from "../components/TextField.jsx";
 import { login } from "../lib/api.js";
 import { HOME_BY_ROLE } from "../lib/auth.js";
 import { goTo } from "../lib/browser.js";
+import { setFlash } from "../lib/flash.js";
 import { formErrors, NO_ERRORS } from "../lib/forms.js";
 import { t } from "../lib/i18n/index.js";
 import { DEMO_PASSWORD, getDb } from "../lib/mock/db.js";
@@ -25,6 +26,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       const user = await login(values);
+      setFlash(t("signIn.welcome"));
       goTo(HOME_BY_ROLE[user.role]);
     } catch (error) {
       setErrors(formErrors(error));

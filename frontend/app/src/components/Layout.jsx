@@ -1,12 +1,14 @@
 // Page shell: user bar, header with role-based navigation, footer. The current page renders in <Outlet />.
 import { useEffect, useState } from "react";
-import { Link, NavLink, Outlet } from "react-router";
+import { Link, NavLink, Outlet, useLocation } from "react-router";
 import { logout } from "../lib/api.js";
 import { getCurrentUser, roleOf } from "../lib/auth.js";
 import { brand } from "../lib/brand.js";
 import { goTo } from "../lib/browser.js";
+import { setFlash } from "../lib/flash.js";
 import { getLanguage, LANGUAGES, t } from "../lib/i18n/index.js";
 import DevBar from "./DevBar.jsx";
+import FlashMessage from "./FlashMessage.jsx";
 
 const YEAR = new Date().getFullYear();
 const NAV = {
@@ -28,6 +30,7 @@ export default function Layout() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
 
   // Runs once after the first render: asks the API who is signed in.
   useEffect(() => {
@@ -46,6 +49,7 @@ export default function Layout() {
     } catch {
       // No auth-service yet in real mode: nothing to sign out from.
     }
+    setFlash(t("logout.done"));
     goTo("/");
   }
 
@@ -111,6 +115,8 @@ export default function Layout() {
         </div>
       </header>
 
+      {/* A new key on every page change: the message saved by the previous page is read again. */}
+      <FlashMessage key={location.key} />
       <Outlet context={user} />
 
       <footer className="site-footer">

@@ -69,6 +69,7 @@ describe("MyBookingsPage", () => {
     await waitFor(() => expect(deleteBooking).toHaveBeenCalledWith(1));
     await waitFor(() => expect(screen.queryByRole("heading", { name: "Openspace 1" })).not.toBeInTheDocument());
     expect(screen.getByRole("heading", { name: "Bureau 1" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Réservation annulée.");
   });
 
   it("keeps the booking when the client changes their mind", async () => {

@@ -6,7 +6,7 @@ The tests don't use the prototype's demo data (`lib/mock/db.js`). Each one gives
 
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-106 tests.
+110 tests.
 
 ## A. Prices and opening hours
 
@@ -100,7 +100,7 @@ Run them with `npm test` in `frontend/app`. The test function names are in `gest
 ## E. Sign-in and sign-up
 
 **28. Sign in**: an admin enters their e-mail and password.
-- Expected: the sign-in is sent with those values, then the admin home page is loaded.
+- Expected: the sign-in is sent with those values, then the admin home page is loaded, with "Bienvenue !" saved for it.
 
 **29. Wrong password**: the sign-in is refused.
 - Expected: the error message is shown above the form, and the page stays.
@@ -109,7 +109,7 @@ Run them with `npm test` in `frontend/app`. The test function names are in `gest
 - Expected: the form is filled with the demo client's e-mail and password.
 
 **31. Sign up**: a new user fills in the five fields.
-- Expected: the account is created with those values, then the home page is loaded.
+- Expected: the account is created with those values, then the home page is loaded, with "Compte créé. Bienvenue !" saved for it.
 
 **32. Sign-up errors**: the API rejects the e-mail.
 - Expected: the message is shown under the e-mail field, which is marked as invalid; no message above the form.
@@ -199,7 +199,7 @@ A signed-in client books on the "Réserver" page. "Today" is Monday 16 November 
 - Expected: "Aucun espace de ce type n’est disponible pour ce créneau." replaces the list, and the booking can't be confirmed.
 
 **57. Book**: the client confirms a full day on Bureau 1.
-- Expected: the booking is sent with that space and slot (Tuesday 17, 8:00–19:00), then "Mes réservations" opens.
+- Expected: the booking is sent with that space and slot (Tuesday 17, 8:00–19:00), then "Mes réservations" opens, with "Réservation confirmée." saved for it.
 
 **58. Booking refused**: the API refuses the booking.
 - Expected: the error message is shown, and the page stays.
@@ -215,7 +215,7 @@ A signed-in client books on the "Réserver" page. "Today" is Monday 16 November 
 - Expected: it is listed, without an "Annuler" button.
 
 **61. Cancel**: the client clicks "Annuler", then confirms.
-- Expected: the booking is cancelled and the list is loaded again; it is gone, and the booking in progress is still shown.
+- Expected: the booking is cancelled and the list is loaded again; it is gone, the booking in progress is still shown, and "Réservation annulée." is shown.
 
 **62. Keep**: the client clicks "Annuler", then "Garder".
 - Expected: the dialog closes; nothing is cancelled and the booking is still shown.
@@ -360,3 +360,19 @@ The day view of the admin bookings page, with two spaces: Openspace 1 and Bureau
 
 **106. Data can't be loaded**: the bookings can't be loaded (real mode: the endpoint doesn't exist yet).
 - Expected: an error message with the reason.
+
+## O. Messages after a page change
+
+Some confirmations are shown on the next page: "Bienvenue !" after signing in, "Réservation confirmée." after booking, "Vous êtes déconnecté." after signing out. The page saves the message before leaving (tests 28, 31 and 57 check that it is saved); the layout shows it on the next page, once.
+
+**107. Message shown**: a message was saved before the page change.
+- Expected: it is shown.
+
+**108. Shown once**: the next page after that.
+- Expected: the message is no longer shown.
+
+**109. Page change inside the app**: a page saves "Réservation confirmée." and opens another page without a full page load (as "Réserver" does).
+- Expected: the next page shows the message.
+
+**110. Sign out**: a signed-in client clicks "Déconnexion".
+- Expected: the home page is loaded, with "Vous êtes déconnecté." saved for it.

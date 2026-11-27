@@ -110,5 +110,9 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 104 | Delete | `AdminBookingsPage > deletes a booking once the admin confirms` (`pages/AdminBookingsPage.test.jsx`) |
 | 105 | Booking refused | `AdminBookingsPage > shows the API's error in the dialog and keeps it open` (`pages/AdminBookingsPage.test.jsx`) |
 | 106 | Data can't be loaded | `AdminBookingsPage > shows an error when the data cannot be loaded` (`pages/AdminBookingsPage.test.jsx`) |
+| 107 | Message shown | `FlashMessage > shows the message saved before the page change` (`components/FlashMessage.test.jsx`) |
+| 108 | Shown once | `FlashMessage > shows it only once` (`components/FlashMessage.test.jsx`) |
+| 109 | Page change inside the app | `Layout > shows a message saved by the previous page` (`components/Layout.test.jsx`) |
+| 110 | Sign out | `Layout > signs out and says so on the next page` (`components/Layout.test.jsx`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

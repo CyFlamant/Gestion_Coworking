@@ -9,6 +9,7 @@ import { applyBookingChange, resolveSpaceId } from "../lib/booking.js";
 import { RATE_FIELDS, SPACE_TYPES } from "../lib/config.js";
 import { addDays, formatMoney, toLocalIso, today } from "../lib/dates.js";
 import { clearDraft, readDraft } from "../lib/draft.js";
+import { setFlash } from "../lib/flash.js";
 import { t } from "../lib/i18n/index.js";
 import {
   bookingRange,
@@ -91,6 +92,7 @@ export default function BookPage() {
     setSubmitting(true);
     try {
       await createBooking({ spaceId, startDateTime: start, endDateTime: end });
+      setFlash(t("booking.created"));
       navigate("/mes-reservations");
     } catch (err) {
       setSubmitError(err.detail ?? String(err));

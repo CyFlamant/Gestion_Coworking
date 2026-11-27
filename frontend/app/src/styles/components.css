@@ -301,6 +301,11 @@
   background: var(--color-surface);
 }
 
+/* Message from the previous page (FlashMessage), above the page content */
+.flash {
+  padding-top: var(--space-4);
+}
+
 /* ---------- Card and layout helpers ---------- */
 
 .card {

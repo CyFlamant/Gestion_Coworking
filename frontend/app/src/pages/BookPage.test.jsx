@@ -3,6 +3,7 @@ import { Route } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, createBooking, getAvailableSpaces, getSpaces } from "../lib/api.js";
 import { saveDraft } from "../lib/draft.js";
+import { readFlash } from "../lib/flash.js";
 import { renderWithUser } from "../test/renderWithUser.jsx";
 import BookPage from "./BookPage.jsx";
 
@@ -110,6 +111,7 @@ describe("BookPage", () => {
       startDateTime: "2026-11-17T08:00:00",
       endDateTime: "2026-11-17T19:00:00",
     });
+    expect(readFlash()).toBe("Réservation confirmée."); // shown on the next page
   });
 
   it("shows the API's error and stays on the page when the booking fails", async () => {

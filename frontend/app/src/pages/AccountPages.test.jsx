@@ -3,6 +3,7 @@ import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, login, register } from "../lib/api.js";
 import { goTo } from "../lib/browser.js";
+import { clearFlash, readFlash } from "../lib/flash.js";
 import LoginPage from "./LoginPage.jsx";
 import SignupPage from "./SignupPage.jsx";
 
@@ -14,8 +15,11 @@ vi.mock("../lib/api.js", async (importOriginal) => ({
 }));
 vi.mock("../lib/browser.js", () => ({ goTo: vi.fn() }));
 
-// Forget the calls recorded by the previous test.
-beforeEach(() => vi.clearAllMocks());
+// Forget the calls and the message recorded by the previous test.
+beforeEach(() => {
+  vi.clearAllMocks();
+  clearFlash();
+});
 
 // Types a value in the field with that label, as a user would.
 function type(label, value) {
@@ -36,6 +40,7 @@ describe("LoginPage", () => {
       email: "admin@exemple.be",
       password: "demo1234",
     });
+    expect(readFlash()).toMatch(/Bienvenue/); // shown on the next page
   });
 
   it("shows the error and stays on the page when the password is wrong", async () => {
@@ -80,6 +85,7 @@ describe("SignupPage", () => {
       password: "motdepasse",
       passwordConfirm: "motdepasse",
     });
+    expect(readFlash()).toMatch(/Compte créé/); // shown on the next page
   });
 
   it("shows the API's errors next to the fields", async () => {

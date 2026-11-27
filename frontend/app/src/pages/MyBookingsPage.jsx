@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import ConfirmDialog from "../components/ConfirmDialog.jsx";
 import ErrorAlert from "../components/ErrorAlert.jsx";
 import PageTitle from "../components/PageTitle.jsx";
+import StatusMessage from "../components/StatusMessage.jsx";
 import TypeChip from "../components/TypeChip.jsx";
 import { deleteBooking, getMyBookings } from "../lib/api.js";
 import { formatMoney, formatMonthShort, parseLocal } from "../lib/dates.js";
@@ -13,6 +14,7 @@ import { describeRange } from "../lib/slots.js";
 export default function MyBookingsPage() {
   const [bookings, setBookings] = useState(null);
   const [error, setError] = useState(null);
+  const [notice, setNotice] = useState(null); // confirmation of the last cancellation
   const [toCancel, setToCancel] = useState(null); // the booking whose cancellation is being confirmed
   const [version, setVersion] = useState(0); // bumped to load the list again
   const [now] = useState(() => new Date()); // read once: drawing the page must give the same result each time
@@ -26,10 +28,13 @@ export default function MyBookingsPage() {
   async function confirmCancel() {
     const booking = toCancel;
     setToCancel(null);
+    setError(null);
     try {
       await deleteBooking(booking.id);
+      setNotice(t("myBookings.cancelled"));
       setVersion((v) => v + 1);
     } catch (err) {
+      setNotice(null);
       setError(err.detail ?? String(err));
     }
   }
@@ -51,6 +56,7 @@ export default function MyBookingsPage() {
         </Link>
       </div>
       <ErrorAlert>{error}</ErrorAlert>
+      <StatusMessage>{notice}</StatusMessage>
       {bookings && (
         <div aria-live="polite">
           {upcoming.length === 0 ? (

@@ -5,6 +5,7 @@ import PageTitle from "../components/PageTitle.jsx";
 import TextField from "../components/TextField.jsx";
 import { register } from "../lib/api.js";
 import { goTo } from "../lib/browser.js";
+import { setFlash } from "../lib/flash.js";
 import { formErrors, NO_ERRORS } from "../lib/forms.js";
 import { t } from "../lib/i18n/index.js";
 
@@ -37,6 +38,7 @@ export default function SignupPage() {
     setSubmitting(true);
     try {
       await register(values);
+      setFlash(t("signUp.created"));
       goTo("/");
     } catch (error) {
       setErrors(formErrors(error));
