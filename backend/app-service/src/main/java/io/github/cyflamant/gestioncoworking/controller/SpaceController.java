@@ -37,7 +37,6 @@ public class SpaceController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-
     public SpaceResponse create(@Valid @RequestBody SpaceRequest request) {
         return SpaceResponse.from(spaceService.create(request.toEntity()));
     }
@@ -51,14 +50,12 @@ public class SpaceController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-
     public SpaceResponse update(@PathVariable Integer id, @Valid @RequestBody SpaceRequest request) {
         return SpaceResponse.from(spaceService.update(id, request.toEntity()));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         spaceService.delete(id);
