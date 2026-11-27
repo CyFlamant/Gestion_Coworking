@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App.jsx";
-import { getAvailableSpaces, getMyBookings, getSpaces } from "./lib/api.js";
+import { getAvailableSpaces, getBookings, getMyBookings, getSpaces } from "./lib/api.js";
 import { getCurrentUser } from "./lib/auth.js";
 
 // Checks the wiring in App.jsx: each address shows its real page, for the right role.
@@ -16,6 +16,7 @@ vi.mock("./lib/api.js", async (importOriginal) => ({
   getSpaces: vi.fn(),
   getAvailableSpaces: vi.fn(),
   getMyBookings: vi.fn(),
+  getBookings: vi.fn(),
 }));
 
 const USERS = {
@@ -29,6 +30,7 @@ beforeEach(() => {
   getSpaces.mockResolvedValue([]);
   getAvailableSpaces.mockResolvedValue([]);
   getMyBookings.mockResolvedValue([]);
+  getBookings.mockResolvedValue([]);
 });
 
 function renderAt(path, who) {
@@ -61,6 +63,7 @@ describe("App", () => {
   it("shows the admin pages to an admin", async () => {
     renderAt("/admin/espaces", "admin");
     expect(await screen.findByRole("heading", { level: 1, name: "Espaces" })).toBeInTheDocument();
+    await waitFor(() => expect(document.title).toBe("Espaces · L’Échappée"));
   });
 
   it("sends a guest who opens a client page to the home page", async () => {

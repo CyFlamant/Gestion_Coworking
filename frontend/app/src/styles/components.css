@@ -751,6 +751,64 @@
   font-weight: 600;
 }
 
+/* Tables as cards on phones: one card per row, each value next to its column name (data-label).
+   Cells without data-label (name, actions) take the full width. */
+@media (max-width: 640px) {
+  .table-wrap:has(.table--cards) {
+    overflow-x: visible;
+    border: 0;
+  }
+
+  .table--cards thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .table--cards,
+  .table--cards tbody,
+  .table--cards tr,
+  .table--cards td {
+    display: block;
+  }
+
+  .table--cards tr {
+    margin-bottom: var(--space-3);
+    padding: var(--space-2) 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  .table--cards td {
+    border-bottom: 0;
+    padding: 6px 12px;
+    white-space: normal;
+  }
+
+  .table--cards td[data-label] {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    text-align: right;
+  }
+
+  .table--cards td[data-label]::before {
+    content: attr(data-label);
+    font: 600 var(--text-xs) / 1.6 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    text-align: left;
+  }
+
+  .table--cards .table__actions {
+    justify-content: flex-start;
+    padding-top: var(--space-2);
+  }
+}
+
 /* ---------- Dialog ---------- */
 
 .dialog {

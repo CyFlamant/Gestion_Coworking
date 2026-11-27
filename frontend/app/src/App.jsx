@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router";
 import Layout from "./components/Layout.jsx";
 import RequireRole from "./components/RequireRole.jsx";
+import AdminBookingsPage from "./pages/AdminBookingsPage.jsx";
+import AdminSpacesPage from "./pages/AdminSpacesPage.jsx";
 import BookPage from "./pages/BookPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
@@ -37,14 +39,8 @@ export default function App() {
           <Route path="/mes-reservations" element={<MyBookingsPage />} />
         </Route>
         <Route element={<RequireRole roles={["ADMIN"]} />}>
-          <Route
-            path="/admin/reservations"
-            element={<Placeholder title="Réservations" />}
-          />
-          <Route
-            path="/admin/espaces"
-            element={<Placeholder title="Espaces" />}
-          />
+          <Route path="/admin/reservations" element={<AdminBookingsPage />} />
+          <Route path="/admin/espaces" element={<AdminSpacesPage />} />
         </Route>
         {/* Open to everyone */}
         <Route path="/contact" element={<ContactPage />} />

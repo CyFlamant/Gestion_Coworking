@@ -68,5 +68,47 @@ Test number and title from `gestion-coworking-front-end-tests.md`, and the Vites
 | 62 | Keep | `MyBookingsPage > keeps the booking when the client changes their mind` (`pages/MyBookingsPage.test.jsx`) |
 | 63 | Nothing coming up | `MyBookingsPage > invites the client to book when nothing is coming up` (`pages/MyBookingsPage.test.jsx`) |
 | 64 | Bookings can't be loaded | `MyBookingsPage > shows an error when the bookings cannot be loaded` (`pages/MyBookingsPage.test.jsx`) |
+| 65 | Page at `/` | `App > shows the page at / to a guest` (`App.test.jsx`) |
+| 66 | Page at `/espaces` | `App > shows the page at /espaces to a guest` (`App.test.jsx`) |
+| 67 | Page at `/connexion` | `App > shows the page at /connexion to a guest` (`App.test.jsx`) |
+| 68 | Page at `/inscription` | `App > shows the page at /inscription to a guest` (`App.test.jsx`) |
+| 69 | Page at `/reserver` | `App > shows the page at /reserver to a client` (`App.test.jsx`) |
+| 70 | Page at `/mes-reservations` | `App > shows the page at /mes-reservations to a client` (`App.test.jsx`) |
+| 71 | Page at `/contact` | `App > shows the page at /contact to a guest` (`App.test.jsx`) |
+| 72 | Page at `/horaires` | `App > shows the page at /horaires to a guest` (`App.test.jsx`) |
+| 73 | Page at `/mentions-legales` | `App > shows the page at /mentions-legales to a guest` (`App.test.jsx`) |
+| 74 | Admin page | `App > shows the admin pages to an admin` (`App.test.jsx`) |
+| 75 | Client page for a guest | `App > sends a guest who opens a client page to the home page` (`App.test.jsx`) |
+| 76 | Unknown address | `App > says when a page does not exist` (`App.test.jsx`) |
+| 77 | List | `AdminSpacesPage > lists the spaces with their rates and number of bookings` (`pages/AdminSpacesPage.test.jsx`) |
+| 78 | Order | `AdminSpacesPage > sorts the spaces by type, then by name` (`pages/AdminSpacesPage.test.jsx`) |
+| 79 | Type filter | `AdminSpacesPage > filters the spaces by type` (`pages/AdminSpacesPage.test.jsx`) |
+| 80 | Add | `AdminSpacesPage > adds a space` (`pages/AdminSpacesPage.test.jsx`) |
+| 81 | Edit | `AdminSpacesPage > edits a space` (`pages/AdminSpacesPage.test.jsx`) |
+| 82 | Form errors | `AdminSpacesPage > shows the API's errors in the form and keeps it open` (`pages/AdminSpacesPage.test.jsx`) |
+| 83 | Delete | `AdminSpacesPage > deletes a space once the admin confirms` (`pages/AdminSpacesPage.test.jsx`) |
+| 84 | Space with bookings | `AdminSpacesPage > explains why a space with bookings cannot be deleted` (`pages/AdminSpacesPage.test.jsx`) |
+| 85 | Bookings not available | `AdminSpacesPage > still lists the spaces when the bookings are not available` (`pages/AdminSpacesPage.test.jsx`) |
+| 86 | Spaces can't be loaded | `AdminSpacesPage > shows an error when the spaces cannot be loaded` (`pages/AdminSpacesPage.test.jsx`) |
+| 87 | Month and first day of the week | `MonthCalendar > shows the month of the selected day, with weeks starting on Monday` (`components/MonthCalendar.test.jsx`) |
+| 88 | Selected day | `MonthCalendar > highlights the selected day` (`components/MonthCalendar.test.jsx`) |
+| 89 | Choosing a day | `MonthCalendar > gives the clicked day to its parent` (`components/MonthCalendar.test.jsx`) |
+| 90 | Other months | `MonthCalendar > moves to the next and previous months` (`components/MonthCalendar.test.jsx`) |
+| 91 | Days with bookings | `MonthCalendar > puts a dot on the days that have bookings` (`components/MonthCalendar.test.jsx`) |
+| 92 | Columns and bookings | `DayTimeline > shows one column per space, with its bookings and their times` (`components/DayTimeline.test.jsx`) |
+| 93 | Booking over several days | `DayTimeline > shows the formula instead of times for a booking over several days` (`components/DayTimeline.test.jsx`) |
+| 94 | Clicking a booking | `DayTimeline > gives the clicked booking to its parent` (`components/DayTimeline.test.jsx`) |
+| 95 | Clicking a free hour | `DayTimeline > gives the space and hour of a clicked free slot to its parent` (`components/DayTimeline.test.jsx`) |
+| 96 | Opening hours | `DayTimeline > follows the opening hours of the day` (`components/DayTimeline.test.jsx`) |
+| 97 | Sunday | `DayTimeline > says the coworking space is closed on Sunday` (`components/DayTimeline.test.jsx`) |
+| 98 | Today's bookings | `AdminBookingsPage > shows today's bookings in the day view` (`pages/AdminBookingsPage.test.jsx`) |
+| 99 | Another day | `AdminBookingsPage > shows the bookings of the day chosen in the calendar` (`pages/AdminBookingsPage.test.jsx`) |
+| 100 | Filters | `AdminBookingsPage > filters the day view by type and by space` (`pages/AdminBookingsPage.test.jsx`) |
+| 101 | List view | `AdminBookingsPage > lists the bookings that are not over, and the past ones on request` (`pages/AdminBookingsPage.test.jsx`) |
+| 102 | Add | `AdminBookingsPage > adds a booking for a client from a free hour of the day view` (`pages/AdminBookingsPage.test.jsx`) |
+| 103 | Edit | `AdminBookingsPage > edits a booking clicked in the day view` (`pages/AdminBookingsPage.test.jsx`) |
+| 104 | Delete | `AdminBookingsPage > deletes a booking once the admin confirms` (`pages/AdminBookingsPage.test.jsx`) |
+| 105 | Booking refused | `AdminBookingsPage > shows the API's error in the dialog and keeps it open` (`pages/AdminBookingsPage.test.jsx`) |
+| 106 | Data can't be loaded | `AdminBookingsPage > shows an error when the data cannot be loaded` (`pages/AdminBookingsPage.test.jsx`) |
 
 Run one test file from `frontend/app`: `npx vitest run <file>`; one test: `npx vitest run <file> -t "<it text>"`.

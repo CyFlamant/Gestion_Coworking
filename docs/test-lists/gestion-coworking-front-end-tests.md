@@ -2,9 +2,11 @@
 
 The tests of the React application, grouped by subject. Each test checks one behaviour and was written before the code it tests (RED, then GREEN).
 
+The tests don't use the prototype's demo data (`lib/mock/db.js`). Each one gives the page its own small set of example spaces and bookings, described at the start of a section when it matters, and a fixed "today" when dates are involved.
+
 Run them with `npm test` in `frontend/app`. The test function names are in `gestion-coworking-front-end-test-functions.md`; the back-end tests are in `gestion-coworking-back-end-tests.md`.
 
-64 tests.
+106 tests.
 
 ## A. Prices and opening hours
 
@@ -222,4 +224,139 @@ A signed-in client books on the "Réserver" page. "Today" is Monday 16 November 
 - Expected: "Vous n’avez aucune réservation à venir." and a "Réserver un espace" link.
 
 **64. Bookings can't be loaded**: the API fails.
+- Expected: an error message with the reason.
+
+## J. Addresses (routes)
+
+Checks that each address opens its real page for the right role. The pages themselves are tested above; here the API answers with empty lists. A placeholder page has the right heading but no tab title, so the tab title shows the real page is there.
+
+**65–73. Each page at its address**: the page is opened at its address by a user who may see it.
+
+| # | Address | Role | Heading | Tab title |
+|---|---|---|---|---|
+| 65 | `/` | guest | Espace de coworking | Accueil |
+| 66 | `/espaces` | guest | Espaces disponibles | Espaces disponibles |
+| 67 | `/connexion` | guest | Connexion | Connexion |
+| 68 | `/inscription` | guest | Créer un compte | Inscription |
+| 69 | `/reserver` | client | Réserver | Réserver |
+| 70 | `/mes-reservations` | client | Mes réservations | Mes réservations |
+| 71 | `/contact` | guest | Contact | Contact |
+| 72 | `/horaires` | guest | Horaires | Horaires |
+| 73 | `/mentions-legales` | guest | Mentions légales | Mentions légales |
+
+- Expected: the page's heading is shown, and the tab title is the one in the table, followed by "· L’Échappée".
+
+**74. Admin page**: an admin opens `/admin/espaces`.
+- Expected: the "Espaces" heading is shown, and the tab title is "Espaces · L’Échappée".
+
+**75. Client page for a guest**: a guest opens `/reserver`.
+- Expected: the home page is shown instead.
+
+**76. Unknown address**: `/nimporte-quoi`.
+- Expected: "Page introuvable" is shown.
+
+## K. Managing spaces (admin)
+
+An admin manages the spaces. The tests use four example spaces (two open spaces, an office and a meeting room); Openspace 1 has two bookings and Bureau 1 one.
+
+**77. List**: the page opens.
+- Expected: each space is shown with its rates and its number of bookings (2 for Openspace 1); "4 espace(s)".
+
+**78. Order**: the spaces arrive in any order.
+- Expected: they are listed by type (open spaces, offices, rooms), then by name.
+
+**79. Type filter**: "Bureaux individuels" is chosen.
+- Expected: only Bureau 1 is listed; "1 espace(s)".
+
+**80. Add**: the admin fills in the "Nouvel espace" form (name, type and four rates) and saves.
+- Expected: the space is sent with those values; the dialog closes, "Espace « Bureau 3 » ajouté." is shown and the list is loaded again.
+
+**81. Edit**: the admin changes the name of Bureau 1 and saves.
+- Expected: the form opens with the current values; the space is sent with the new name and its other values; "modifié" is shown.
+
+**82. Form errors**: the API rejects the form (name missing).
+- Expected: "Champ obligatoire" is shown under the name, which is marked as invalid; the dialog stays open.
+
+**83. Delete**: the admin clicks "Supprimer" on Openspace 2, then confirms.
+- Expected: the space is deleted and "supprimé" is shown.
+
+**84. Space with bookings**: the API refuses to delete Openspace 1.
+- Expected: the API's message ("… il a des réservations") is shown as an error.
+
+**85. Bookings not available**: the bookings can't be loaded (real mode: the endpoint doesn't exist yet).
+- Expected: the spaces are still listed, with 0 bookings, and no error.
+
+**86. Spaces can't be loaded**: the API fails.
+- Expected: an error message with the reason.
+
+## L. Month calendar (admin)
+
+The calendar of the admin bookings page. The selected day is Monday 16 November 2026.
+
+**87. Month and first day of the week**: the calendar opens.
+- Expected: "Novembre 2026" is shown; the first row starts on Monday 26 October (1 November is a Sunday).
+
+**88. Selected day**.
+- Expected: Monday 16 is marked as selected, Tuesday 17 isn't.
+
+**89. Choosing a day**: Tuesday 17 is clicked.
+- Expected: that day is passed to the page.
+
+**90. Other months**: "Mois suivant", then "Mois précédent" twice.
+- Expected: "Décembre 2026", then "Octobre 2026".
+
+**91. Days with bookings**: Tuesday 17 has a booking.
+- Expected: Tuesday 17 has a dot; Monday 16 doesn't.
+
+## M. Day timeline (admin)
+
+The day view of the admin bookings page, with two spaces: Openspace 1 and Bureau 1.
+
+**92. Columns and bookings**: Monday, with Marie Dubois's booking from 9:00 to 12:00.
+- Expected: one column per space; the booking shows "Marie Dubois" and "9:00 – 12:00".
+
+**93. Booking over several days**: a monthly booking.
+- Expected: it shows the formula ("Mois") instead of times.
+
+**94. Clicking a booking**.
+- Expected: that booking is passed to the page (to edit it).
+
+**95. Clicking a free hour**: Bureau 1 at 14:00.
+- Expected: the space and the hour are passed to the page (to add a booking).
+
+**96. Opening hours**: a Saturday.
+- Expected: free hours from 9:00 to 12:00; none at 13:00.
+
+**97. Sunday**.
+- Expected: "L’espace de coworking est fermé ce jour-là." and no buttons.
+
+## N. Managing bookings (admin)
+
+"Today" is Monday 16 November 2026 at 10:00. Marie Dubois has a booking today (Openspace 1, 9:00–12:00) and one last week; Thomas Lambert has one tomorrow (Bureau 1, full day).
+
+**98. Today's bookings**: the page opens.
+- Expected: the day view shows Monday 16 November, "1 réservation(s) ce jour" and Marie's booking, 9:00–12:00.
+
+**99. Another day**: Tuesday 17 is chosen in the calendar.
+- Expected: the day view shows Tuesday 17 with Thomas's booking, and not Marie's.
+
+**100. Filters**: the type "Open space", then the space "Openspace 1", are chosen.
+- Expected: the day view keeps only the open spaces, then only Openspace 1.
+
+**101. List view**: "Liste" is chosen.
+- Expected: today's and tomorrow's bookings are listed; last week's only after ticking "Afficher les réservations passées".
+
+**102. Add**: the admin clicks the free hour of Bureau 1 at 14:00, chooses Marie and saves.
+- Expected: the booking is sent for Marie, Bureau 1, today 14:00–15:00; the dialog closes, "Réservation ajoutée." is shown and the bookings are loaded again.
+
+**103. Edit**: the admin clicks Marie's booking and changes the duration to 2 hours.
+- Expected: the dialog opens with Marie as the client; the booking is sent with 9:00–11:00; "Réservation modifiée." is shown.
+
+**104. Delete**: the admin clicks Marie's booking, then "Supprimer", then confirms.
+- Expected: the booking is deleted and "Réservation supprimée." is shown.
+
+**105. Booking refused**: the API refuses the new booking.
+- Expected: the error is shown in the dialog, which stays open.
+
+**106. Data can't be loaded**: the bookings can't be loaded (real mode: the endpoint doesn't exist yet).
 - Expected: an error message with the reason.

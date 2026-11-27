@@ -4,12 +4,14 @@ import Segmented from "./Segmented.jsx";
 import ShapeIcon from "./ShapeIcon.jsx";
 import SlotFields from "./SlotFields.jsx";
 
-// Space type + slot + space. Used by "Réserver" (and later the admin booking dialog).
-// Controlled: the parent keeps `booking` ({ type, slot }) and the chosen `spaceId`, and gets changes in onChange.
+// (Client, for admins) + space type + slot + space. Used by "Réserver" and the admin booking dialog.
+// Controlled: the parent keeps `booking` ({ type, slot, userId }) and the chosen `spaceId`, and gets changes in onChange.
 // free: ids of the spaces free on the slot, or null when unknown (every space is then offered as free).
+// clients: given only for an admin, who books for a client.
 export default function BookingForm({
   idPrefix,
   spaces,
+  clients,
   booking,
   spaceId,
   free,
@@ -23,6 +25,26 @@ export default function BookingForm({
 
   return (
     <div className="form">
+      {clients && (
+        <div className="field">
+          <label className="field__label" htmlFor={`${idPrefix}-client`}>
+            {t("booking.client")}
+          </label>
+          <select
+            id={`${idPrefix}-client`}
+            className="select"
+            value={booking.userId ?? ""}
+            onChange={(event) => onChange({ userId: event.target.value })}
+          >
+            <option value="">{t("booking.chooseClient")}</option>
+            {clients.map((client) => (
+              <option key={client.id} value={client.id}>
+                {`${client.firstName} ${client.lastName} (${client.email})`}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       <fieldset className="field">
         <legend className="field__label">{t("booking.type")}</legend>
         <Segmented
